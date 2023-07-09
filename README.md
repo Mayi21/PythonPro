@@ -1,2 +1,2 @@
 # PythonPro
-some pickle on python
+a daily usage on my python life
