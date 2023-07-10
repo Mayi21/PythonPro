@@ -17,4 +17,8 @@ function get_top_10_process() {
   echo "$top_output"
 }
 
+function get_disk_usage_with_sta() {
+    du -sh /work/qb/
+}
+
 get_top_10_process
