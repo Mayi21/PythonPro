@@ -1,12 +1,18 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Welcome</title>
+    <title>Welcome to online spark</title>
   </head>
 
   <body>
-    <h1>Hello, {{ name }}</h1>
-    <input  placeholder="input command">
+    <form action="/submit" method="post">
+      <input name="command"  placeholder="input command">
+      <button>submit</button>
+    </form>
+    <textarea >
+      {{ cmd }}
+    </textarea>
+
   </body>
 </html>
 
