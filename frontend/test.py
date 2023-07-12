@@ -31,13 +31,15 @@ async def submit(request: Request, command: str=Form(...)):
         "request": request,
         "res": output.decode()
     })
-
 @app.post("/cmd")
-async def cmd(cmd: str=Form(...)):
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    output, error = process.communicate()
-    print(output.decode())
-    return {'result': output.decode().strip()}
+async def cmd(cmd: str = Form(...)):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
 
 if __name__ == '__main__':
     os.system('uvicorn test:app --reload')
