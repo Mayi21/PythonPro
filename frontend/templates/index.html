@@ -9,8 +9,8 @@
     }
 
     .terminal {
-      width: 400px;
-      height: 300px;
+      width: 600px;
+      height: 400px;
       background-color: black;
       color: white;
       padding: 10px;
@@ -29,6 +29,10 @@
 
     .terminal::-webkit-scrollbar-thumb {
       background-color: #888;
+    }
+
+    .input-container {
+      margin-bottom: 10px;
     }
 
     input[type="text"] {
@@ -69,9 +73,11 @@
 </head>
 <body>
   <h1>前端页面示例</h1>
+  <div class="input-container">
+    <label for="inputField">输入命令：</label>
+    <input type="text" id="inputField">
+    <button id="submitButton">提交</button>
+  </div>
   <div class="terminal" id="resultField"></div>
-  <label for="inputField">输入命令：</label>
-  <input type="text" id="inputField">
-  <button id="submitButton">提交</button>
 </body>
 </html>
