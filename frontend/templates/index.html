@@ -74,16 +74,28 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
-      $('#submitButton').click(submitCommand);
+      var submitButton = $('#submitButton');
+      var inputField = $('#inputField');
+      var resultField = $('#resultField');
+      var lastSubmitTime = 0;
+      var submitInterval = 5000; // 5秒
 
-      $('#inputField').keypress(function(event) {
+      submitButton.click(submitCommand);
+
+      inputField.keypress(function(event) {
         if (event.which === 13) { // 按下回车键
           submitCommand();
         }
       });
 
       function submitCommand() {
-        var inputText = $('#inputField').val();
+        var currentTime = new Date().getTime();
+        if (currentTime - lastSubmitTime < submitInterval) {
+          // 在限制时间内禁用提交按钮
+          return;
+        }
+
+        var inputText = inputField.val();
 
         $.ajax({
           url: '/cmd',
@@ -94,7 +106,7 @@
           dataType: 'json',
           success: function(response) {
             var result = response.result;
-            $('#resultField').text(result);
+            resultField.text(result);
           },
           error: function(error) {
             console.log(error);
@@ -102,7 +114,10 @@
         });
 
         // 清空输入框内容
-        $('#inputField').val('');
+        inputField.val('');
+
+        // 更新最后提交时间
+        lastSubmitTime = currentTime;
       }
     });
   </script>
