@@ -86,12 +86,15 @@
           dataType: 'json',
           success: function(response) {
             var result = response.result;
-            $('#resultField').append(result + '\n');
+            $('#resultField').text(result);
           },
           error: function(error) {
             console.log(error);
           }
         });
+
+        // 清空输入框内容
+        $('#inputField').val('');
       });
     });
   </script>
