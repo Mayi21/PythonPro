@@ -70,6 +70,19 @@
       border-radius: 3px;
       cursor: pointer;
     }
+
+    .limit-message {
+      color: red;
+      margin-top: 5px;
+      font-size: 12px;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+    }
+
+    .limit-message.hide {
+      opacity: 0;
+      height: 0;
+    }
   </style>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
@@ -77,6 +90,7 @@
       var submitButton = $('#submitButton');
       var inputField = $('#inputField');
       var resultField = $('#resultField');
+      var limitMessage = $('.limit-message');
       var lastSubmitTime = 0;
       var submitInterval = 5000; // 5秒
 
@@ -92,6 +106,7 @@
         var currentTime = new Date().getTime();
         if (currentTime - lastSubmitTime < submitInterval) {
           // 在限制时间内禁用提交按钮
+          showLimitMessage('请等待一段时间后再次提交');
           return;
         }
 
@@ -118,6 +133,27 @@
 
         // 更新最后提交时间
         lastSubmitTime = currentTime;
+
+        // 清空限制提示信息
+        hideLimitMessage();
+      }
+
+      function showLimitMessage(message) {
+        limitMessage.text(message).removeClass('hide');
+
+        // 在一定时间后自动隐藏限制提示信息
+        setTimeout(function() {
+          hideLimitMessage();
+        }, 3000); // 3秒
+      }
+
+      function hideLimitMessage() {
+        limitMessage.addClass('hide');
+
+        // 恢复空白区域的高度
+        setTimeout(function() {
+          resultField.css('height', '300px');
+        }, 500); // 0.5秒，等待限制提示信息逐渐隐藏完成
       }
     });
   </script>
@@ -129,6 +165,7 @@
       <input type="text" id="inputField" placeholder="输入命令">
       <button id="submitButton">提交</button>
     </div>
+    <div class="limit-message hide"></div>
     <div class="terminal" id="resultField"></div>
   </div>
 </body>
