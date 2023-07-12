@@ -74,7 +74,15 @@
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script>
     $(document).ready(function() {
-      $('#submitButton').click(function() {
+      $('#submitButton').click(submitCommand);
+
+      $('#inputField').keypress(function(event) {
+        if (event.which === 13) { // 按下回车键
+          submitCommand();
+        }
+      });
+
+      function submitCommand() {
         var inputText = $('#inputField').val();
 
         $.ajax({
@@ -95,13 +103,13 @@
 
         // 清空输入框内容
         $('#inputField').val('');
-      });
+      }
     });
   </script>
 </head>
 <body>
   <div class="container">
-    <h1>前端页面示例</h1>
+    <h1>执行命令</h1>
     <div class="input-container">
       <input type="text" id="inputField" placeholder="输入命令">
       <button id="submitButton">提交</button>
