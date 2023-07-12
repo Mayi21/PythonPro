@@ -1,4 +1,6 @@
+import json
 import os
+import subprocess
 
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
@@ -22,10 +24,20 @@ async def home(request: Request):
 
 @app.post("/submit")
 async def submit(request: Request, command: str=Form(...)):
+
+    process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
     return templates.TemplateResponse("index.html", {
         "request": request,
-        "cmd": command
+        "res": output.decode()
     })
+
+@app.post("/cmd")
+async def cmd(cmd: str=Form(...)):
+    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
+    output, error = process.communicate()
+    print(output.decode())
+    return {'result': output.decode().strip()}
 
 if __name__ == '__main__':
     os.system('uvicorn test:app --reload')
