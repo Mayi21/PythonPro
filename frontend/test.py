@@ -2,6 +2,7 @@ import json
 import os
 import subprocess
 
+import uvicorn
 from fastapi import FastAPI, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
@@ -42,4 +43,5 @@ async def cmd(cmd: str = Form(...)):
         return {"result": str(e)}
 
 if __name__ == '__main__':
+    # uvicorn.run("main:app  --reload", host="0.0.0.0", port=8000)
     os.system('uvicorn test:app --reload')
