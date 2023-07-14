@@ -13,3 +13,7 @@ register web info on server in start up.
 then we know those server online.  
 and server can use some health probe to monitor agent status.  
 
+i think can use fastapi in client, and use django in server  
+don't operate anything, just report system info  
+and server easy implment anything use django  
+
