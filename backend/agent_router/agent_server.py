@@ -1,3 +1,4 @@
+import os
 import subprocess
 
 from fastapi import FastAPI
@@ -26,4 +27,7 @@ def __exec_cmd(cmd):
     print("output", output)
     print("error", error)
     return output.decode().strip()
+
+if __name__ == '__main__':
+    os.system('uvicorn agent_server:app --reload')
 
