@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>前端页面示例</title>
+  <style>
+    body {
+      font-family: monospace;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background-color: #f5f5f5;
+    }
+
+    .container {
+      width: 80%;
+      max-width: 600px;
+      padding: 20px;
+      background-color: white;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .terminal {
+      width: 100%;
+      height: 300px;
+      background-color: black;
+      color: white;
+      padding: 10px;
+      font-size: 14px;
+      overflow: auto;
+      white-space: pre;
+      margin-top: 10px;
+    }
+
+    .terminal::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    .terminal::-webkit-scrollbar-track {
+      background-color: #333;
+    }
+
+    .terminal::-webkit-scrollbar-thumb {
+      background-color: #888;
+    }
+
+    .input-container {
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-container input[type="text"] {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 14px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .input-container button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 14px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .limit-message {
+      color: red;
+      margin-top: 5px;
+      font-size: 12px;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+    }
+
+    .limit-message.hide {
+      opacity: 0;
+      height: 0;
+    }
+  </style>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script>
+    $(document).ready(function() {
+      var submitButton = $('#submitButton');
+      var inputField = $('#inputField');
+      var resultField = $('#resultField');
+      var limitMessage = $('.limit-message');
+      var lastSubmitTime = 0;
+      var submitInterval = 5000; // 5秒
+
+      submitButton.click(submitCommand);
+
+      inputField.keypress(function(event) {
+        if (event.which === 13) { // 按下回车键
+          submitCommand();
+        }
+      });
+
+      function submitCommand() {
+        var currentTime = new Date().getTime();
+        if (currentTime - lastSubmitTime < submitInterval) {
+          // 在限制时间内禁用提交按钮
+          showLimitMessage('请等待一段时间后再次提交');
+          return;
+        }
+
+        var inputText = inputField.val();
+
+        $.ajax({
+          url: '/cmd/',
+          method: 'POST',
+          data: {
+            cmd: inputText
+          },
+          dataType: 'json',
+          success: function(response) {
+            var result = response.result;
+            resultField.text(result);
+          },
+          error: function(error) {
+            console.log(error);
+          }
+        });
+
+        // 清空输入框内容
+        inputField.val('');
+
+        // 更新最后提交时间
+        lastSubmitTime = currentTime;
+
+        // 清空限制提示信息
+        hideLimitMessage();
+      }
+
+      function showLimitMessage(message) {
+        limitMessage.text(message).removeClass('hide');
+
+        // 在一定时间后自动隐藏限制提示信息
+        setTimeout(function() {
+          hideLimitMessage();
+        }, 3000); // 3秒
+      }
+
+      function hideLimitMessage() {
+        limitMessage.addClass('hide');
+
+        // 恢复空白区域的高度
+        setTimeout(function() {
+          resultField.css('height', '300px');
+        }, 500); // 0.5秒，等待限制提示信息逐渐隐藏完成
+      }
+    });
+  </script>
+</head>
+<body>
+  <div class="container">
+    <h1>执行命令</h1>
+    <div class="input-container">
+      <input type="text" id="inputField" placeholder="输入命令">
+      <button id="submitButton">提交</button>
+    </div>
+    <div class="limit-message hide"></div>
+    <div class="terminal" id="resultField"></div>
+  </div>
+</body>
+</html>
