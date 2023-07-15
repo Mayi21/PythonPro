@@ -22,6 +22,5 @@ from . import views
 app_name = 'server'
 urlpatterns = [
     path('index/', views.index, name='index'),
-    path('save/', views.save_user, name='save'),
-    path('get/', views.get_user, name='get')
+    path('cmd/', views.get_cmd_res, name='cmd')
 ]
