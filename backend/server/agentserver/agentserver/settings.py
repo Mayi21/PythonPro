@@ -38,10 +38,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django_cron',
+    'django_apscheduler',
     'server'
 ]
 
 CRON_CLASSES = [
+    ''
     'server.cron.MyCronJob'
 ]
 
