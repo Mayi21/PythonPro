@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 
 # Create your views here.
-from .models import User
+from .models import User, Instance
 
 
 
@@ -16,3 +16,4 @@ def save_user(request):
 def get_user(request):
     data = User.objects.all()
     return HttpResponse(data)
+
