@@ -1,23 +1,14 @@
+import subprocess
+
+from apscheduler.jobstores.base import JobLookupError
 from apscheduler.triggers.interval import IntervalTrigger
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import render
 import requests
+from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from .models import User, Instance
-
-
-
-def index(request):
-    return HttpResponse("request path:{}".format(request.path))
-
-
-def save_user(request):
-    user = User(name='xiaohei', gender='m', age=10)
-    user.save()
-def get_user(request):
-    data = User.objects.all()
-    return HttpResponse(data)
 
 
 
@@ -41,10 +32,33 @@ def health_monitor():
             ins.save()
 
 
-scheduler.add_job(health_monitor,
-                  trigger=IntervalTrigger(seconds=5),
-                  id='health_check',
-                  name='health check')
+# schedule_job = scheduler.get_job('health_check', DjangoJobStore())
+# print(schedule_job.name)
+# if schedule_job:
+try:
+    scheduler.remove_job('health_check')
+    scheduler.add_job(health_monitor,
+                      trigger=IntervalTrigger(seconds=5),
+                      id='health_check',
+                      name='health___check')
+except JobLookupError:
+    scheduler.add_job(health_monitor,
+                      trigger=IntervalTrigger(seconds=5),
+                      id='health_check',
+                      name='health___check')
 
 
-scheduler.start()
+def index(request):
+    return render(request, "index.html", {})
+
+@csrf_exempt
+def get_cmd_res(request):
+    try:
+        command = request.POST.get('cmd')
+        print(command)
+        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": "error"}
