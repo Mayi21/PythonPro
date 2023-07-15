@@ -3,7 +3,7 @@ import datetime
 from django_cron import CronJobBase, Schedule
 import requests
 
-from backend.server.agentserver.server.models import Instance
+from .models import Instance
 
 
 
@@ -20,7 +20,7 @@ def __get_instance_info():
 
 
 class MyCronJob(CronJobBase):
-    RUN_EVERY_MINS = 1 # 1分钟运行一次
+    RUN_EVERY_MINS = 1
 
     schedule = Schedule(run_every_mins=RUN_EVERY_MINS)
     code = 'server.health_monitor'
@@ -28,8 +28,10 @@ class MyCronJob(CronJobBase):
     def do(self):
         instances = Instance.objects.all()
         for ins in instances:
-            health_check_url = "{}:{}/health".format(ins.ip, ins.server_port)
+            health_check_url = "http://{}:{}/health".format(ins.ip, ins.server_port)
+            print(health_check_url)
             resp = requests.get(health_check_url)
+            print(resp.status_code)
             if resp.status_code == 200:
                 ins.status = True
                 ins.save()
