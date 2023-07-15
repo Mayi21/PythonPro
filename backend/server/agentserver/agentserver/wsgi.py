@@ -11,10 +11,10 @@ import os
 
 from django.core.wsgi import get_wsgi_application
 
-from .cron import scheduler
+# from .cron import scheduler
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agentserver.settings')
 
 application = get_wsgi_application()
 
-scheduler.start()
+# scheduler.start()
