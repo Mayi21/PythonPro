@@ -10,6 +10,7 @@ class Cmd(BaseModel):
     description: str
     value: str
 
+# health api
 @app.get("/health")
 async def get_info():
     return {"status": 200}
