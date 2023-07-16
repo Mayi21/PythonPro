@@ -3,30 +3,54 @@
 <head>
   <title>搜索页面</title>
   <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
     .container {
       display: flex;
     }
 
     .search {
-      flex: 1;
+      flex: 2;
       display: flex;
       align-items: center;
+      justify-content: flex-start;
+      padding: 20px;
+      background-color: #fff;
     }
 
-    .search input {
-      flex: 1;
+    .search input[type="text"] {
+      border: none;
+      border-radius: 20px;
+      padding: 10px;
+      width: 200px;
+      margin-right: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .search button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      border-radius: 20px;
+      padding: 10px 20px;
+      cursor: pointer;
     }
 
     .results {
-      flex: 2;
-      overflow: hidden;
-      transition: max-height 0.3s ease-in-out;
+      flex: 3;
+      padding: 20px;
     }
 
     .content {
-      background-color: #f2f2f2;
-      padding: 10px;
-      position: relative;
+      background-color: #fff;
+      padding: 20px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      transition: max-height 0.3s ease-in-out;
     }
 
     .arrow {
