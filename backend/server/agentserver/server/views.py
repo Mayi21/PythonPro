@@ -55,10 +55,9 @@ def index(request):
 def get_cmd_res(request):
     try:
         command = request.POST.get('cmd')
-        print(command)
         process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
         output, error = process.communicate()
         result = output.decode().strip() if output else error.decode().strip()
-        return {"result": result}
+        return JsonResponse({"result": result})
     except Exception as e:
-        return {"result": "error"}
+        return JsonResponse({"result": str(e)})
