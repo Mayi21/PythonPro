@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 from .models import User, Instance
+from .service import get_command_res
 
 
 
@@ -53,11 +54,4 @@ def index(request):
 
 @csrf_exempt
 def get_cmd_res(request):
-    try:
-        command = request.POST.get('cmd')
-        process = subprocess.Popen(command, stdout=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-        result = output.decode().strip() if output else error.decode().strip()
-        return JsonResponse({"result": result})
-    except Exception as e:
-        return JsonResponse({"result": str(e)})
+    get_command_res(request)
