@@ -32,18 +32,8 @@ def health_monitor():
             ins.status = True
             ins.save()
 
-
-# schedule_job = scheduler.get_job('health_check', DjangoJobStore())
-# print(schedule_job.name)
-# if schedule_job:
-try:
-    scheduler.remove_job('health_check')
-    scheduler.add_job(health_monitor,
-                      trigger=IntervalTrigger(seconds=5),
-                      id='health_check',
-                      name='health___check')
-except JobLookupError:
-    scheduler.add_job(health_monitor,
+scheduler.remove_job('health_check')
+scheduler.add_job(health_monitor,
                       trigger=IntervalTrigger(seconds=5),
                       id='health_check',
                       name='health___check')
