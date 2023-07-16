@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>搜索页面</title>
+  <style>
+    .container {
+      display: flex;
+    }
+
+    .search {
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .search input {
+      flex: 1;
+    }
+
+    .results {
+      flex: 2;
+      overflow: hidden;
+      transition: max-height 0.3s ease-in-out;
+    }
+
+    .content {
+      background-color: #f2f2f2;
+      padding: 10px;
+    }
+
+    .arrow {
+      display: inline-block;
+      width: 20px;
+      height: 20px;
+      background-color: #ccc;
+      border-radius: 50%;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .arrow.down:after {
+      content: "\25BC";
+      color: white;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="search">
+      <input type="text" id="searchInput" placeholder="输入搜索内容">
+      <button id="searchButton">搜索</button>
+    </div>
+    <div class="results">
+      <div class="content">
+        <div class="arrow" id="arrowIcon"></div>
+        <p>这是内容框</p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // 获取元素
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const arrowIcon = document.getElementById('arrowIcon');
+    const content = document.querySelector('.content');
+
+    // 搜索按钮点击事件
+    searchButton.addEventListener('click', function() {
+      const searchTerm = searchInput.value;
+      // 执行搜索逻辑，根据搜索结果更新页面
+      // 这里只是一个示例，你可以根据具体需求进行实现
+      console.log('执行搜索：', searchTerm);
+    });
+
+    // 点击箭头图标时展开或收起内容框
+    arrowIcon.addEventListener('click', function() {
+      content.classList.toggle('down');
+      content.style.maxHeight = content.classList.contains('down') ? content.scrollHeight + 'px' : null;
+    });
+  </script>
+</body>
+</html>
