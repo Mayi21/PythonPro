@@ -14,40 +14,45 @@
       display: flex;
     }
 
-    .search {
-      flex: 2;
-      display: flex;
-      align-items: center;
-      justify-content: flex-start;
+    .left-sidebar {
+      flex: 1;
       padding: 20px;
       background-color: #fff;
     }
 
-    .search input[type="text"] {
+    .search-container {
+      display: flex;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .search-input {
       border: none;
-      border-radius: 20px;
+      border-radius: 5px;
       padding: 10px;
       width: 200px;
       margin-right: 10px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
-    .search button {
-      background-color: #4CAF50;
+    .search-button {
+      background-color: #007bff;
       color: #fff;
       border: none;
-      border-radius: 20px;
-      padding: 10px 20px;
+      border-radius: 5px;
+      padding: 12px 20px;
       cursor: pointer;
+      font-size: 14px;
     }
 
-    .results {
-      flex: 3;
+    .right-sidebar {
+      flex: 4;
       padding: 20px;
+      background-color: #fff;
     }
 
     .content {
-      background-color: #fff;
+      background-color: #f2f2f2;
       padding: 20px;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       transition: max-height 0.3s ease-in-out;
@@ -64,6 +69,7 @@
       position: absolute;
       top: 10px;
       right: 10px;
+      transform: translateY(-50%);
     }
 
     .arrow.down:after {
@@ -74,11 +80,14 @@
 </head>
 <body>
   <div class="container">
-    <div class="search">
-      <input type="text" id="searchInput" placeholder="输入搜索内容">
-      <button id="searchButton">搜索</button>
+    <div class="left-sidebar">
+      <div class="search-container">
+        <input type="text" class="search-input" placeholder="输入搜索内容">
+        <button class="search-button">搜索</button>
+      </div>
+      <p>左边布局</p>
     </div>
-    <div class="results">
+    <div class="right-sidebar">
       <div class="content">
         <div class="arrow" id="arrowIcon"></div>
         <p>这是内容框</p>
@@ -88,8 +97,8 @@
 
   <script>
     // 获取元素
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
+    const searchInput = document.querySelector('.search-input');
+    const searchButton = document.querySelector('.search-button');
     const arrowIcon = document.getElementById('arrowIcon');
     const content = document.querySelector('.content');
 
