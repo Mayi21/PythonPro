@@ -14,10 +14,25 @@
       display: flex;
     }
 
-    .left-sidebar {
+    .sidebar {
       flex: 1;
       padding: 20px;
       background-color: #fff;
+    }
+
+    .menu {
+      margin-bottom: 20px;
+    }
+
+    .menu-item {
+      display: block;
+      padding: 10px;
+      color: #333;
+      text-decoration: none;
+    }
+
+    .menu-item:hover {
+      background-color: #f2f2f2;
     }
 
     .search-container {
@@ -80,12 +95,16 @@
 </head>
 <body>
   <div class="container">
-    <div class="left-sidebar">
+    <div class="sidebar">
+      <div class="menu">
+        <a href="#" class="menu-item">首页</a>
+        <a href="#" class="menu-item">搜索</a>
+        <a href="#" class="menu-item">命令执行</a>
+      </div>
       <div class="search-container">
         <input type="text" class="search-input" placeholder="输入搜索内容">
         <button class="search-button">搜索</button>
       </div>
-      <p>左边布局</p>
     </div>
     <div class="right-sidebar">
       <div class="content">
