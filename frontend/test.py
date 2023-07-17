@@ -42,6 +42,12 @@ async def cmd(cmd: str = Form(...)):
     except Exception as e:
         return {"result": str(e)}
 
+@app.get('/search')
+async def search(request: Request):
+    return templates.TemplateResponse("search.html", {
+        "request": request,
+    })
+
 if __name__ == '__main__':
     # uvicorn.run("main:app  --reload", host="0.0.0.0", port=8000)
     os.system('uvicorn test:app --reload')
