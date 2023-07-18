@@ -1,26 +1,18 @@
-import subprocess
+import os
+import sys
 
-from apscheduler.jobstores.base import JobLookupError
-from apscheduler.triggers.interval import IntervalTrigger
-from django.http import HttpResponse, JsonResponse
-from django.shortcuts import render
 import requests
-from django.views.decorators.csrf import csrf_exempt
-
-# Create your views here.
-from .models import User, Instance
-from .service import get_command_res
-
-
-
 from apscheduler.schedulers.background import BackgroundScheduler
-from django_apscheduler.jobstores import DjangoJobStore, register_events, register_job
+from apscheduler.triggers.interval import IntervalTrigger
+from django_apscheduler.jobstores import DjangoJobStore
+from models import Instance
 
 # 实例化调度器
 scheduler = BackgroundScheduler()
 # 调度器使用默认的DjangoJobStore()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
 
+# cron health check
 def health_monitor():
     instances = Instance.objects.all()
     for ins in instances:
@@ -32,16 +24,11 @@ def health_monitor():
             ins.status = True
             ins.save()
 
+# remove this task before start cron task
 scheduler.remove_job('health_check')
 scheduler.add_job(health_monitor,
                       trigger=IntervalTrigger(seconds=5),
                       id='health_check',
                       name='health___check')
 
-
-def index(request):
-    return render(request, "index.html", {})
-
-@csrf_exempt
-def get_cmd_res(request):
-    get_command_res(request)
+scheduler.start()
