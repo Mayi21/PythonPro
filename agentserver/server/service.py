@@ -3,6 +3,7 @@ import subprocess
 from django.http import JsonResponse
 
 
+# input command and get execute result
 def get_command_res(request):
     try:
         command = request.POST.get('cmd')
@@ -12,3 +13,4 @@ def get_command_res(request):
         return JsonResponse({"result": result})
     except Exception as e:
         return JsonResponse({"result": str(e)})
+

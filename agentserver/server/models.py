@@ -23,3 +23,14 @@ class Instance(models.Model):
     server_port = models.IntegerField()
     last_update_time = models.DateTimeField(auto_now=True)
 
+
+# include disk usage and cpu usage every 10 seconds
+class InstanceMetric(models.Model):
+    id = models.AutoField(primary_key=True)
+    disk_usgae = models.IntegerField()
+    cpu_usage = models.IntegerField()
+    ip = models.CharField(max_length=15, db_index=True)
+    collect_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'instance_metrics'
