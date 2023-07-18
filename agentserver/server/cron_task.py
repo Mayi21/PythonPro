@@ -1,16 +1,15 @@
-import os
-import sys
-
 import requests
+from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from django_apscheduler.jobstores import DjangoJobStore
-from models import Instance
+from .models import Instance
 
 # 实例化调度器
 scheduler = BackgroundScheduler()
 # 调度器使用默认的DjangoJobStore()
 scheduler.add_jobstore(DjangoJobStore(), 'default')
+
 
 # cron health check
 def health_monitor():
@@ -24,11 +23,12 @@ def health_monitor():
             ins.status = True
             ins.save()
 
-# remove this task before start cron task
-scheduler.remove_job('health_check')
-scheduler.add_job(health_monitor,
-                      trigger=IntervalTrigger(seconds=5),
-                      id='health_check',
-                      name='health___check')
 
-scheduler.start()
+
+
+scheduler.add_job(health_monitor,
+                  trigger=IntervalTrigger(seconds=5),
+                  )
+
+# id='health_check',
+                  # name='health___check'

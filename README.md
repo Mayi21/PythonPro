@@ -24,7 +24,10 @@ schedule task to get vm info
 
 use django-apscheduler implement timely task  
 Q. restart django server and will start new schedule task. it's name like before task.  
-A. remove schedule task when restart server
+A. remove schedule task when restart server  
+
+Q. can't import module from other dir  
+A.
 
 ## kafka-rest-proxy  
 can't use kafka-rest-proxy in these dockers. maybe will change docker instance in the future 
