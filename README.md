@@ -27,7 +27,11 @@ Q. restart django server and will start new schedule task. it's name like before
 A. remove schedule task when restart server  
 
 Q. can't import module from other dir  
-A.
+A. move cron_task and wsgj file in one folder  
+
+## instance metrics
+cpu_usage,disk_usage,collect_time, use ecaharts to display these data  
+
 
 ## kafka-rest-proxy  
 can't use kafka-rest-proxy in these dockers. maybe will change docker instance in the future 
