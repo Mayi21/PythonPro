@@ -12,12 +12,12 @@ class User(models.Model):
 
 
 class Instance(models.Model):
-    '''
+    """
     ip: instance ip
     status: true is online and false is offline
     server_port: running port of agent client in client host
     last_update_time: last time of health check
-    '''
+    """
     ip = models.CharField(max_length=15)
     status = models.BooleanField()
     server_port = models.IntegerField()

@@ -1,5 +1,4 @@
 import requests
-from apscheduler.jobstores.base import JobLookupError
 from apscheduler.schedulers.background import BackgroundScheduler
 from apscheduler.triggers.interval import IntervalTrigger
 from django_apscheduler.jobstores import DjangoJobStore
@@ -24,11 +23,6 @@ def health_monitor():
             ins.save()
 
 
-
-
 scheduler.add_job(health_monitor,
                   trigger=IntervalTrigger(seconds=5),
                   )
-
-# id='health_check',
-                  # name='health___check'
