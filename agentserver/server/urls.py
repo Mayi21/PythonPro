@@ -22,5 +22,6 @@ app_name = 'server'
 urlpatterns = [
     path('index/', views.index, name='index'),
     path('cmd/', views.get_cmd_res, name='cmd'),
-    path('data/', views.make_fake_data, name='fake_data')
+    path('data/', views.make_fake_data, name='fake_data'),
+    path('get-data/', views.get_instance_metric, name='get_metrics_data' )
 ]

@@ -23,16 +23,17 @@ def get_command_res(request):
 
 # get instance metrics info
 def get_instance_metrics(request):
-    ip = request.POST.get('ip')
-    start_time = request.POST.get('start_time')
+    data = json.loads(request.body)
+    ip = data['ip']
+    start_time = data['start_time']
     end_time = request.POST.get('end_time')
     results = InstanceMetric.objects.filter(ip=ip, collect_time__gte = start_time)
     resp = {'ip': ip}
     res_list = []
     for res in results:
-        r = {'disk_usage': res.get('disk_usage'),
-             'cpu_usage': res.get('cpu_usage'),
-             'time': res.get('collect_time')}
+        r = {'disk_usage': res.disk_usage,
+             'cpu_usage': res.cpu_usage,
+             'time': res.collect_time}
         res_list.append(r)
     resp.update({'data': res_list})
     return JsonResponse(resp)
