@@ -21,5 +21,6 @@ from . import views
 app_name = 'server'
 urlpatterns = [
     path('index/', views.index, name='index'),
-    path('cmd/', views.get_cmd_res, name='cmd')
+    path('cmd/', views.get_cmd_res, name='cmd'),
+    path('data/', views.make_fake_data, name='fake_data')
 ]
