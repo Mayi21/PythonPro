@@ -30,7 +30,7 @@ Q. can't import module from other dir
 A. move cron_task and wsgj file in one folder  
 
 ## instance metrics
-cpu_usage,disk_usage,collect_time, use ecaharts to display these data  
+cpu_usage,disk_usage,collect_time, use echarts to display these data  
 
 
 ## kafka-rest-proxy  
