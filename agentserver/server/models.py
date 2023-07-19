@@ -27,7 +27,7 @@ class Instance(models.Model):
 # include disk usage and cpu usage every 10 seconds
 class InstanceMetric(models.Model):
     id = models.AutoField(primary_key=True)
-    disk_usgae = models.IntegerField()
+    disk_usage = models.IntegerField()
     cpu_usage = models.IntegerField()
     ip = models.CharField(max_length=15, db_index=True)
     collect_time = models.DateTimeField(auto_now=True)
