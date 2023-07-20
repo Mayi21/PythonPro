@@ -1,6 +1,7 @@
 import json
 import os
 import subprocess
+from datetime import datetime
 
 import uvicorn
 from fastapi import FastAPI, Request, Form
@@ -61,7 +62,11 @@ class CPUUsage(BaseModel):
 @app.get("/get_cpu_usage/", response_model=CPUUsage)
 async def get_cpu_usage():
     cpu_percent = psutil.cpu_percent(interval=1)
-    current_time = time.strftime('%H:%M:%S')
+    current_time = datetime.now()
+
+    # 将当前时间格式化为 'YYYY-MM-DD HH:mm' 格式的字符串
+    time_format = '%M:%S'
+    current_time = current_time.strftime(time_format)
     print(cpu_percent, current_time)
     return CPUUsage(time=current_time, cpu_usage=cpu_percent)
 

@@ -7,7 +7,7 @@
 
 </head>
 <body>
-    <div id="line-chart" style="width: 600px; height: 400px;"></div>
+    <div id="line-chart" style="width: 1500px; height: 600px;"></div>
     <script>
         // 初始化折线图
         var lineChart = echarts.init(document.getElementById('line-chart'));
@@ -27,9 +27,11 @@
                     // 将新数据加入到数据数组中
                     xAxisData.push(data.time);
                     seriesData.push(data.cpu_usage);
+                    console.log(xAxisData)
+                    console.log(seriesData)
 
                     // 限制数据长度，只保留最近的若干个数据
-                    var maxLength = 10;
+                    var maxLength = 60;
                     if (xAxisData.length > maxLength) {
                         xAxisData.shift();
                         seriesData.shift();
@@ -38,10 +40,15 @@
                     // 更新折线图数据
                     lineChart.setOption({
                         xAxis: {
-                            data: xAxisData
+                            data: xAxisData,
+                            type: 'category'
+                        },
+                        yAxis: {
+                            type: 'value'
                         },
                         series: [{
-                            data: seriesData
+                            data: seriesData,
+                            type: 'line'
                         }]
                     });
                 },
@@ -49,7 +56,7 @@
                     console.error(error);
                 }
             });
-        }, 5000); // 每 5 秒更新一次数据
+        }, 500); // 每 5 秒更新一次数据
     </script>
 </body>
 </html>
