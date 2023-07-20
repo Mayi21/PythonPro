@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>ECharts 折线图动态展示</title>
+    <title>ECharts 折线图动态展示 CPU 占用率</title>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
 </head>
 <body>
@@ -14,33 +14,40 @@
         var xAxisData = [];
         var seriesData = [];
 
-        // 定义一个定时器，每隔一段时间更新数据
+        // 每 5 秒获取一次数据并更新折线图
         setInterval(function () {
-            // 模拟获取新的数据
-            var newData = Math.random() * 100;
-            var now = new Date().toLocaleTimeString();
+            // 发送 Ajax 请求获取 CPU 占用率数据
+            $.ajax({
+                url: '/get_cpu_usage/',
+                type: 'GET',
+                dataType: 'json',
+                success: function (data) {
+                    // 将新数据加入到数据数组中
+                    xAxisData.push(data.time);
+                    seriesData.push(data.cpu_usage);
 
-            // 将新数据加入到数据数组中
-            xAxisData.push(now);
-            seriesData.push(newData);
+                    // 限制数据长度，只保留最近的若干个数据
+                    var maxLength = 10;
+                    if (xAxisData.length > maxLength) {
+                        xAxisData.shift();
+                        seriesData.shift();
+                    }
 
-            // 限制数据长度，只保留最近的若干个数据
-            var maxLength = 10;
-            if (xAxisData.length > maxLength) {
-                xAxisData.shift();
-                seriesData.shift();
-            }
-
-            // 更新折线图数据
-            lineChart.setOption({
-                xAxis: {
-                    data: xAxisData
+                    // 更新折线图数据
+                    lineChart.setOption({
+                        xAxis: {
+                            data: xAxisData
+                        },
+                        series: [{
+                            data: seriesData
+                        }]
+                    });
                 },
-                series: [{
-                    data: seriesData
-                }]
+                error: function (error) {
+                    console.error(error);
+                }
             });
-        }, 1000); // 每秒更新一次数据
+        }, 5000); // 每 5 秒更新一次数据
     </script>
 </body>
 </html>
