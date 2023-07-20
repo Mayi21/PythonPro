@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ECharts 折线图动态展示</title>
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+</head>
+<body>
+    <div id="line-chart" style="width: 600px; height: 400px;"></div>
+    <script>
+        // 初始化折线图
+        var lineChart = echarts.init(document.getElementById('line-chart'));
+
+        // 初始化数据
+        var xAxisData = [];
+        var seriesData = [];
+
+        // 定义一个定时器，每隔一段时间更新数据
+        setInterval(function () {
+            // 模拟获取新的数据
+            var newData = Math.random() * 100;
+            var now = new Date().toLocaleTimeString();
+
+            // 将新数据加入到数据数组中
+            xAxisData.push(now);
+            seriesData.push(newData);
+
+            // 限制数据长度，只保留最近的若干个数据
+            var maxLength = 10;
+            if (xAxisData.length > maxLength) {
+                xAxisData.shift();
+                seriesData.shift();
+            }
+
+            // 更新折线图数据
+            lineChart.setOption({
+                xAxis: {
+                    data: xAxisData
+                },
+                series: [{
+                    data: seriesData
+                }]
+            });
+        }, 1000); // 每秒更新一次数据
+    </script>
+</body>
+</html>
