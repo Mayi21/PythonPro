@@ -19,7 +19,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/")
 async def home(request: Request):
 
-    return templates.TemplateResponse("index.html", {
+    return templates.TemplateResponse("display.html", {
         "request": request,
     })
 
@@ -47,6 +47,28 @@ async def search(request: Request):
     return templates.TemplateResponse("search.html", {
         "request": request,
     })
+
+
+from pydantic import BaseModel
+import psutil
+import time
+
+
+class CPUUsage(BaseModel):
+    time: str
+    cpu_usage: float
+
+@app.get("/get_cpu_usage/", response_model=CPUUsage)
+async def get_cpu_usage():
+    cpu_percent = psutil.cpu_percent(interval=1)
+    current_time = time.strftime('%H:%M:%S')
+    print(cpu_percent, current_time)
+    return CPUUsage(time=current_time, cpu_usage=cpu_percent)
+
+
+@app.get('/display-data')
+def display_data(request: Request):
+    return templates.TemplateResponse("display.html", {"request": request})
 
 if __name__ == '__main__':
     # uvicorn.run("main:app  --reload", host="0.0.0.0", port=8000)
