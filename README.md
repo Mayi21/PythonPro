@@ -31,6 +31,8 @@ A. move cron_task and wsgj file in one folder
 
 ## instance metrics
 cpu_usage,disk_usage,collect_time, use echarts to display these data  
+use echarts to display data  
+
 
 
 ## kafka-rest-proxy  
