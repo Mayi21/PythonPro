@@ -20,6 +20,12 @@ async def get_info():
 async def run_cmd(command: Cmd):
     return __exec_cmd(command.value)
 
+# use to execute local shell file in /opt/plugin
+@app.get("/exec-shell")
+async def execute_shell_file(file_name: str):
+    shell_file_path = os.path.join('/opt/plugin', file_name)
+    return __exec_cmd('sh ' + shell_file_path)
+
 
 def __exec_cmd(cmd):
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
