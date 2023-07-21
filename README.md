@@ -37,3 +37,6 @@ use echarts to display data
 
 ## kafka-rest-proxy  
 can't use kafka-rest-proxy in these dockers. maybe will change docker instance in the future 
+
+basic info
+![img.png](md_image/img.png)
