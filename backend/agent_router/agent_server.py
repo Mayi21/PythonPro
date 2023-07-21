@@ -1,7 +1,7 @@
 import os
 import subprocess
 
-from fastapi import FastAPI, UploadFile
+from fastapi import FastAPI, UploadFile, File
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
 
@@ -29,8 +29,13 @@ async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)
 
-@app.put('/uploadfile')
-async def upload_shell_file(file: UploadFile):
+@app.post('/uploadfiles')
+async def upload_shell_file(file: UploadFile=File(...)):
+    file_data = await file.file.read()
+    file_name = file.filename
+    with open(file_name, 'wb') as f:
+        f.write(file_data)
+
     return {"filename": file.filename}
 
 
@@ -39,11 +44,11 @@ async def upload_shell_file(file: UploadFile):
 async def main():
     content = """
 <body>
-<form action="/files/" enctype="multipart/form-data" method="post">
+<form action="/files" enctype="multipart/form-data" method="post">
 <input name="files" type="file" multiple>
 <input type="submit">
 </form>
-<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<form action="/uploadfiles" enctype="multipart/form-data" method="post">
 <input name="files" type="file" multiple>
 <input type="submit">
 </form>
