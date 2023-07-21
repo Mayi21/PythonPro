@@ -1,8 +1,11 @@
 import os
 import subprocess
 
-from fastapi import FastAPI
+from fastapi import FastAPI, UploadFile
 from pydantic import BaseModel
+from starlette.responses import HTMLResponse
+
+from constant import InstanceEnv
 
 app = FastAPI()
 
@@ -23,8 +26,30 @@ async def run_cmd(command: Cmd):
 # use to execute local shell file in /opt/plugin
 @app.get("/exec-shell")
 async def execute_shell_file(file_name: str):
-    shell_file_path = os.path.join('/opt/plugin', file_name)
+    shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)
+
+@app.put('/uploadfile')
+async def upload_shell_file(file: UploadFile):
+    return {"filename": file.filename}
+
+
+# file upload test
+@app.get("/")
+async def main():
+    content = """
+<body>
+<form action="/files/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+<form action="/uploadfiles/" enctype="multipart/form-data" method="post">
+<input name="files" type="file" multiple>
+<input type="submit">
+</form>
+</body>
+    """
+    return HTMLResponse(content=content)
 
 
 def __exec_cmd(cmd):
