@@ -31,8 +31,9 @@ async def execute_shell_file(file_name: str):
 
 @app.post('/uploadfiles')
 async def upload_shell_file(file: UploadFile=File(...)):
-    file_data = await file.file.read()
+    file_data = file.file.read()
     file_name = file.filename
+    print(file_name)
     with open(file_name, 'wb') as f:
         f.write(file_data)
 
@@ -44,14 +45,10 @@ async def upload_shell_file(file: UploadFile=File(...)):
 async def main():
     content = """
 <body>
-<form action="/files" enctype="multipart/form-data" method="post">
-<input name="files" type="file" multiple>
-<input type="submit">
-</form>
-<form action="/uploadfiles" enctype="multipart/form-data" method="post">
-<input name="files" type="file" multiple>
-<input type="submit">
-</form>
+    <form action="/uploadfiles" enctype="multipart/form-data" method="post">
+        <input name="file" type="file">
+        <input type="submit" value="Upload">
+    </form>
 </body>
     """
     return HTMLResponse(content=content)
