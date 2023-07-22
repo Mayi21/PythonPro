@@ -33,6 +33,11 @@ A. move cron_task and wsgj file in one folder
 cpu_usage,disk_usage,collect_time, use echarts to display these data  
 use echarts to display data  
 
+## upload shell script to client
+1. use ssh  
+2. use fastapi  
+3. 
+
 
 
 ## kafka-rest-proxy  
