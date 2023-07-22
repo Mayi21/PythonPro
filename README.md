@@ -44,3 +44,17 @@ basic info
 
 # Kafka Cluster
 use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docker-compose up` run kafka cluster
+
+# Develope Guide
+## Project Folder
+* shell  
+  shell file to collect host info
+* md_image  
+  image about markdown document 
+* docker  
+  compose file about docker
+* agentserver  
+  a django project as server, interact with database and kafka
+* backend  
+  fastapi project and use in client. aim to fast and lightweight build app.  
+* 
