@@ -62,3 +62,9 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
   a django project as server, interact with database and kafka
 * backend  
   fastapi project and use in client. aim to fast and lightweight build app.
+
+## generalize 
+use django as server  
+use fastapi as client  
+client report host info and execute shell script, return res to kafka, schedule task 
+consume data and persistence data in db.
