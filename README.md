@@ -48,13 +48,12 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
 # Develope Guide
 ## Project Folder
 * shell  
-  shell file to collect host info
+  shell script that collect host info.
 * md_image  
-  image about markdown document 
+  some images used in markdown document 
 * docker  
   compose file about docker
 * agentserver  
   a django project as server, interact with database and kafka
 * backend  
-  fastapi project and use in client. aim to fast and lightweight build app.  
-* 
+  fastapi project and use in client. aim to fast and lightweight build app.
