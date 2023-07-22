@@ -40,3 +40,7 @@ can't use kafka-rest-proxy in these dockers. maybe will change docker instance i
 
 basic info
 ![img.png](md_image/img.png)
+
+
+# Kafka Cluster
+use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docker-compose up` run kafka cluster
