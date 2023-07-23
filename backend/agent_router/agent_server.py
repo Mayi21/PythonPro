@@ -31,11 +31,18 @@ async def execute_shell_file(file_name: str):
 
 @app.post('/uploadfiles')
 async def upload_shell_file(file: UploadFile=File(...)):
+    # 1.must end with .sh (optional)
+    # 2.check size (must)
+    # 3.rate limitation  (must)
     file_data = file.file.read()
     file_name = file.filename
     print(file_name)
+    # 1.save to the specified folder
+    # 2.consider duplicate file name
+    # for transport with name and attr,save in local temp dir then send to des from local
     with open(file_name, 'wb') as f:
         f.write(file_data)
+
 
     return {"filename": file.filename}
 
