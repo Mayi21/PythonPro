@@ -62,8 +62,9 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
   a django project as server, interact with database and kafka
 * backend  
   fastapi project and use in client. aim to fast and lightweight build app.
-  fastapi run in host. so it expose health check api, exec cmd api, exec shell scrpit api and
-  upload file api.
+  fastapi run in host. so it expose health check api, exec cmd api, exec shell script api and
+  upload file api. how to implement upload file to destination host? in server use pick shell 
+  script then send a request.
 
 ## generalize 
 use django as server  
