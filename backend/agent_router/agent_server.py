@@ -31,6 +31,8 @@ async def execute_shell_file(file_name: str):
 
 @app.post('/uploadfiles')
 async def upload_shell_file(file: UploadFile=File(...)):
+    # need a front page that
+
     # 1.must end with .sh (optional)
     # 2.check size (must)
     # 3.rate limitation  (must)
