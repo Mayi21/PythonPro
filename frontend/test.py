@@ -78,3 +78,7 @@ def display_data(request: Request):
 if __name__ == '__main__':
     # uvicorn.run("main:app  --reload", host="0.0.0.0", port=8000)
     os.system('uvicorn test:app --reload')
+
+
+
+
