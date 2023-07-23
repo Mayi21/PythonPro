@@ -67,6 +67,7 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
   * how to implement upload file to destination host?   
     in server use pick shell script then send a request. select file to upload in console,
     then choose one host that would upload host ip. click send is done.
+    ![5D1415F7-8AD8-4E59-9C58-6892F39F8D62.jpeg](md_image%2F5D1415F7-8AD8-4E59-9C58-6892F39F8D62.jpeg)
 
 ## generalize 
 use django as server  
