@@ -2,12 +2,24 @@ import os
 import subprocess
 
 from fastapi import FastAPI, UploadFile, File
+from fastapi_limiter import FastAPILimiter
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
 
 from constant import InstanceEnv
 
 app = FastAPI()
+
+# 初始化 FastAPILimiter，并设置限流策略
+limiter = FastAPILimiter(
+    key_func=lambda _: "global",  # 使用 "global" 作为全局限流的 key
+    default_limits=["60 requests/minute"],  # 设置默认的限流策略
+)
+
+# 使用装饰器应用限流策略
+@app.on_event("startup")
+async def on_startup():
+    limiter.init_app(app)
 
 class Cmd(BaseModel):
     name: str
@@ -30,9 +42,9 @@ async def execute_shell_file(file_name: str):
     return __exec_cmd('sh ' + shell_file_path)
 
 @app.post('/uploadfiles')
+@limiter.limit("5 requests/second")
 async def upload_shell_file(file: UploadFile=File(...)):
     # need a front page that
-
     # 1.must end with .sh (optional)
     # 2.check size (must)
     # 3.rate limitation  (must)
