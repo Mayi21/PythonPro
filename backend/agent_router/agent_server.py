@@ -37,6 +37,8 @@ async def upload_shell_file(file: UploadFile=File(...)):
     # 2.check size (must)
     # 3.rate limitation  (must)
     file_data = file.file.read()
+    if file.size / 1024 >= 1024:
+        return {'error': 'shell script to large'}
     file_name = file.filename
     if not file_name.endswith(".sh"):
         return {'error': 'file check not match'}
