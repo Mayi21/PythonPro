@@ -1,25 +1,29 @@
 import os
 import subprocess
 
-from fastapi import FastAPI, UploadFile, File
+from fastapi import UploadFile, File
+from fastapi import FastAPI, Request
 from fastapi_limiter import FastAPILimiter
 from pydantic import BaseModel
 from starlette.responses import HTMLResponse
-
 from constant import InstanceEnv
+from fastapi import FastAPI
+from slowapi.errors import RateLimitExceeded
+from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi.util import get_remote_address
 
+limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
+app.state.limiter = limiter
+app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-# 初始化 FastAPILimiter，并设置限流策略
-limiter = FastAPILimiter(
-    key_func=lambda _: "global",  # 使用 "global" 作为全局限流的 key
-    default_limits=["60 requests/minute"],  # 设置默认的限流策略
-)
 
-# 使用装饰器应用限流策略
-@app.on_event("startup")
-async def on_startup():
-    limiter.init_app(app)
+
+# 应用限流策略到接口
+@app.get("/limited_endpoint/")
+@limiter.limit("5/minute")
+async def limited_endpoint(request: Request):
+    return {"message": "This endpoint is limited per second."}
 
 class Cmd(BaseModel):
     name: str
@@ -42,7 +46,6 @@ async def execute_shell_file(file_name: str):
     return __exec_cmd('sh ' + shell_file_path)
 
 @app.post('/uploadfiles')
-@limiter.limit("5 requests/second")
 async def upload_shell_file(file: UploadFile=File(...)):
     # need a front page that
     # 1.must end with .sh (optional)
