@@ -38,6 +38,8 @@ async def upload_shell_file(file: UploadFile=File(...)):
     # 3.rate limitation  (must)
     file_data = file.file.read()
     file_name = file.filename
+    if not file_name.endswith(".sh"):
+        return {'error': 'file check not match'}
     print(file_name)
     # 1.save to the specified folder
     # 2.consider duplicate file name
