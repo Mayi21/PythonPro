@@ -47,6 +47,7 @@ async def execute_shell_file(file_name: str):
     return __exec_cmd('sh ' + shell_file_path)
 
 @app.post('/uploadfiles')
+@limiter.limit("10/second")
 async def upload_shell_file(file: UploadFile=File(...)):
     # need a front page that
     file_data = file.file.read()
