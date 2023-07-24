@@ -8,3 +8,4 @@ class KafkaInfo(Enum):
 
 class InstanceEnv(Enum):
     PLUGIN_SCRIPT_PATH = "/opt/plugin"
+    PLUGIN_TEMP_PATH = '/tmp'
