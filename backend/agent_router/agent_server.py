@@ -60,7 +60,6 @@ async def upload_shell_file(file: UploadFile=File(...)):
     des_file = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     with open(des_file, 'wb') as f:
         f.write(file_data)
-
     return {"success": file.filename}
 
 
