@@ -70,6 +70,7 @@ async def main():
 <body>
     <form action="/uploadfiles" enctype="multipart/form-data" method="post">
         <input name="file" type="file">
+        <input name="ip" type="text" placeholder="des ip">
         <input type="submit" value="Upload">
     </form>
 </body>
