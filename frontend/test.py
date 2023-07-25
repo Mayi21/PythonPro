@@ -4,7 +4,7 @@ import subprocess
 from datetime import datetime
 
 import uvicorn
-from fastapi import FastAPI, Request, Form
+from fastapi import FastAPI, Request, Form, UploadFile, File
 from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -20,9 +20,13 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/")
 async def home(request: Request):
 
-    return templates.TemplateResponse("display.html", {
+    return templates.TemplateResponse("UploadPlugin.html", {
         "request": request,
     })
+
+@app.post('/uploadfiles')
+async def upload_files(request: Request, file: UploadFile=File(...), ip: str= Form(...)):
+    print(ip)
 
 @app.post("/submit")
 async def submit(request: Request, command: str=Form(...)):
@@ -74,6 +78,9 @@ async def get_cpu_usage():
 @app.get('/display-data')
 def display_data(request: Request):
     return templates.TemplateResponse("display.html", {"request": request})
+
+
+
 
 if __name__ == '__main__':
     # uvicorn.run("main:app  --reload", host="0.0.0.0", port=8000)
