@@ -23,6 +23,15 @@ def get_cmd_res(request):
 def get_instance_metric(request):
     return get_instance_metrics(request)
 
+# get upload page view
+def upload_plugin_page(reuqest):
+    return render(reuqest, "UploadPlugin.html", {})
+
+# upload file function
+def upload_file(request):
+    pass
+
+
 
 def make_fake_data(request):
     thread = threading.Thread(target=test_generate_fake_date)
