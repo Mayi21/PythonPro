@@ -20,13 +20,13 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/")
 async def home(request: Request):
 
-    return templates.TemplateResponse("UploadPlugin.html", {
+    return templates.TemplateResponse("testupload.html", {
         "request": request,
     })
 
 @app.post('/uploadfiles')
-async def upload_files(request: Request, file: UploadFile=File(...), ip: str= Form(...)):
-    print(ip)
+async def upload_files(request: Request, file: UploadFile=File(...)):
+    print(file.filename)
 
 @app.post("/submit")
 async def submit(request: Request, command: str=Form(...)):

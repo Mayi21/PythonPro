@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frontend POST Request with File</title>
+</head>
+<body>
+    <input type="file" id="fileInput">
+    <input type="text" id="ip">
+    <button onclick="uploadFile()">Upload File</button>
+
+    <script>
+        function uploadFile() {
+            const ip = document.getElementById('ip').value
+            console.info(ip)
+            const url = 'http://' + ip + ':8000/uploadfiles'; // Replace with your API endpoint
+
+            const fileInput = document.getElementById('fileInput');
+            const file = fileInput.files[0];
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            fetch(url, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response:', data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
