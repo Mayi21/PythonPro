@@ -7,17 +7,16 @@ from fastapi_limiter import FastAPILimiter
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.responses import HTMLResponse
-from constant import InstanceEnv
 from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
-from .constant import InstanceEnv
+from constant import InstanceEnv
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 origins = [
-    "http://localhost:8080",
+    "http://127.0.0.1:8080",
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -59,7 +58,7 @@ async def execute_shell_file(file_name: str):
 
 @app.post('/uploadfiles')
 @limiter.limit("10/second")
-async def upload_shell_file(file: UploadFile=File(...)):
+async def upload_shell_file(request: Request, file: UploadFile=File(...)):
     # need a front page that
     file_data = file.file.read()
     if file.size / 1024 >= 1024:
@@ -67,7 +66,6 @@ async def upload_shell_file(file: UploadFile=File(...)):
     file_name = file.filename
     if not file_name.endswith(".sh"):
         return {'error': 'file check not match'}
-    print(file_name)
     des_file = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     with open(des_file, 'wb') as f:
         f.write(file_data)
