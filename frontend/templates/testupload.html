@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>下发插件</title>
+    <title>插件下发</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -53,6 +53,11 @@
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
 
+            if (!file) {
+                alert('请选择文件！');
+                return;
+            }
+
             const formData = new FormData();
             formData.append('file', file);
 
@@ -76,12 +81,14 @@
             const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
             const isValidIP = ipPattern.test(ip);
 
+            const fileInput = document.getElementById('fileInput');
             const uploadButton = document.getElementById('uploadButton');
-            uploadButton.disabled = !isValidIP;
+            uploadButton.disabled = !isValidIP || !fileInput.files[0];
         }
 
-        // 监听输入框的变化，并进行验证
+        // 监听输入框和选择文件框的变化，并进行验证
         document.getElementById('ip').addEventListener('input', validateIP);
+        document.getElementById('fileInput').addEventListener('change', validateIP);
     </script>
 </body>
 </html>
