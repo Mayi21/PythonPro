@@ -65,12 +65,19 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                console.log('Response:', data);
+            .then(response => {
+                console.log(response)
+                if (response.ok) {
+                    alert('上传成功！');
+                    document.getElementById('ip').value = '';
+                    fileInput.value = null;
+                } else {
+                    alert('上传失败！');
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
+                alert('上传失败！');
             });
         }
 
