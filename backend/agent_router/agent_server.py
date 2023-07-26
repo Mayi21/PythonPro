@@ -72,21 +72,6 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
     return {"success": file.filename}
 
 
-# file upload test
-@app.get("/")
-async def main():
-    content = """
-<body>
-    <form action="/uploadfiles" enctype="multipart/form-data" method="post">
-        <input name="file" type="file">
-        <input name="ip" type="text" placeholder="des ip">
-        <input type="submit" value="Upload">
-    </form>
-</body>
-    """
-    return HTMLResponse(content=content)
-
-
 def __exec_cmd(cmd):
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
     output, error = process.communicate()
