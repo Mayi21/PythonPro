@@ -29,13 +29,6 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
-
-# 应用限流策略到接口
-@app.get("/limited_endpoint/")
-@limiter.limit("5/minute")
-async def limited_endpoint(request: Request):
-    return {"message": "This endpoint is limited per second."}
-
 class Cmd(BaseModel):
     name: str
     description: str
