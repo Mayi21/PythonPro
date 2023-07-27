@@ -4,7 +4,7 @@ services:
   zookeeper:
     image: zookeeper
     build:
-      context: ./
+      context: ..
     container_name: zookeeper
     ports:
       - 2181:2181
@@ -18,7 +18,7 @@ services:
     depends_on:
       - zookeeper
     build:
-      context: ./
+      context: ..
     container_name: kafka-node-0s
     image: wurstmeister/kafka
     environment:
@@ -38,7 +38,7 @@ services:
     depends_on:
       - kafka_node_0
     build:
-      context: ./
+      context: ..
     container_name: kafka-node-1
     image: wurstmeister/kafka
     environment:
@@ -58,7 +58,7 @@ services:
     depends_on:
       - kafka_node_1
     build:
-      context: ./
+      context: ..
     container_name: kafka-node-2
     image: wurstmeister/kafka
     environment:
