@@ -50,6 +50,8 @@ basic info
 # Kafka Cluster
 use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docker-compose up` run kafka cluster
 
+
+
 # Develope Guide
 ## Project Folder
 * shell  
@@ -68,6 +70,10 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
     in server use pick shell script then send a request. select file to upload in console,
     then choose one host that would upload host ip. click send is done.
     ![5D1415F7-8AD8-4E59-9C58-6892F39F8D62.jpeg](md_image%2F5D1415F7-8AD8-4E59-9C58-6892F39F8D62.jpeg)
+
+# resource pool
+## base image
+use docker to deploy host with agent. Auto management. health check and report instance status
 
 ## generalize 
 use django as server  
