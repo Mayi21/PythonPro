@@ -75,6 +75,7 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
 ## base image
 use docker to deploy host with agent. Auto management. health check and report instance status.  
 we can select image to deploy server, implement by docker-compose.
+current use alpine to build base image and install python.
 
 
 ## generalize 
