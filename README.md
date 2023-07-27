@@ -73,7 +73,9 @@ use `docker/docker-compose.yaml` fast build zk and kafka cluster then use `docke
 
 # resource pool
 ## base image
-use docker to deploy host with agent. Auto management. health check and report instance status
+use docker to deploy host with agent. Auto management. health check and report instance status.  
+we can select image to deploy server, implement by docker-compose.
+
 
 ## generalize 
 use django as server  
