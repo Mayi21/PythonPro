@@ -8,42 +8,38 @@
       font-family: monospace;
       margin: 0;
       display: flex;
-      justify-content: center;
       align-items: center;
       height: 100vh;
       background-color: #f5f5f5;
     }
 
-    .container {
-      width: 100%;
-      max-width: 960px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 60px;
+    .menu-container {
+      width: 200px;
       background-color: #333;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
-    .container a {
+    .menu-item {
+      padding: 10px 20px;
       color: white;
       text-decoration: none;
-      padding: 10px 20px;
       font-size: 16px;
     }
 
-    .container a:hover {
+    .menu-item:hover {
       background-color: #555;
       border-radius: 5px;
     }
 
-    .container a.active {
+    .menu-item.active {
       background-color: #4caf50;
       border-radius: 5px;
     }
 
     .main-container {
-      width: 80%;
-      max-width: 600px;
+      flex-grow: 1;
       padding: 20px;
       background-color: white;
       border-radius: 5px;
@@ -186,11 +182,11 @@
   </script>
 </head>
 <body>
-<div class="container">
-  <a href="index.html">首页</a>
-  <a href="search.html">搜索</a>
-  <a href="UploadPlugin.html">插件下发</a>
-  <a href="display.html">监控</a>
+<div class="menu-container">
+  <a href="index.html" class="menu-item">首页</a>
+  <a href="search.html" class="menu-item">搜索</a>
+  <a href="UploadPlugin.html" class="menu-item">插件下发</a>
+  <a href="display.html" class="menu-item">监控</a>
 </div>
 <div class="main-container">
   <h1>执行命令</h1>
