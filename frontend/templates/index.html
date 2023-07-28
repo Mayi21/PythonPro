@@ -52,6 +52,78 @@
       display: flex;
       align-items: center;
     }
+    /* 调整菜单样式 */
+    .container {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      height: 60px;
+      background-color: #333;
+    }
+
+    .container a {
+      color: white;
+      text-decoration: none;
+      padding: 10px;
+      font-size: 18px;
+    }
+
+    .container a:hover {
+      background-color: #555;
+      border-radius: 5px;
+    }
+
+    .container a.active {
+      background-color: #4caf50;
+      border-radius: 5px;
+    }
+
+    /* 调整执行命令部分样式 */
+    .container:last-child {
+      margin-top: 20px;
+    }
+
+    .container h1 {
+      color: #333;
+    }
+
+    .input-container {
+      display: flex;
+      align-items: center;
+    }
+
+    .input-container input[type="text"] {
+      flex-grow: 1;
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ccc;
+      border-radius: 3px;
+    }
+
+    .input-container button {
+      margin-left: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #4caf50;
+      color: white;
+      border: none;
+      border-radius: 3px;
+      cursor: pointer;
+    }
+
+    .limit-message {
+      color: red;
+      margin-top: 5px;
+      font-size: 14px;
+      transition: opacity 0.5s ease-in-out;
+      opacity: 1;
+    }
+
+    .limit-message.hide {
+      opacity: 0;
+      height: 0;
+    }
+
 
     .input-container input[type="text"] {
       flex-grow: 1;
