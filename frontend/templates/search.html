@@ -97,46 +97,46 @@
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="sidebar">
-      <div class="menu">
-        <a href="/index" class="menu-item">首页</a>
-        <a href="#" class="menu-item">搜索</a>
-        <a href="#" class="menu-item">命令执行</a>
-      </div>
-      <div class="search-container">
-        <input type="text" class="search-input" placeholder="输入搜索内容">
-        <button class="search-button">搜索</button>
-      </div>
+<div class="container">
+  <div class="sidebar">
+    <div class="menu">
+      <a href="/index" class="menu-item">首页</a>
+      <a href="#" class="menu-item">搜索</a>
+      <a href="#" class="menu-item">命令执行</a>
     </div>
-    <div class="right-sidebar">
-      <div class="content">
-        <div class="arrow" id="arrowIcon"></div>
-        <p>这是内容框</p>
-      </div>
+    <div class="search-container">
+      <input type="text" class="search-input" placeholder="输入搜索内容">
+      <button class="search-button">搜索</button>
     </div>
   </div>
+  <div class="right-sidebar">
+    <div class="content">
+      <div class="arrow" id="arrowIcon"></div>
+      <p>这是内容框</p>
+    </div>
+  </div>
+</div>
 
-  <script>
-    // 获取元素
-    const searchInput = document.querySelector('.search-input');
-    const searchButton = document.querySelector('.search-button');
-    const arrowIcon = document.getElementById('arrowIcon');
-    const content = document.querySelector('.content');
+<script>
+  // 获取元素
+  const searchInput = document.querySelector('.search-input');
+  const searchButton = document.querySelector('.search-button');
+  const arrowIcon = document.getElementById('arrowIcon');
+  const content = document.querySelector('.content');
 
-    // 搜索按钮点击事件
-    searchButton.addEventListener('click', function() {
-      const searchTerm = searchInput.value;
-      // 执行搜索逻辑，根据搜索结果更新页面
-      // 这里只是一个示例，你可以根据具体需求进行实现
-      console.log('执行搜索：', searchTerm);
-    });
+  // 搜索按钮点击事件
+  searchButton.addEventListener('click', function() {
+    const searchTerm = searchInput.value;
+    // 执行搜索逻辑，根据搜索结果更新页面
+    // 这里只是一个示例，你可以根据具体需求进行实现
+    console.log('执行搜索：', searchTerm);
+  });
 
-    // 点击箭头图标时展开或收起内容框
-    arrowIcon.addEventListener('click', function() {
-      content.classList.toggle('down');
-      content.style.maxHeight = content.classList.contains('down') ? content.scrollHeight + 'px' : null;
-    });
-  </script>
+  // 点击箭头图标时展开或收起内容框
+  arrowIcon.addEventListener('click', function() {
+    content.classList.toggle('down');
+    content.style.maxHeight = content.classList.contains('down') ? content.scrollHeight + 'px' : null;
+  });
+</script>
 </body>
 </html>
