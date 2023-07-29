@@ -83,3 +83,13 @@ use django as server
 use fastapi as client  
 client report host info and execute shell script, return res to kafka, schedule task 
 consume data and persistence data in db.
+
+# client agent
+* health check api
+* install plugin api
+* report host info api
+* execute shell command api
+* execute shell script api
+
+# console page
+* 
