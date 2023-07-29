@@ -93,4 +93,5 @@ consume data and persistence data in db.
 
 # console page
 * execute shell command and get result
-* 
+* display host metric by search ip
+* select local shell file and ip to uplaod
