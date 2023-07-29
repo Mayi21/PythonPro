@@ -5,10 +5,10 @@ FROM python:3.9
 WORKDIR /app
 
 # 复制项目文件到容器中
-COPY . /app
+COPY ../../agent /app/agent
 
 # 安装项目依赖包
-RUN pip install -r requirements.txt
+RUN pip install -r agent/requirements.txt
 
 # 运行 Python 脚本
 CMD ["python", "app.py"]
