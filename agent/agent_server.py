@@ -2,11 +2,9 @@ import os
 import subprocess
 
 from fastapi import UploadFile, File
-from fastapi import FastAPI, Request
-from fastapi_limiter import FastAPILimiter
+from fastapi import Request
 from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
-from starlette.responses import HTMLResponse
 from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
@@ -66,6 +64,8 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
         f.write(file_data)
     return {"success": file.filename}
 
+#
+
 
 def __exec_cmd(cmd):
     process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
@@ -73,6 +73,8 @@ def __exec_cmd(cmd):
     print("output", output)
     print("error", error)
     return output.decode().strip()
+
+
 
 if __name__ == '__main__':
     os.system('uvicorn agent_server:app --reload')
