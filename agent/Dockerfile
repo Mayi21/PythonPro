@@ -5,10 +5,7 @@ FROM python:3.9
 WORKDIR /app
 
 # 复制项目文件到容器中
-COPY ../../agent/ /app/agent
-
-# 设计工作目录
-WORKDIR /app/agent
+COPY . /app
 
 # 暴漏接口
 EXPOSE 8000
