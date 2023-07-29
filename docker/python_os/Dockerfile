@@ -7,8 +7,16 @@ WORKDIR /app
 # 复制项目文件到容器中
 COPY ../../agent /app/agent
 
+# 设计工作目录
+WORKDIR /app/agent
+
+# 暴漏接口
+EXPOSE 8000
+
+
 # 安装项目依赖包
-RUN pip install -r agent/requirements.txt
+RUN pip install -r requirements.txt
+
 
 # 运行 Python 脚本
-CMD ["python", "app.py"]
+CMD ["uvicorn", "agent_server:app", "--host", "0.0.0.0", "--port", "8000"]
