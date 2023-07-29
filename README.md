@@ -92,4 +92,5 @@ consume data and persistence data in db.
 * execute shell script api
 
 # console page
+* execute shell command and get result
 * 
