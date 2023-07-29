@@ -39,11 +39,12 @@ class Cmd(BaseModel):
 async def get_info():
     return {"status": 200}
 
+# execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
     return __exec_cmd(command.value)
 
-# use to execute local shell file in /opt/plugin
+# execute shell script
 @app.get("/exec-shell")
 async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
