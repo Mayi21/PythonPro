@@ -50,6 +50,7 @@ async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)
 
+# upload shell script
 @app.post('/uploadfiles')
 @limiter.limit("10/second")
 async def upload_shell_file(request: Request, file: UploadFile=File(...)):
