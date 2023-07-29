@@ -12,7 +12,7 @@ EXPOSE 8000
 
 
 # 安装项目依赖包
-RUN pip install -r requirements.txt
+RUN pip install -r requirments.txt
 
 
 # 运行 Python 脚本
