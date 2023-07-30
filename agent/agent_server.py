@@ -9,6 +9,8 @@ from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
+
+from agent.utils import __exec_cmd
 from constant import InstanceEnv
 import socket
 
@@ -69,16 +71,6 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
     with open(des_file, 'wb') as f:
         f.write(file_data)
     return {"success": file.filename}
-
-# exec command in local client
-def __exec_cmd(cmd):
-    try:
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
-        output, error = process.communicate()
-        result = output.decode().strip() if output else error.decode().strip()
-        return {"result": result}
-    except Exception as e:
-        return {"result": str(e)}
 
 
 
