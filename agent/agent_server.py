@@ -70,9 +70,7 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
         f.write(file_data)
     return {"success": file.filename}
 
-#
-
-
+# exec command in local client
 def __exec_cmd(cmd):
     try:
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
