@@ -35,7 +35,13 @@ class Cmd(BaseModel):
 # health api
 @app.get("/health")
 async def get_info():
-    return {"status": 200}
+    import socket
+
+    # 获取本机计算机名称
+    hostname = socket.gethostname()
+    # 获取本机ip
+    ip = socket.gethostbyname(hostname)
+    return {"status": 200, "hostname": hostname, "ip": ip}
 
 # execute shell command
 @app.post("/cmd")
