@@ -4,6 +4,10 @@ FROM python:3.9
 # 设置工作目录
 WORKDIR /app
 
+# install pip
+RUN apt-get update && apt-get install -y python3-pip
+RUN pip install --upgrade pip
+
 # 复制项目文件到容器中
 COPY . /app
 
