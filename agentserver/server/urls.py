@@ -24,5 +24,6 @@ urlpatterns = [
     path('cmd/', views.get_cmd_res, name='cmd'),
     path('data/', views.make_fake_data, name='fake_data'),
     path('get-data/', views.get_instance_metric, name='get_metrics_data'),
-    path('upload-plugin/', views.upload_plugin_page, name='upload_plugin_page_view')
+    path('upload-plugin/', views.upload_plugin_page, name='upload_plugin_page_view'),
+    path('deploy-host/', views.deploy_host_func, name='deploy_host_func')
 ]
