@@ -46,13 +46,13 @@ async def get_info():
 # execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
-    return __exec_cmd(command.value)
+    return __exec_cmd(command.value)['result']
 
 # execute shell script
 @app.get("/exec-shell")
 async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
-    return __exec_cmd('sh ' + shell_file_path)
+    return __exec_cmd('sh ' + shell_file_path)['result']
 
 # upload shell script
 @app.post('/uploadfiles')
@@ -74,11 +74,13 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
 
 
 def __exec_cmd(cmd):
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    output, error = process.communicate()
-    print("output", output)
-    print("error", error)
-    return output.decode().strip()
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
 
 
 
