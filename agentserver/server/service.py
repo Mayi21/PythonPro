@@ -80,9 +80,9 @@ def deploy_host():
                             status=False,
                             container_id=container_id)
         instance.save()
-        return {'status': 200}
+        return JsonResponse({'status': 200})
     else:
-        return {'status': 500}
+        return JsonResponse({'status': 500})
 
 
 
