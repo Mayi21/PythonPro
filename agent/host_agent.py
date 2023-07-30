@@ -80,6 +80,21 @@ async def deploy_host(port: str):
         return {'error': out['result']}
     return {'success': out['result']}
 
+@app.post("/stop-host")
+async def stop_host(container_id: str):
+    out = __exec_cmd('docker stop {}'.format(container_id))
+    if len(out['result']) != 64:
+        return {'error': out['result']}
+    return {'success': out['result']}
+
+@app.post('/del-host')
+async def del_host(container_id: str):
+    out = __exec_cmd('docker container rm {}'.format(container_id))
+    if len(out['result']) != 64:
+        return {'error': out['result']}
+    return {'success': out['result']}
+
+
 
 if __name__ == '__main__':
     os.system('uvicorn agent_server:app --reload')
