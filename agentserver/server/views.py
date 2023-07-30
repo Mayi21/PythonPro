@@ -6,7 +6,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
-from .service import get_command_res, get_instance_metrics, test_generate_fake_date
+from .service import get_command_res, get_instance_metrics, test_generate_fake_date, deploy_host
 
 
 # index page
@@ -27,9 +27,11 @@ def get_instance_metric(request):
 def upload_plugin_page(reuqest):
     return render(reuqest, "UploadPlugin.html", {})
 
-# upload file function
-def upload_file(request):
-    pass
+
+# deploy host
+def deploy_host_func(request):
+    return deploy_host()
+
 
 
 
