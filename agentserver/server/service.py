@@ -3,6 +3,7 @@ import random
 import subprocess
 import time
 
+import requests
 from django.http import JsonResponse
 
 from .models import Instance, InstanceMetric
@@ -53,6 +54,39 @@ def test_generate_fake_date():
                                               cpu_usage=cpu_usage)
             instance_metrics.save()
         time.sleep(1)
+
+
+# get not use port to deploy container
+## 1. select max port of online container then plus one
+## 2. random generate and select by port if status eq false or not record
+def __get_not_use_port():
+    online_server_ports = (Instance.objects.filter(status=True)
+                           .values_list('server_port', flat=True))
+
+    online_server_ports = set(online_server_ports)
+    server_port = random.randint(49152, 65535)
+    while server_port in online_server_ports:
+        server_port = random.randint(49152, 65535)
+    return server_port
+
+def deploy_host():
+    server_port = __get_not_use_port()
+    deploy_host_url = "http://127.0.0.1:8000/deploy-host"
+    resp = requests.post(deploy_host_url, data={'port': server_port})
+    if resp.status_code == 200:
+        # todo get id from resp
+        container_id = ''
+        instance = Instance(server_port=server_port,
+                            status=False,
+                            container_id=container_id)
+        instance.save()
+        return {'status': 200}
+    else:
+        return {'status': 500}
+
+
+
+
 
 
 
