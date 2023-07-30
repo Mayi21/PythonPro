@@ -16,6 +16,8 @@ class Instance(models.Model):
     ip: instance ip
     status: true is online and false is offline
     server_port: running port of agent client in client host
+    hostname: container host name
+    container id: use to stop container
     last_update_time: last time of health check
     """
     ip = models.CharField(max_length=15)
