@@ -9,6 +9,8 @@ from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
+
+from agent.utils import __exec_cmd
 from constant import InstanceEnv
 
 limiter = Limiter(key_func=get_remote_address)
@@ -73,16 +75,10 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
 # run container
 @app.post("/deploy-host")
 async def deploy_host(port: str):
-    __exec_cmd('docker run -d -p {}:8000 agent'.format(port))
-
-
-def __exec_cmd(cmd):
-    process = subprocess.Popen(cmd, stdout=subprocess.PIPE, shell=True)
-    output, error = process.communicate()
-    print("output", output)
-    print("error", error)
-    return output.decode().strip()
-
+    out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
+    if len(out['result']) != 64:
+        return {'error': out['result']}
+    return {'success': out['result']}
 
 
 if __name__ == '__main__':
