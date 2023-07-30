@@ -21,6 +21,8 @@ class Instance(models.Model):
     ip = models.CharField(max_length=15)
     status = models.BooleanField()
     server_port = models.IntegerField()
+    hostname = models.CharField(max_length=30)
+    container_id = models.CharField(max_length=64)
     last_update_time = models.DateTimeField(auto_now=True)
 
 
