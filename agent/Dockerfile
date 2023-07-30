@@ -6,6 +6,8 @@ WORKDIR /app
 
 # install pip
 RUN apt-get update && apt-get install -y python3-pip
+RUN apt-get update && apt-get install -y ca-certificates
+
 RUN pip install --upgrade pip
 
 # 复制项目文件到容器中
