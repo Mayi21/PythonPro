@@ -90,6 +90,8 @@ consume data and persistence data in db.
 * report host info api
 * execute shell command api
 * execute shell script api
+* deploy host
+  * use `docker build -t agent .` to build image and `docker run -d -p 8000:8000 agent` to run server.
 
 # console page
 * execute shell command and get result
