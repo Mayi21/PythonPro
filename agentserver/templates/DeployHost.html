@@ -119,6 +119,32 @@
         .deploy-button:hover {
             background-color: #45a049;
         }
+
+        .stop-button {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .stop-button:hover {
+            background-color: #d32f2f;
+        }
+
+        .offline-button {
+            padding: 8px 16px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .offline-button:hover {
+            background-color: #1976D2;
+        }
     </style>
 </head>
 <body>
@@ -154,13 +180,27 @@
                         <td>${instance.ip}</td>
                         <td>${instance.server_port}</td>
                         <td class="action-buttons">
-                            <button onclick="stopAction(${instance.id})">停止</button>
-                            <button onclick="offlineAction(${instance.id})">下线</button>
+                            <button class="stop-button" onclick="confirmStopAction(${instance.id})">停止</button>
+                            <button class="offline-button" onclick="confirmOfflineAction(${instance.id})">下线</button>
                         </td>
                     `;
                 });
             })
             .catch(error => console.error('获取实例信息失败:', error));
+        function confirmStopAction(id) {
+            if (confirm('确定要停止主机 ' + id + ' 吗？')) {
+                // 用户点击了确定按钮
+                stopAction(id);
+            }
+        }
+
+        function confirmOfflineAction(id) {
+            if (confirm('确定要下线主机 ' + id + ' 吗？')) {
+                // 用户点击了确定按钮
+                offlineAction(id);
+            }
+        }
+
 
         function stopAction(id) {
             // 在这里执行停止操作，可以向后端发送请求或执行其他操作
