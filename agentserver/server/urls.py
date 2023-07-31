@@ -25,5 +25,7 @@ urlpatterns = [
     path('data/', views.make_fake_data, name='fake_data'),
     path('get-data/', views.get_instance_metric, name='get_metrics_data'),
     path('upload-plugin/', views.upload_plugin_page, name='upload_plugin_page_view'),
-    path('deploy-host/', views.deploy_host_func, name='deploy_host_func')
+    path('deploy-host/', views.deploy_host_func, name='deploy_host_func'),
+    path('host-manage/', views.host_management_page, name='host_manage'),
+    path('get-host-info/', views.get_deploy_host_info_info, name='get_host_info')
 ]
