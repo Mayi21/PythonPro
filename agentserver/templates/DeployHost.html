@@ -206,6 +206,7 @@
 </div>
 <div style="width: 1200px; height: 100%">
     <button class="deploy-button" onclick="deployHost()">下发主机</button>
+    <div id="countdown" style="display: none; color: red;"></div>
     <h1>主机信息</h1>
     <table id="instanceTable">
         <tr>
@@ -283,6 +284,28 @@
             console.log('下线操作，编号：', id);
         }
         function deployHost() {
+          // 点击按钮后，禁用按钮
+          const deployButton = document.querySelector('.deploy-button');
+          deployButton.disabled = true;
+
+          // 显示倒计时
+          const countdownElement = document.getElementById('countdown');
+          countdownElement.style.display = 'block';
+          let countdown = 10;
+
+          const countdownInterval = setInterval(() => {
+            countdownElement.innerText = `请等待 ${countdown} 秒`;
+            countdown--;
+
+            if (countdown < 0) {
+              clearInterval(countdownInterval);
+              countdownElement.style.display = 'none';
+
+              // 恢复按钮状态
+              deployButton.disabled = false;
+            }
+          }, 1000);
+
           // 使用fetch函数发送POST请求到后端
           fetch('/deploy-host/', {
             method: 'POST',
@@ -294,10 +317,16 @@
           .then(data => {
             // 处理后端返回的数据
             console.log('下发主机成功:', data);
+            // 手动响应后，弹出提示框
+            showSuccessDialog('创建成功！');
           })
           .catch(error => {
             console.error('下发主机失败:', error);
           });
+        }
+        function showSuccessDialog(message) {
+          // 弹出提示框
+          alert(message);
         }
     </script>
 </div>
