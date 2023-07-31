@@ -27,6 +27,25 @@ class Instance(models.Model):
     container_id = models.CharField(max_length=64)
     last_update_time = models.DateTimeField(auto_now=True)
 
+class DeployHost(models.Model):
+    """
+    deploy host table
+
+    container_id: container id
+    port: expose port
+    create_time: container create time
+    update_time: container update time
+
+    """
+    id = models.AutoField(primary_key=True)
+    container_id = models.CharField(max_length=64)
+    port = models.CharField(max_length=6)
+    create_time = models.DateTimeField(auto_created=True)
+    update_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'deploy_host'
+
 
 # include disk usage and cpu usage every 10 seconds
 class InstanceMetric(models.Model):
