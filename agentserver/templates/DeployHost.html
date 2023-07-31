@@ -145,6 +145,55 @@
         .offline-button:hover {
             background-color: #1976D2;
         }
+
+        .dialog-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 999;
+        }
+
+        .dialog-box {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 300px;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .dialog-message {
+          margin-bottom: 20px;
+        }
+
+        .dialog-buttons {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .dialog-buttons button {
+          margin-left: 10px;
+          padding: 8px 20px;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+
+        .dialog-confirm {
+          background-color: #4caf50;
+          color: #fff;
+        }
+
+        .dialog-cancel {
+          background-color: #ccc;
+        }
     </style>
 </head>
 <body>
@@ -187,19 +236,41 @@
                 });
             })
             .catch(error => console.error('获取实例信息失败:', error));
-        function confirmStopAction(id) {
-            if (confirm('确定要停止主机 ' + id + ' 吗？')) {
-                // 用户点击了确定按钮
-                stopAction(id);
-            }
-        }
+        function showConfirmationDialog(message, confirmCallback) {
+            const dialogOverlay = document.getElementById('dialogOverlay');
+            const dialogMessage = document.getElementById('dialogMessage');
+            const dialogConfirmButton = document.getElementById('dialogConfirmButton');
+            const dialogCancelButton = document.getElementById('dialogCancelButton');
 
-        function confirmOfflineAction(id) {
-            if (confirm('确定要下线主机 ' + id + ' 吗？')) {
-                // 用户点击了确定按钮
-                offlineAction(id);
-            }
-        }
+            dialogMessage.innerText = message;
+            dialogConfirmButton.onclick = function () {
+              hideConfirmationDialog();
+              confirmCallback();
+            };
+
+            dialogCancelButton.onclick = function () {
+              hideConfirmationDialog();
+            };
+
+            dialogOverlay.style.display = 'flex';
+          }
+
+          function hideConfirmationDialog() {
+            const dialogOverlay = document.getElementById('dialogOverlay');
+            dialogOverlay.style.display = 'none';
+          }
+
+          function confirmStopAction(id) {
+            showConfirmationDialog('确定要停止主机 ' + id + ' 吗？', function () {
+              stopAction(id);
+            });
+          }
+
+          function confirmOfflineAction(id) {
+            showConfirmationDialog('确定要下线主机 ' + id + ' 吗？', function () {
+              offlineAction(id);
+            });
+          }
 
 
         function stopAction(id) {
@@ -216,6 +287,15 @@
             console.log('下发主机');
         }
     </script>
+</div>
+<div class="dialog-overlay" id="dialogOverlay">
+  <div class="dialog-box">
+    <p class="dialog-message" id="dialogMessage"></p>
+    <div class="dialog-buttons">
+      <button class="dialog-confirm" id="dialogConfirmButton">确定</button>
+      <button class="dialog-cancel" id="dialogCancelButton">取消</button>
+    </div>
+  </div>
 </div>
 </body>
 </html>
