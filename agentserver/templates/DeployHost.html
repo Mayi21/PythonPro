@@ -283,8 +283,21 @@
             console.log('下线操作，编号：', id);
         }
         function deployHost() {
-            // 在这里执行下发主机的操作，可以向后端发送请求或执行其他操作
-            console.log('下发主机');
+          // 使用fetch函数发送POST请求到后端
+          fetch('/deploy-host/', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          })
+          .then(response => response.json())
+          .then(data => {
+            // 处理后端返回的数据
+            console.log('下发主机成功:', data);
+          })
+          .catch(error => {
+            console.error('下发主机失败:', error);
+          });
         }
     </script>
 </div>
