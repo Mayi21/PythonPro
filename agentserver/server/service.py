@@ -85,6 +85,22 @@ def deploy_host():
         return JsonResponse({'status': 500})
 
 
+# get deploy host info
+def get_deploy_host_func(request):
+    online_hosts = Instance.objects.filter(status=True)
+    instances = []
+    for host in online_hosts:
+        instance = {
+            "id": host.container_id,
+            "ip": host.ip,
+            "server_port": host.server_port,
+            "hostname": host.hostname,
+        }
+        instances.append(instance)
+    serialized_instances = json.dumps(instances)  # 将非字典对象序列化为 JSON 格式的字符串
+    return JsonResponse(serialized_instances, safe=False)  # 设置
+
+
 
 
 
