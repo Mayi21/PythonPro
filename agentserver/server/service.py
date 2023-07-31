@@ -70,19 +70,20 @@ def __get_not_use_port():
     return server_port
 
 def deploy_host():
-    server_port = __get_not_use_port()
-    deploy_host_url = "http://127.0.0.1:8000/deploy-host"
-    resp = requests.post(deploy_host_url, data={'port': server_port})
-    if resp.status_code == 200:
-        # todo get id from resp
-        container_id = ''
-        instance = Instance(server_port=server_port,
-                            status=False,
-                            container_id=container_id)
-        instance.save()
-        return JsonResponse({'status': 200})
-    else:
-        return JsonResponse({'status': 500})
+    return JsonResponse({'status': 200})
+    # server_port = __get_not_use_port()
+    # deploy_host_url = "http://127.0.0.1:8000/deploy-host"
+    # resp = requests.post(deploy_host_url, data={'port': server_port})
+    # if resp.status_code == 200:
+    #     # todo get id from resp
+    #     container_id = ''
+    #     instance = Instance(server_port=server_port,
+    #                         status=False,
+    #                         container_id=container_id)
+    #     instance.save()
+    #     return JsonResponse({'status': 200})
+    # else:
+    #     return JsonResponse({'status': 500})
 
 
 # get deploy host info
