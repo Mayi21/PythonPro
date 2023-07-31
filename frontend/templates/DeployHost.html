@@ -2,10 +2,141 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <html>
 <head>
-    <title>Deploy Host</title>
+    <title>实例管理</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
+
+        .menu-container {
+            width: 200px;
+            background-color: #333;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        .menu-item:hover {
+            background-color: #555;
+            border-radius: 5px;
+        }
+
+        .menu-item.active {
+            background-color: #4caf50;
+            border-radius: 5px;
+        }
+
+        .input-container input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .input-container button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-buttons {
+            display: flex;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+        }
+    </style>
 </head>
 <body>
-<>
+<div class="menu-container">
+    <a href="index.html" class="menu-item">首页</a>
+    <a href="search.html" class="menu-item">搜索</a>
+    <a href="UploadPlugin.html" class="menu-item">插件下发</a>
+    <a href="display.html" class="menu-item">监控</a>
+    <a href="DeployHost.html" class="menu-item">实例管理</a>
+</div>
+<div style="width: 1200px; height: 100%">
+    <h1>主机信息</h1>
+    <table id="instanceTable">
+        <tr>
+            <th>ID</th>
+            <th>IP</th>
+            <th>Port</th>
+            <th>操作</th>
+        </tr>
+    </table>
+    <script>
+        // 获取实例信息并展示在表格中
+        fetch('/hosts')
+            .then(response => response.json())
+            .then(data => {
+                const instanceTable = document.getElementById('instanceTable');
+                data.forEach(instance => {
+                    const row = instanceTable.insertRow(-1);
+                    row.innerHTML = `
+                        <td>${instance.id}</td>
+                        <td>${instance.ip}</td>
+                        <td>${instance.server_port}</td>
+                        <td class="action-buttons">
+                            <button onclick="stopAction(${instance.id})">停止</button>
+                            <button onclick="offlineAction(${instance.id})">下线</button>
+                        </td>
+                    `;
+                });
+            })
+            .catch(error => console.error('获取实例信息失败:', error));
 
+        function stopAction(id) {
+            // 在这里执行停止操作，可以向后端发送请求或执行其他操作
+            console.log('停止操作，编号：', id);
+        }
+
+        function offlineAction(id) {
+            // 在这里执行下线操作，可以向后端发送请求或执行其他操作
+            console.log('下线操作，编号：', id);
+        }
+    </script>
+</div>
 </body>
 </html>
