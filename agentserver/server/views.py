@@ -33,7 +33,9 @@ def upload_plugin_page(reuqest):
     return render(reuqest, "UploadPlugin.html", {})
 
 
+
 # deploy host
+@csrf_exempt
 def deploy_host_func(request):
     return deploy_host()
 
