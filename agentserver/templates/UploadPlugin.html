@@ -1,50 +1,89 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>插件下发</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-        }
+  <title>插件下发</title>
 
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-top: 50px;
-        }
+  <style>
 
-        .file-input {
-            margin-bottom: 10px;
-        }
+  .menu-container {
+    width: 200px;
+    height: 100%;
+    background: #333;
+  }
 
-        .ip-input {
-            margin-bottom: 10px;
-        }
+  .menu-item {
+    padding: 10px 20px;
+    color: #fff;
+    text-decoration: none;
+    font-size: 16px;
+  }
 
-        .upload-btn {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
+  .menu-item:hover {
+    background: #555;
+  }
 
-        .upload-btn:disabled {
-            background-color: #ccc;
-            cursor: not-allowed;
-        }
-    </style>
+  .menu-item.active {
+    background: #4CAF50;
+  }
+
+  .main {
+    padding: 20px;
+  }
+
+  .file-input {
+    margin-bottom: 10px;
+  }
+
+  .ip-input {
+    margin-bottom: 10px;
+  }
+
+  .upload-btn {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  .upload-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+  }
+
+  </style>
+
 </head>
-<body>
-    <div class="container">
-        <input type="file" id="fileInput" class="file-input">
-        <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器的 IP 地址">
-        <button onclick="uploadFile()" class="upload-btn" id="uploadButton" disabled>Upload File</button>
-    </div>
 
-    <script>
+<body>
+
+<div class="menu-container">
+  <a href="#" class="menu-item active">插件下发</a>
+  <a href="#" class="menu-item">首页</a>
+  <a href="#" class="menu-item">搜索</a>
+  <a href="#" class="menu-item">监控</a>
+  <a href="#" class="menu-item">实例管理</a>
+</div>
+
+<div class="main">
+
+  <div class="container">
+
+    <input type="file" id="fileInput" class="file-input">
+
+    <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP">
+
+    <button id="uploadBtn" class="upload-btn" disabled>
+      上传文件
+    </button>
+
+  </div>
+
+</div>
+
+<script>
+
         function uploadFile() {
             const ip = document.getElementById('ip').value;
             console.info(ip);
@@ -93,9 +132,10 @@
             uploadButton.disabled = !isValidIP || !fileInput.files[0];
         }
 
-        // 监听输入框和选择文件框的变化，并进行验证
-        document.getElementById('ip').addEventListener('input', validateIP);
-        document.getElementById('fileInput').addEventListener('change', validateIP);
-    </script>
+// 验证逻辑
+document.getElementById('ip').addEventListener('input', validateIP);
+document.getElementById('fileInput').addEventListener('change', validateIP);
+</script>
 </body>
 </html>
+
