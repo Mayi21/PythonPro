@@ -84,12 +84,15 @@ use fastapi as client
 client report host info and execute shell script, return res to kafka, schedule task 
 consume data and persistence data in db.
 
-# client agent
+# System Design
+## VM Agent Design
 * health check api
-* install plugin api
+* upload plugin api
 * report host info api
 * execute shell command api
 * execute shell script api
+
+## Host Agent Design
 * deploy host
   * use `docker build -t agent .` to build image and `docker run -d -p 8000:8000 agent` to run server.
 
