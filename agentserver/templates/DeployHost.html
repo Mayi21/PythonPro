@@ -274,9 +274,37 @@
           }
 
 
-        function stopAction(id) {
-            // 在这里执行停止操作，可以向后端发送请求或执行其他操作
-            console.log('停止操作，编号：', id);
+        function stopVM(id) {
+
+          // 构造请求数据
+          const data = {
+            id: id
+          };
+
+          // 发起请求
+          fetch('http://example.com/api/stop-vm', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            // 请求成功
+            if(response.ok) {
+              alert('编号为 ' + id + ' 的虚拟机已停止');
+
+            // 请求失败
+            } else {
+              alert('错误:' + response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('请求失败', error);
+          });
+
+          // 记录日志
+          console.log('停止虚拟机操作,编号:', id);
         }
 
         function offlineAction(id) {
