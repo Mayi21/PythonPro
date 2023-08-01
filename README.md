@@ -87,6 +87,7 @@ consume data and persistence data in db.
 # System Design
 ## VM Agent Design
 * health check api
+  * 
 * upload plugin api
 * report host info api
 * execute shell command api
@@ -95,6 +96,10 @@ consume data and persistence data in db.
 ## Host Agent Design
 * deploy host
   * use `docker build -t agent .` to build image and `docker run -d -p 8000:8000 agent` to run server.
+
+## Server Design
+* deploy, stop and destroy vm
+* 
 
 # console page
 * execute shell command and get result
