@@ -6,13 +6,21 @@
 
   <style>
 
+  /* 整体布局样式 */
+  body {
+    display: flex;
+    margin: 0;
+  }
+
   /* 菜单栏样式 */
   .menu-container {
     width: 200px;
     background: #333;
-    height: 100%;
+    height: 100vh; /* 100%视窗高度 */
     display: flex;
     flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   .menu-item {
@@ -34,7 +42,12 @@
 
   /* 主体内容样式 */
   .main {
+    flex: 1;
     padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
   }
 
   /* 文件上传样式 */
@@ -96,7 +109,7 @@
         function uploadFile() {
             const ip = document.getElementById('ip').value;
             console.info(ip);
-            const url = 'http://' + ip + ':8000/uploadfiles'; // Replace with your API endpoint
+            const url = 'http://' + ip + ':8000/uploadfiles'; // 替换为实际的 API 接口地址
 
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
@@ -137,7 +150,7 @@
             const isValidIP = ipPattern.test(ip);
 
             const fileInput = document.getElementById('fileInput');
-            const uploadButton = document.getElementById('uploadButton');
+            const uploadButton = document.getElementById('uploadBtn');
             uploadButton.disabled = !isValidIP || !fileInput.files[0];
         }
 
@@ -145,6 +158,5 @@
 document.getElementById('ip').addEventListener('input', validateIP);
 document.getElementById('fileInput').addEventListener('change', validateIP);
 </script>
-
 </body>
 </html>
