@@ -5,9 +5,52 @@
     <title>ECharts 折线图动态展示 CPU 占用率</title>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/echarts@5.3.0/dist/echarts.min.js"></script>
+    <style>
+        /* 整体布局样式 */
+        body {
+            display: flex;
+            margin: 0;
+            height: 100vh;
+            align-items: flex-start;
+            justify-content: center;
+            flex-direction: column;
+        }
+
+        /* 菜单栏样式 */
+        .menu-container {
+            background: #333;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            padding: 10px;
+        }
+
+        .menu-item {
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            font-size: 16px;
+        }
+
+        /* 折线图容器样式 */
+        #line-chart-container {
+            width: 1500px;
+            height: 600px;
+        }
+    </style>
 </head>
 <body>
-    <div id="line-chart" style="width: 1500px; height: 600px;"></div>
+    <div class="menu-container">
+        <a href="#" class="menu-item active">折线图</a>
+        <a href="#" class="menu-item">柱状图</a>
+        <a href="#" class="menu-item">饼图</a>
+        <a href="#" class="menu-item">雷达图</a>
+    </div>
+
+    <div id="line-chart-container">
+        <div id="line-chart"></div>
+    </div>
+
     <script>
         // 初始化折线图
         var lineChart = echarts.init(document.getElementById('line-chart'));
@@ -27,8 +70,6 @@
                     // 将新数据加入到数据数组中
                     xAxisData.push(data.time);
                     seriesData.push(data.cpu_usage);
-                    console.log(xAxisData)
-                    console.log(seriesData)
 
                     // 限制数据长度，只保留最近的若干个数据
                     var maxLength = 60;
