@@ -34,6 +34,9 @@ class Cmd(BaseModel):
     description: str
     value: str
 
+class ContainerId(BaseModel):
+    value: str
+
 # health api
 @app.get("/health")
 async def get_info():
@@ -88,7 +91,8 @@ async def stop_host(container_id: str):
     return {'success': out['result']}
 
 @app.post('/del-host')
-async def del_host(container_id: str):
+async def del_host(container_id: ContainerId):
+    container_id = container_id.value
     out = __exec_cmd('docker container rm {}'.format(container_id))
     if len(out['result']) != 64:
         return {'error': out['result']}
@@ -97,5 +101,5 @@ async def del_host(container_id: str):
 
 
 if __name__ == '__main__':
-    os.system('uvicorn agent_server:app --reload')
+    os.system('uvicorn host_agent:app --reload')
 

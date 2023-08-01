@@ -1,8 +1,4 @@
 import os
-db_address = os.getenv("db_address")
-db_name = os.getenv("db_name")
-db_username = os.getenv("db_username")
+container_id = '5fa3eb17e8e5cb0435d76f04bf6feff1b87cceb42a870ca33243aeb3b9252aa9'
+print(len(container_id))
 
-print(db_name)
-print(db_address)
-print(db_username)

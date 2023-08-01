@@ -1,8 +1,11 @@
 import getopt
+import subprocess
 import sys
 import uuid
 
 import requests
+
+from utils import __exec_cmd
 
 
 def main(argv):
@@ -26,5 +29,28 @@ def test_upload_file():
     else:
         print("failed to upload")
 
+def deploy_host(port: str):
+    out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
+    if len(out['result']) != 64:
+        print(out['result'])
+    print(out['result'])
+
+
+def stop_host(container_id: str):
+    out = __exec_cmd('docker stop {}'.format(container_id))
+    if len(out['result']) != 64:
+        return {'error': out['result']}
+    return {'success': out['result']}
+    pass
+
+def del_host(container_id: str):
+    out = __exec_cmd('docker container rm {}'.format(container_id))
+    if len(out['result']) != 64:
+        return {'error': out['result']}
+    return {'success': out['result']}
+
+
 if __name__ == "__main__":
-   test_upload_file()
+   # print(deploy_host('8081'))
+    print(del_host('d2aafd335ca9ea87c73e3e467efa03a26a5dd9fba65a30e49fa32079a5b65ae9'))
+   # print(stop_host('a4d5ddc33b320c7571043679fb3eba6cc9b6b91165549d7ddbe8dd867330acc4'))

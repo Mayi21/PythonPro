@@ -7,12 +7,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 # Create your views here.
 
-from .service import (get_command_res,
-                      get_instance_metrics,
-                      test_generate_fake_date,
-                      deploy_host,
-                      get_deploy_host_func)
-
+from .service import *
 
 # index page
 def index(request):

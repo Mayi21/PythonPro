@@ -218,7 +218,7 @@
     </table>
     <script>
         // 获取实例信息并展示在表格中
-        fetch('/get-host-info')
+        fetch('/get-host-info/')
             .then(response => response.json())
             .then(data => {
                 const instanceTable = document.getElementById('instanceTable');
@@ -263,7 +263,7 @@
 
           function confirmStopAction(id) {
             showConfirmationDialog('确定要停止主机 ' + id + ' 吗？', function () {
-              stopAction(id);
+              stopVM(id);
             });
           }
 
@@ -278,11 +278,11 @@
 
           // 构造请求数据
           const data = {
-            id: id
+            'container_id': id
           };
 
           // 发起请求
-          fetch('http://example.com/api/stop-vm', {
+          fetch('http://127.0.0.1:8000/stop-host', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
