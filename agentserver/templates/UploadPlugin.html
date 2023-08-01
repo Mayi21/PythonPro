@@ -5,10 +5,13 @@
 
   <style>
 
+  /* 菜单栏样式 */
   .menu-container {
     width: 200px;
-    height: 100%;
     background: #333;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
   }
 
   .menu-item {
@@ -20,16 +23,20 @@
 
   .menu-item:hover {
     background: #555;
+    border-radius: 5px;
   }
 
   .menu-item.active {
     background: #4CAF50;
+    border-radius: 5px;
   }
 
+  /* 主体内容样式 */
   .main {
     padding: 20px;
   }
 
+  /* 文件上传样式 */
   .file-input {
     margin-bottom: 10px;
   }
@@ -82,6 +89,7 @@
 
 </div>
 
+<!-- 上传文件逻辑 -->
 <script>
 
         function uploadFile() {
@@ -136,6 +144,6 @@
 document.getElementById('ip').addEventListener('input', validateIP);
 document.getElementById('fileInput').addEventListener('change', validateIP);
 </script>
+
 </body>
 </html>
-
