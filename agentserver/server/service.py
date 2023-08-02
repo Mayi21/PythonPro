@@ -6,7 +6,7 @@ import time
 import requests
 from django.http import JsonResponse
 
-from .models import Instance, InstanceMetric
+from .models import *
 from .constant import *
 
 REQ_HEADERS = {'Content-Type': 'application/json'}
@@ -83,11 +83,14 @@ def deploy_host():
     if resp.status_code == 200:
         msg = json.loads(resp.content)
         if msg['code'] == RespCode.SUCCESS_CODE.value:
-            container_id = msg['msg']
-            instance = Instance(server_port=server_port,
-                                status=False,
-                                container_id=container_id)
-            instance.save()
+            result = json.loads(msg['msg'])
+            container_id = result['container_id']
+            container_ip = result['container_ip']
+            deploy_host_model: DeployHost = DeployHost(container_id=container_id,
+                                  ip=container_ip,
+                                  port=server_port,
+                                  status=False)
+            deploy_host_model.save()
             return JsonResponse({'status': 200})
         else:
             return JsonResponse({'status': 500, 'msg': msg['msg']})
@@ -107,13 +110,15 @@ def stop_host(request):
         msg = json.loads(resp.content)
         if msg['code'] == RespCode.SUCCESS_CODE.value:
             # stop success
-            pass
-
+            deploy_host_model = DeployHost.objects.filter(container_id=container_id)
+            deploy_host_model.stauts = DeployHostStatus.STOP.value
+            deploy_host_model.save()
+            return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
             # stop failure
-            pass
+            return JsonResponse({'status': 500, 'msg': msg['msg']})
     else:
-        pass
+        return JsonResponse({'status': 500, 'msg': resp.content})
 
 # delete host
 def del_host(request):
@@ -129,13 +134,15 @@ def del_host(request):
         msg = json.loads(resp.content)
         if msg['code'] == RespCode.SUCCESS_CODE.value:
             # stop success
-            pass
-
+            deploy_host_model = DeployHost.objects.filter(container_id=container_id)
+            deploy_host_model.stauts = DeployHostStatus.OFFLINE.value
+            deploy_host_model.save()
+            return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
             # stop failure
-            pass
+            return JsonResponse({'status': 500, 'msg': msg['msg']})
     else:
-        pass
+        return JsonResponse({'status': 500, 'msg': resp.content})
 
 
 
@@ -143,14 +150,14 @@ def del_host(request):
 
 # get deploy host info
 def get_deploy_host_func(request):
-    online_hosts = Instance.objects.filter(status=True)
+    online_hosts = DeployHost.objects.filter(status=DeployHostStatus.ONLINE.value)
     instances = []
     for host in online_hosts:
         instance = {
             "id": host.container_id,
             "ip": host.ip,
-            "server_port": host.server_port,
-            "hostname": host.hostname,
+            "server_port": host.port,
+            "hostname": host.host_name,
         }
         instances.append(instance)
     serialized_instances = json.dumps(instances)  # 将非字典对象序列化为 JSON 格式的字符串
