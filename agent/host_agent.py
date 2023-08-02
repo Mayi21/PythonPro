@@ -37,6 +37,9 @@ class Cmd(BaseModel):
 class ContainerId(BaseModel):
     value: str
 
+class PortItem(BaseModel):
+    value: str
+
 # health api
 @app.get("/health")
 async def get_info():
@@ -77,16 +80,18 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
 
 # run container
 @app.post("/deploy-host")
-async def deploy_host(port: str):
+async def deploy_host(port: PortItem):
+    port = port.value
     out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
     if len(out['result']) != 64:
         return {'error': out['result']}
     return {'success': out['result']}
 
 @app.post("/stop-host")
-async def stop_host(container_id: str):
+async def stop_host(container_id: ContainerId):
+    container_id = container_id.value
     out = __exec_cmd('docker stop {}'.format(container_id))
-    if len(out['result']) != 64:
+    if len(out['result']) != len(container_id):
         return {'error': out['result']}
     return {'success': out['result']}
 
@@ -94,7 +99,7 @@ async def stop_host(container_id: str):
 async def del_host(container_id: ContainerId):
     container_id = container_id.value
     out = __exec_cmd('docker container rm {}'.format(container_id))
-    if len(out['result']) != 64:
+    if len(out['result']) != len(container_id):
         return {'error': out['result']}
     return {'success': out['result']}
 
