@@ -269,16 +269,15 @@
 
           function confirmOfflineAction(id) {
             showConfirmationDialog('确定要下线主机 ' + id + ' 吗？', function () {
-              offlineAction(id);
+              offlineVM(id);
             });
           }
 
 
         function stopVM(id) {
-
           // 构造请求数据
           const data = {
-            'container_id': id
+            'value': id
           };
 
           // 发起请求
@@ -307,9 +306,36 @@
           console.log('停止虚拟机操作,编号:', id);
         }
 
-        function offlineAction(id) {
-            // 在这里执行下线操作，可以向后端发送请求或执行其他操作
-            console.log('下线操作，编号：', id);
+        function offlineVM(id) {
+            // 构造请求数据
+          const data = {
+            'value': id
+          };
+
+          // 发起请求
+          fetch('http://127.0.0.1:8000/del-host', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+          })
+          .then(response => {
+            // 请求成功
+            if(response.ok) {
+              alert('编号为 ' + id + ' 的虚拟机已下线');
+
+            // 请求失败
+            } else {
+              alert('错误:' + response.statusText);
+            }
+          })
+          .catch(error => {
+            console.error('请求失败', error);
+          });
+
+          // 记录日志
+          console.log('下线虚拟机操作,编号:', id);
         }
         function deployHost() {
           // 点击按钮后，禁用按钮
