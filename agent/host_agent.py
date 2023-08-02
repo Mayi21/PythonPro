@@ -85,7 +85,8 @@ async def deploy_host(port: PortItem):
     port = port.value
     out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
     if len(out['result']) != 64:
-        return {'error': out['result']}
+        return Response(RespCode.INTERNAL_ERROR,
+                        msg="deploy host fail, cause by {}".format(out['result']))
     return Response(RespCode.SUCCESS_CODE,
                     msg=out['result'])
 
