@@ -41,10 +41,10 @@ class DeployHost(models.Model):
     container_id = models.CharField(max_length=64)
     ip = models.CharField(max_length=15)
     port = models.CharField(max_length=6)
-    create_time = models.DateTimeField(auto_created=True)
+    create_time = models.DateTimeField(auto_now=True)
     update_time = models.DateTimeField(auto_now=True)
     # online, offline, stop, exception
-    status = models.CharField(max_length=15)
+    status = models.CharField(max_length=15, default="ONLINE")
     host_name = models.CharField(max_length=100)
 
     class Meta:
