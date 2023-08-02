@@ -13,3 +13,8 @@ class InstanceEnv(Enum):
 class RespCode(Enum):
     SUCCESS_CODE = "200"
     INTERNAL_ERROR = "500"
+
+class DeployHostStatus(Enum):
+    ONLINE = "ONLINE"
+    OFFLINE = "OFFLINE"
+    STOP = "STOP"
