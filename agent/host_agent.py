@@ -96,8 +96,10 @@ async def stop_host(container_id: ContainerId):
     container_id = container_id.value
     out = __exec_cmd('docker stop {}'.format(container_id))
     if len(out['result']) != len(container_id):
-        return {'error': out['result']}
-    return {'success': out['result']}
+        return Response(RespCode.INTERNAL_ERROR,
+                        msg="deploy host fail, cause by {}".format(out['result']))
+    return Response(RespCode.SUCCESS_CODE,
+                    msg=out['result'])
 
 # delete host
 @app.post('/del-host')
@@ -105,8 +107,10 @@ async def del_host(container_id: ContainerId):
     container_id = container_id.value
     out = __exec_cmd('docker container rm {}'.format(container_id))
     if len(out['result']) != len(container_id):
-        return {'error': out['result']}
-    return {'success': out['result']}
+        return Response(RespCode.INTERNAL_ERROR,
+                        msg="deploy host fail, cause by {}".format(out['result']))
+    return Response(RespCode.SUCCESS_CODE,
+                    msg=out['result'])
 
 
 
