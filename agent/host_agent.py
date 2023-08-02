@@ -10,8 +10,9 @@ from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 
+from resp import Response
 from utils import __exec_cmd
-from constant import InstanceEnv
+from constant import InstanceEnv, RespCode
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -85,7 +86,8 @@ async def deploy_host(port: PortItem):
     out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
     if len(out['result']) != 64:
         return {'error': out['result']}
-    return {'success': out['result']}
+    return Response(RespCode.SUCCESS_CODE,
+                    msg=out['result'])
 
 # stop host
 @app.post("/stop-host")
