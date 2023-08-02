@@ -1,3 +1,4 @@
+import json
 import os
 import subprocess
 
@@ -89,8 +90,11 @@ async def deploy_host(port: PortItem):
     if len(out['result']) != 64:
         return Response(RespCode.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
+    container_ip = __exec_cmd('{} {}'.format(DockerCMD.GET_IP.value,
+                                             out['result']))
     return Response(RespCode.SUCCESS_CODE,
-                    msg=out['result'])
+                    msg=json.dumps({'container_id': out['result'],
+                                    'ip': container_ip['result']}))
 
 # stop host
 @app.post("/stop-host")
