@@ -12,7 +12,7 @@ from slowapi.util import get_remote_address
 
 from resp import Response
 from utils import __exec_cmd
-from constant import InstanceEnv, RespCode
+from constant import InstanceEnv, RespCode, DockerCMD
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -83,7 +83,9 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
 @app.post("/deploy-host")
 async def deploy_host(port: PortItem):
     port = port.value
-    out = __exec_cmd('docker run -d -p {}:8000 --name agent_{} agent'.format(port, port))
+    out = __exec_cmd('{} {}:8000 --name agent_{} agent'.format(DockerCMD.RUN_VM.value,
+                                                               port,
+                                                               port))
     if len(out['result']) != 64:
         return Response(RespCode.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
@@ -94,7 +96,8 @@ async def deploy_host(port: PortItem):
 @app.post("/stop-host")
 async def stop_host(container_id: ContainerId):
     container_id = container_id.value
-    out = __exec_cmd('docker stop {}'.format(container_id))
+    out = __exec_cmd('{} {}'.format(DockerCMD.STOP_VM.value,
+                                    container_id))
     if len(out['result']) != len(container_id):
         return Response(RespCode.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
@@ -105,7 +108,8 @@ async def stop_host(container_id: ContainerId):
 @app.post('/del-host')
 async def del_host(container_id: ContainerId):
     container_id = container_id.value
-    out = __exec_cmd('docker container rm {}'.format(container_id))
+    out = __exec_cmd('{} {}'.format(DockerCMD.DEL_VM.value,
+                                    container_id))
     if len(out['result']) != len(container_id):
         return Response(RespCode.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
