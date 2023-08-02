@@ -34,6 +34,15 @@ def upload_plugin_page(reuqest):
 def deploy_host_func(request):
     return deploy_host()
 
+# stop host
+def stop_host_func(request):
+    return stop_host(request)
+
+# delete host
+def del_host_func(request):
+    return del_host(request)
+
+
 
 # host manage page
 def host_management_page(request):
@@ -42,6 +51,7 @@ def host_management_page(request):
 # get deploy host info
 def get_deploy_host_info_info(request):
     return get_deploy_host_func(request)
+
 
 
 
