@@ -1,10 +1,12 @@
 import getopt
+import json
 import subprocess
 import sys
 import uuid
 
 import requests
 
+from constant import *
 from utils import __exec_cmd
 
 
@@ -52,5 +54,9 @@ def del_host(container_id: str):
 
 if __name__ == "__main__":
    # print(deploy_host('8081'))
-    print(del_host('d2aafd335ca9ea87c73e3e467efa03a26a5dd9fba65a30e49fa32079a5b65ae9'))
+   #  print(del_host('d2aafd335ca9ea87c73e3e467efa03a26a5dd9fba65a30e49fa32079a5b65ae9'))
    # print(stop_host('a4d5ddc33b320c7571043679fb3eba6cc9b6b91165549d7ddbe8dd867330acc4'))
+
+   # print(DockerCMD.DEL_VM.value)
+   # print('200'== RespCode.SUCCESS_CODE.value)
+   print(DockerCMD.GET_IP.value)
