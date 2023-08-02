@@ -277,11 +277,11 @@
         function stopVM(id) {
           // 构造请求数据
           const data = {
-            'value': id
+            'id': id
           };
 
           // 发起请求
-          fetch('http://127.0.0.1:8000/stop-host', {
+          fetch('/stop-host/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -309,11 +309,11 @@
         function offlineVM(id) {
             // 构造请求数据
           const data = {
-            'value': id
+            'id': id
           };
 
           // 发起请求
-          fetch('http://127.0.0.1:8000/del-host', {
+          fetch('/del-host/', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json'
@@ -337,6 +337,7 @@
           // 记录日志
           console.log('下线虚拟机操作,编号:', id);
         }
+
         function deployHost() {
           // 点击按钮后，禁用按钮
           const deployButton = document.querySelector('.deploy-button');
