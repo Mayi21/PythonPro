@@ -213,6 +213,7 @@
             <th>ID</th>
             <th>IP</th>
             <th>Port</th>
+            <th>Status</th>
             <th>操作</th>
         </tr>
     </table>
@@ -229,6 +230,7 @@
                         <td>${instance.id}</td>
                         <td>${instance.ip}</td>
                         <td>${instance.server_port}</td>
+                        <td>${instance.status}</td>
                         <td class="action-buttons">
                             <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
                             <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
@@ -237,6 +239,7 @@
                 });
             })
             .catch(error => console.error('获取实例信息失败:', error));
+
         function showConfirmationDialog(message, confirmCallback) {
             const dialogOverlay = document.getElementById('dialogOverlay');
             const dialogMessage = document.getElementById('dialogMessage');
@@ -297,6 +300,7 @@
             } else {
               alert('错误:' + response.statusText);
             }
+            flushData();
           })
           .catch(error => {
             console.error('请求失败', error);
@@ -329,6 +333,7 @@
             } else {
               alert('错误:' + response.statusText);
             }
+            flushData();
           })
           .catch(error => {
             console.error('请求失败', error);
@@ -336,6 +341,32 @@
 
           // 记录日志
           console.log('下线虚拟机操作,编号:', id);
+        }
+        function flushData() {
+            const instanceTable = document.getElementById('instanceTable');
+
+            // 清空表格内容
+            instanceTable.innerHTML = '';
+            fetch('/get-host-info/')
+            .then(response => response.json())
+            .then(data => {
+                const instanceTable = document.getElementById('instanceTable');
+                const instances = JSON.parse(data);
+                instances.forEach(instance => {
+                    const row = instanceTable.insertRow(-1);
+                    row.innerHTML = `
+                        <td>${instance.id}</td>
+                        <td>${instance.ip}</td>
+                        <td>${instance.server_port}</td>
+                        <td>${instance.status}</td>
+                        <td class="action-buttons">
+                            <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
+                            <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
+                        </td>
+                    `;
+                });
+            })
+            .catch(error => console.error('获取实例信息失败:', error));
         }
 
         function deployHost() {
@@ -374,6 +405,7 @@
             console.log('下发主机成功:', data);
             // 手动响应后，弹出提示框
             showSuccessDialog('创建成功！');
+            flushData();
           })
           .catch(error => {
             console.error('下发主机失败:', error);
