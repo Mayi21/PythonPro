@@ -35,10 +35,12 @@ def deploy_host_func(request):
     return deploy_host()
 
 # stop host
+@csrf_exempt
 def stop_host_func(request):
     return stop_host(request)
 
 # delete host
+@csrf_exempt
 def del_host_func(request):
     return del_host(request)
 
