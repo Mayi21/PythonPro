@@ -87,6 +87,7 @@ async def deploy_host(port: PortItem):
         return {'error': out['result']}
     return {'success': out['result']}
 
+# stop host
 @app.post("/stop-host")
 async def stop_host(container_id: ContainerId):
     container_id = container_id.value
@@ -95,6 +96,7 @@ async def stop_host(container_id: ContainerId):
         return {'error': out['result']}
     return {'success': out['result']}
 
+# delete host
 @app.post('/del-host')
 async def del_host(container_id: ContainerId):
     container_id = container_id.value
