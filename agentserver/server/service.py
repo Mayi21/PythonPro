@@ -7,6 +7,9 @@ import requests
 from django.http import JsonResponse
 
 from .models import Instance, InstanceMetric
+from .constant import *
+
+REQ_HEADERS = {'Content-Type': 'application/json'}
 
 
 # input command and get execute result
@@ -73,17 +76,21 @@ def deploy_host():
     server_port = __get_not_use_port()
     # TODO get host agent address
     agent_address = '127.0.0.1:8000'
-    headers = {'Content-Type': 'application/json'}
     deploy_host_url = "http://{}/deploy-host".format(agent_address)
-    resp = requests.post(deploy_host_url, data=json.dumps({'value': server_port}), headers=headers)
+    resp = requests.post(deploy_host_url,
+                         data=json.dumps({'value': server_port}),
+                         headers=REQ_HEADERS)
     if resp.status_code == 200:
         msg = json.loads(resp.content)
-        container_id = msg['value']
-        instance = Instance(server_port=server_port,
-                            status=False,
-                            container_id=container_id)
-        instance.save()
-        return JsonResponse({'status': 200})
+        if msg['code'] == RespCode.SUCCESS_CODE.value:
+            container_id = msg['msg']
+            instance = Instance(server_port=server_port,
+                                status=False,
+                                container_id=container_id)
+            instance.save()
+            return JsonResponse({'status': 200})
+        else:
+            return JsonResponse({'status': 500, 'msg': msg['msg']})
     else:
         return JsonResponse({'status': 500})
 
@@ -92,9 +99,24 @@ def stop_host(request):
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     agent_address = '127.0.0.1:8000'
-    headers = {'Content-Type': 'application/json'}
     deploy_host_url = "http://{}/stop-host".format(agent_address)
-    resp = requests.post(deploy_host_url, data=json.dumps({'value': server_port}), headers=headers)
+    resp = requests.post(deploy_host_url,
+                         data=json.dumps({'value': container_id}),
+                         headers=REQ_HEADERS)
+    if resp.status_code == 200:
+        msg = json.loads(resp.content)
+        if msg['code'] == RespCode.SUCCESS_CODE.value:
+            # stop success
+            pass
+
+        else:
+            # stop failure
+            pass
+    else:
+        pass
+
+
+
 
 
 # get deploy host info
