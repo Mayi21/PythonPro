@@ -154,14 +154,14 @@ def del_host(request):
 
 # get deploy host info
 def get_deploy_host_func(request):
-    online_hosts = DeployHost.objects.filter(status=DeployHostStatus.ONLINE.value)
+    online_hosts = DeployHost.objects.all()
     instances = []
     for host in online_hosts:
         instance = {
             "id": host.container_id,
             "ip": host.ip,
             "server_port": host.port,
-            "hostname": host.host_name,
+            "status": host.status,
         }
         instances.append(instance)
     serialized_instances = json.dumps(instances)  # 将非字典对象序列化为 JSON 格式的字符串
