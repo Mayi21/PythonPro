@@ -115,6 +115,28 @@ def stop_host(request):
     else:
         pass
 
+# delete host
+def del_host(request):
+    container_id = request.POST.get('id')
+    if not container_id:
+        return JsonResponse({'status': 500, "msg": "container id is empty"})
+    agent_address = '127.0.0.1:8000'
+    deploy_host_url = "http://{}/del-host".format(agent_address)
+    resp = requests.post(deploy_host_url,
+                         data=json.dumps({'value': container_id}),
+                         headers=REQ_HEADERS)
+    if resp.status_code == 200:
+        msg = json.loads(resp.content)
+        if msg['code'] == RespCode.SUCCESS_CODE.value:
+            # stop success
+            pass
+
+        else:
+            # stop failure
+            pass
+    else:
+        pass
+
 
 
 
