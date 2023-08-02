@@ -63,8 +63,8 @@ def test_generate_fake_date():
 ## 1. select max port of online container then plus one
 ## 2. random generate and select by port if status eq false or not record
 def __get_not_use_port():
-    online_server_ports = (Instance.objects.filter(status=True)
-                           .values_list('server_port', flat=True))
+    online_server_ports = (DeployHost.objects.filter(status=DeployHostStatus.ONLINE.value)
+                           .values_list('port', flat=True))
 
     online_server_ports = set(online_server_ports)
     server_port = random.randint(49152, 65535)
@@ -73,7 +73,8 @@ def __get_not_use_port():
     return server_port
 
 def deploy_host():
-    server_port = __get_not_use_port()
+    server_port = str(__get_not_use_port())
+    print(server_port)
     # TODO get host agent address
     agent_address = '127.0.0.1:8000'
     deploy_host_url = "http://{}/deploy-host".format(agent_address)
@@ -85,11 +86,10 @@ def deploy_host():
         if msg['code'] == RespCode.SUCCESS_CODE.value:
             result = json.loads(msg['msg'])
             container_id = result['container_id']
-            container_ip = result['container_ip']
+            container_ip = result['ip']
             deploy_host_model: DeployHost = DeployHost(container_id=container_id,
                                   ip=container_ip,
-                                  port=server_port,
-                                  status=False)
+                                  port=server_port)
             deploy_host_model.save()
             return JsonResponse({'status': 200})
         else:
@@ -98,7 +98,7 @@ def deploy_host():
         return JsonResponse({'status': 500})
 
 def stop_host(request):
-    container_id = request.POST.get('id')
+    container_id = json.loads(request.body)['id']
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     agent_address = '127.0.0.1:8000'
@@ -110,8 +110,9 @@ def stop_host(request):
         msg = json.loads(resp.content)
         if msg['code'] == RespCode.SUCCESS_CODE.value:
             # stop success
-            deploy_host_model = DeployHost.objects.filter(container_id=container_id)
-            deploy_host_model.stauts = DeployHostStatus.STOP.value
+            print("stop {} success".format(container_id))
+            deploy_host_model = DeployHost.objects.get(container_id=container_id)
+            deploy_host_model.status = DeployHostStatus.STOP.value
             deploy_host_model.save()
             return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
@@ -122,7 +123,7 @@ def stop_host(request):
 
 # delete host
 def del_host(request):
-    container_id = request.POST.get('id')
+    container_id = json.loads(request.body)['id']
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     agent_address = '127.0.0.1:8000'
@@ -130,12 +131,15 @@ def del_host(request):
     resp = requests.post(deploy_host_url,
                          data=json.dumps({'value': container_id}),
                          headers=REQ_HEADERS)
+    print(resp.content)
     if resp.status_code == 200:
         msg = json.loads(resp.content)
+        print(msg)
         if msg['code'] == RespCode.SUCCESS_CODE.value:
             # stop success
-            deploy_host_model = DeployHost.objects.filter(container_id=container_id)
-            deploy_host_model.stauts = DeployHostStatus.OFFLINE.value
+            print(msg)
+            deploy_host_model = DeployHost.objects.get(container_id=container_id)
+            deploy_host_model.status = DeployHostStatus.OFFLINE.value
             deploy_host_model.save()
             return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
