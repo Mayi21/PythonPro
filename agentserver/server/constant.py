@@ -18,3 +18,11 @@ class DeployHostStatus(Enum):
     ONLINE = "ONLINE"
     OFFLINE = "OFFLINE"
     STOP = "STOP"
+
+class HostType(Enum):
+    VM = "VM"
+    PM = "PM"
+
+class HostInfo(Enum):
+    pass
+
