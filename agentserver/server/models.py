@@ -61,3 +61,15 @@ class InstanceMetric(models.Model):
 
     class Meta:
         db_table = 'instance_metrics'
+
+class HostRegisterInfo(models.Model):
+    id = models.AutoField(primary_key=True)
+    host_type = models.CharField(max_length=2)
+    vm_ip = models.CharField(max_length=15)
+    pm_ip = models.CharField(max_length=15)
+    port = models.CharField(max_length=5)
+    create_time = models.DateTimeField(auto_now=True)
+    update_time = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'host_register_info'
