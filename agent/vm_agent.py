@@ -3,13 +3,13 @@ import subprocess
 
 from fastapi import UploadFile, File
 from fastapi import Request
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 
+from models import *
 from utils import __exec_cmd
 from constant import InstanceEnv
 import socket
@@ -30,10 +30,6 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
-class Cmd(BaseModel):
-    name: str
-    description: str
-    value: str
 
 # health api
 @app.get("/health")

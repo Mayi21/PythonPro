@@ -11,6 +11,7 @@ from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 
+from models import *
 from resp import Response
 from utils import __exec_cmd
 from constant import InstanceEnv, RespCode, DockerCMD
@@ -31,16 +32,7 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
-class Cmd(BaseModel):
-    name: str
-    description: str
-    value: str
 
-class ContainerId(BaseModel):
-    value: str
-
-class PortItem(BaseModel):
-    value: str
 
 # health api
 @app.get("/health")
