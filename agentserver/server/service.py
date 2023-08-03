@@ -168,6 +168,42 @@ def get_deploy_host_func(request):
     return JsonResponse(serialized_instances, safe=False)  # 设置
 
 
+# receive init register info include host and vm
+def register_info_collect(request):
+    info = json.loads(request.body)
+    """
+    info: dict
+        type: pm or vm
+        vm_ip:
+        pm_ip:
+        port:
+    """
+    try:
+        if info['type'] == HostType.VM.value:
+            vm_ip = info['vm_ip']
+            pm_ip = info['pm_ip']
+            port = info['port']
+        else:
+            vm_ip = None
+            pm_ip = info['pm_ip']
+            port = info['port']
+
+        host_register_info = HostRegisterInfo(host_type=info['type'],
+                                             vm_ip=vm_ip,
+                                             pm_ip=pm_ip,
+                                             port=port)
+        host_register_info.save()
+        return JsonResponse({'status': 200,
+                             'msg': "register success"})
+    except Exception as e:
+        return JsonResponse({'status': 500,
+                             'msg': "register error, cause {}".format(str(e))})
+
+
+
+
+
+
 
 
 

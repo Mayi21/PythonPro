@@ -63,3 +63,6 @@ def make_fake_data(request):
     thread.start()
     return JsonResponse({'status': "success"})
 
+def register_info_func(request):
+    return register_info_collect(request)
+

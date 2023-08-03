@@ -29,5 +29,6 @@ urlpatterns = [
     path('stop-host/', views.stop_host_func, name='stop_host'),
     path('del-host/', views.del_host_func, name='del_host'),
     path('host-manage/', views.host_management_page, name='host_manage_page'),
-    path('get-host-info/', views.get_deploy_host_info_info, name='get_host_info')
+    path('get-host-info/', views.get_deploy_host_info_info, name='get_host_info'),
+    path('register-info/', )
 ]
