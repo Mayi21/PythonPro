@@ -9,6 +9,7 @@ from django.views.decorators.csrf import csrf_exempt
 
 from .service import *
 
+
 # index page
 def index(request):
     return render(request, "index.html", {})
@@ -19,14 +20,15 @@ def index(request):
 def get_cmd_res(request):
     return get_command_res(request)
 
+
 @csrf_exempt
 def get_instance_metric(request):
     return get_instance_metrics(request)
 
+
 # get upload page view
 def upload_plugin_page(reuqest):
     return render(reuqest, "UploadPlugin.html", {})
-
 
 
 # deploy host
@@ -34,10 +36,12 @@ def upload_plugin_page(reuqest):
 def deploy_host_func(request):
     return deploy_host()
 
+
 # stop host
 @csrf_exempt
 def stop_host_func(request):
     return stop_host(request)
+
 
 # delete host
 @csrf_exempt
@@ -45,17 +49,14 @@ def del_host_func(request):
     return del_host(request)
 
 
-
 # host manage page
 def host_management_page(request):
     return render(request, "DeployHost.html", {})
 
+
 # get deploy host info
 def get_deploy_host_info_info(request):
     return get_deploy_host_func(request)
-
-
-
 
 
 def make_fake_data(request):
@@ -63,6 +64,6 @@ def make_fake_data(request):
     thread.start()
     return JsonResponse({'status': "success"})
 
+
 def register_info_func(request):
     return register_info_collect(request)
-
