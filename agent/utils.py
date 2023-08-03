@@ -2,7 +2,7 @@ import json
 import os
 import subprocess
 
-from agent.constant import RequestInfo
+from constant import RequestInfo
 
 
 def __exec_cmd(cmd):

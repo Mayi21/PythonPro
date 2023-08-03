@@ -48,12 +48,14 @@ def register_info():
     config = get_config()
     server = config['server']
     pm_ip = config['pm_ip']
+    host_type = config['type']
     # 获取本机计算机名称
     hostname = socket.gethostname()
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
     deploy_host_url = "http://{}/register-info/".format(server)
     data = {
+        'type': host_type,
         'vm_ip': ip,
         'pm_ip': pm_ip,
     }
