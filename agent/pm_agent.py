@@ -123,5 +123,5 @@ async def del_host(container_id: ContainerId):
 
 
 if __name__ == '__main__':
-    os.system('uvicorn host_agent:app --reload')
+    os.system('uvicorn pm_agent:app --reload')
 

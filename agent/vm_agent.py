@@ -75,5 +75,5 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
 
 
 if __name__ == '__main__':
-    os.system('uvicorn agent_server:app --reload')
+    os.system('uvicorn vm_agent:app --reload')
 
