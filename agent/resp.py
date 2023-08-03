@@ -1,10 +1,10 @@
-from constant import RespCode
+from constant import RequestInfo
 
 
 class Response:
-    code: RespCode
+    code: RequestInfo
     msg: str
 
-    def __init__(self, code: RespCode.SUCCESS_CODE, msg: str):
+    def __init__(self, code: RequestInfo.SUCCESS_CODE, msg: str):
         self.code = code
         self.msg = msg

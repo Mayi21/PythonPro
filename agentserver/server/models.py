@@ -67,7 +67,6 @@ class HostRegisterInfo(models.Model):
     host_type = models.CharField(max_length=2)
     vm_ip = models.CharField(max_length=15)
     pm_ip = models.CharField(max_length=15)
-    port = models.CharField(max_length=5)
     create_time = models.DateTimeField(auto_now=True)
     update_time = models.DateTimeField(auto_now=True)
 

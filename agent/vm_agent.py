@@ -1,6 +1,7 @@
 import os
 import subprocess
 
+import requests
 from fastapi import UploadFile, File
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -9,8 +10,9 @@ from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 
-from models import *
 from utils import __exec_cmd
+from models import *
+from utils import *
 from constant import InstanceEnv
 import socket
 
@@ -40,6 +42,33 @@ async def get_info():
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
     return {"status": 200, "hostname": hostname, "ip": ip}
+
+@app.on_event("startup")
+def register_info():
+    config = get_config()
+    server = config['server']
+    pm_ip = config['pm_ip']
+    # 获取本机计算机名称
+    hostname = socket.gethostname()
+    # 获取本机ip
+    ip = socket.gethostbyname(hostname)
+    deploy_host_url = "http://{}/register-info/".format(server)
+    data = {
+        'vm_ip': ip,
+        'pm_ip': pm_ip,
+    }
+    resp = requests.post(deploy_host_url,
+                         data=json.dumps(data),
+                         headers=RequestInfo.REQ_HEADERS.value)
+    if resp.status_code == 200 and json.loads(resp.content)['status'] == 200:
+        print("register success")
+    elif resp.status_code == 200:
+        print(json.loads(resp.content)['msg'])
+    else:
+        print("network error")
+
+
+
 
 # execute shell command
 @app.post("/cmd")

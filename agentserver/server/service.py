@@ -176,22 +176,18 @@ def register_info_collect(request):
         type: pm or vm
         vm_ip:
         pm_ip:
-        port:
     """
     try:
         if info['type'] == HostType.VM.value:
             vm_ip = info['vm_ip']
             pm_ip = info['pm_ip']
-            port = info['port']
         else:
             vm_ip = None
             pm_ip = info['pm_ip']
-            port = info['port']
 
         host_register_info = HostRegisterInfo(host_type=info['type'],
                                              vm_ip=vm_ip,
-                                             pm_ip=pm_ip,
-                                             port=port)
+                                             pm_ip=pm_ip)
         host_register_info.save()
         return JsonResponse({'status': 200,
                              'msg': "register success"})

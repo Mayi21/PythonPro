@@ -1,5 +1,8 @@
+import json
 import os
 import subprocess
+
+from agent.constant import RequestInfo
 
 
 def __exec_cmd(cmd):
@@ -11,16 +14,28 @@ def __exec_cmd(cmd):
     except Exception as e:
         return {"result": str(e)}
 
+
 def check_shell_file(file_name):
-
-
     pass
 
-def main():
-    file_name = "test.sh"
-    print(file_name.endswith(".sh"))
-    os.system("ll")
+
+def get_config():
+    with open('config.json') as f:
+        config = json.load(f)
+    return config
+
+
+class HttpUtil():
+    def __init__(self, url):
+        self.url = url
+        pass
+
+    def post(self, data, headers: RequestInfo.REQ_HEADERS):
+        pass
+
+    def get(self):
+        pass
 
 
 if __name__ == '__main__':
-    main()
+    print(get_config())

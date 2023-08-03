@@ -14,7 +14,7 @@ from slowapi.util import get_remote_address
 from models import *
 from resp import Response
 from utils import __exec_cmd
-from constant import InstanceEnv, RespCode, DockerCMD
+from constant import InstanceEnv, RequestInfo, DockerCMD
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -80,11 +80,11 @@ async def deploy_host(port: PortItem):
                                                                port,
                                                                port))
     if len(out['result']) != 64:
-        return Response(RespCode.INTERNAL_ERROR,
+        return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
     container_ip = __exec_cmd('{} {}'.format(DockerCMD.GET_IP.value,
                                              out['result']))
-    return Response(RespCode.SUCCESS_CODE,
+    return Response(RequestInfo.SUCCESS_CODE,
                     msg=json.dumps({'container_id': out['result'],
                                     'ip': container_ip['result']}))
 
@@ -95,9 +95,9 @@ async def stop_host(container_id: ContainerId):
     out = __exec_cmd('{} {}'.format(DockerCMD.STOP_VM.value,
                                     container_id))
     if len(out['result']) != len(container_id):
-        return Response(RespCode.INTERNAL_ERROR,
+        return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
-    return Response(RespCode.SUCCESS_CODE,
+    return Response(RequestInfo.SUCCESS_CODE,
                     msg=out['result'])
 
 # delete host
@@ -107,9 +107,9 @@ async def del_host(container_id: ContainerId):
     out = __exec_cmd('{} {}'.format(DockerCMD.DEL_VM.value,
                                     container_id))
     if len(out['result']) != len(container_id):
-        return Response(RespCode.INTERNAL_ERROR,
+        return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
-    return Response(RespCode.SUCCESS_CODE,
+    return Response(RequestInfo.SUCCESS_CODE,
                     msg=out['result'])
 
 

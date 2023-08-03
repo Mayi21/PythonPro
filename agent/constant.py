@@ -10,9 +10,12 @@ class InstanceEnv(Enum):
     PLUGIN_SCRIPT_PATH = "/opt/plugin"
     PLUGIN_TEMP_PATH = '/tmp'
 
-class RespCode(Enum):
+
+class RequestInfo(Enum):
     SUCCESS_CODE = "200"
     INTERNAL_ERROR = "500"
+    REQ_HEADERS = {'Content-Type': 'application/json'}
+
 
 class DockerCMD(Enum):
     PULL_VM = ""
