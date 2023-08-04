@@ -30,23 +30,22 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 
-
-
 # health api
 @app.get("/health")
 async def get_info():
     import socket
-
     # 获取本机计算机名称
     hostname = socket.gethostname()
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
     return {"status": 200, "hostname": hostname, "ip": ip}
 
+
 # execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
     return __exec_cmd(command.value)
+
 
 # execute shell script
 @app.get("/exec-shell")
@@ -54,10 +53,11 @@ async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)
 
+
 # upload shell script
 @app.post('/uploadfiles')
 @limiter.limit("10/second")
-async def upload_shell_file(request: Request, file: UploadFile=File(...)):
+async def upload_shell_file(request: Request, file: UploadFile = File(...)):
     # need a front page that
     file_data = file.file.read()
     if file.size / 1024 >= 1024:
@@ -69,6 +69,7 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
     with open(des_file, 'wb') as f:
         f.write(file_data)
     return {"success": file.filename}
+
 
 # run container
 @app.post("/deploy-host")
@@ -86,6 +87,7 @@ async def deploy_host(port: PortItem):
                     msg=json.dumps({'container_id': out['result'],
                                     'ip': container_ip['result']}))
 
+
 # stop host
 @app.post("/stop-host")
 async def stop_host(container_id: ContainerId):
@@ -97,6 +99,7 @@ async def stop_host(container_id: ContainerId):
                         msg="deploy host fail, cause by {}".format(out['result']))
     return Response(RequestInfo.SUCCESS_CODE,
                     msg=out['result'])
+
 
 # delete host
 @app.post('/del-host')
@@ -111,7 +114,5 @@ async def del_host(container_id: ContainerId):
                     msg=out['result'])
 
 
-
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')
-
