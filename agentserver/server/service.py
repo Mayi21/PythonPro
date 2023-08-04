@@ -5,11 +5,14 @@ import time
 
 import requests
 from django.http import JsonResponse
+from utils import HttpUtil
 
 from .models import *
-from .constant import *
+from constant import *
 
 REQ_HEADERS = {'Content-Type': 'application/json'}
+
+req_util = HttpUtil()
 
 
 # input command and get execute result
@@ -90,16 +93,15 @@ def __get_not_use_port():
 
 def deploy_host():
     server_port = str(__get_not_use_port())
-    print(server_port)
     # TODO get host agent address
-    agent_address = '127.0.0.1:8000'
-    deploy_host_url = "http://{}/deploy-host".format(agent_address)
-    resp = requests.post(deploy_host_url,
-                         data=json.dumps({'value': server_port}),
-                         headers=REQ_HEADERS)
+    agent_address = __get_pm_agent_address("")
+    deploy_host_url = "/deploy-host".format(agent_address)
+    resp = req_util.req(RequestInfo.METHOD_POST,
+                        deploy_host_url,
+                        {'value': server_port})
     if resp.status_code == 200:
         msg = json.loads(resp.content)
-        if msg['code'] == RespCode.SUCCESS_CODE.value:
+        if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             result = json.loads(msg['msg'])
             container_id = result['container_id']
             container_ip = result['ip']
@@ -118,14 +120,14 @@ def stop_host(request):
     container_id = json.loads(request.body)['id']
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
-    agent_address = '127.0.0.1:8000'
-    deploy_host_url = "http://{}/stop-host".format(agent_address)
-    resp = requests.post(deploy_host_url,
-                         data=json.dumps({'value': container_id}),
-                         headers=REQ_HEADERS)
+    agent_address = __get_pm_agent_address("")
+    stop_host_url = "/stop-host".format(agent_address)
+    resp = req_util.req(RequestInfo.METHOD_POST,
+                        stop_host_url,
+                        {'value': container_id})
     if resp.status_code == 200:
         msg = json.loads(resp.content)
-        if msg['code'] == RespCode.SUCCESS_CODE.value:
+        if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             # stop success
             print("stop {} success".format(container_id))
             deploy_host_model = DeployHost.objects.get(container_id=container_id)
@@ -144,18 +146,16 @@ def del_host(request):
     container_id = json.loads(request.body)['id']
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
-    agent_address = '127.0.0.1:8000'
-    deploy_host_url = "http://{}/del-host".format(agent_address)
-    resp = requests.post(deploy_host_url,
-                         data=json.dumps({'value': container_id}),
-                         headers=REQ_HEADERS)
-    print(resp.content)
+    # todo
+    agent_address = __get_pm_agent_address("")
+    del_host_url = "/del-host".format(agent_address)
+    resp = req_util.req(RequestInfo.METHOD_DELETE,
+                         del_host_url,
+                    {'value': container_id})
     if resp.status_code == 200:
         msg = json.loads(resp.content)
-        print(msg)
-        if msg['code'] == RespCode.SUCCESS_CODE.value:
+        if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             # stop success
-            print(msg)
             deploy_host_model = DeployHost.objects.get(container_id=container_id)
             deploy_host_model.status = DeployHostStatus.OFFLINE.value
             deploy_host_model.save()
@@ -165,6 +165,15 @@ def del_host(request):
             return JsonResponse({'status': 500, 'msg': msg['msg']})
     else:
         return JsonResponse({'status': 500, 'msg': resp.content})
+
+
+# TODO need design a table about pm and vm info
+def __get_pm_agent_address(vm_agent_info):
+    vm_id = vm_agent_info['']
+    vm_ip = vm_agent_info['']
+
+    return "http://{}:{}".format("xx", "xxx")
+
 
 
 # get deploy host info

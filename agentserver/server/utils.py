@@ -1,5 +1,4 @@
 import json
-import os
 import subprocess
 
 import requests
@@ -56,12 +55,12 @@ class HttpUtil:
                                headers=headers)
         return resp
 
-    def req(self, method: str, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
-        if method == RequestInfo.METHOD_GET.value:
+    def req(self, method, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
+        if method == RequestInfo.METHOD_GET:
             return self.__get(url=url, data=data, params=params, headers=headers)
-        elif method == RequestInfo.METHOD_PUT.value:
+        elif method == RequestInfo.METHOD_PUT:
             return self.__put(url=url, data=data, params=params, headers=headers)
-        elif method == RequestInfo.METHOD_POST.value:
+        elif method == RequestInfo.METHOD_POST:
             return self.__post(url=url, data=data, headers=headers)
         else:
             return self.__delete(url=url, data=data, params=params, headers=headers)

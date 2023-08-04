@@ -102,7 +102,7 @@ async def stop_host(container_id: ContainerId):
 
 
 # delete host
-@app.post('/del-host')
+@app.delete('/del-host')
 async def del_host(container_id: ContainerId):
     container_id = container_id.value
     out = __exec_cmd('{} {}'.format(DockerCMD.DEL_VM.value,

@@ -64,6 +64,7 @@ def make_fake_data(request):
     thread.start()
     return JsonResponse({'status': "success"})
 
+
 @csrf_exempt
 def register_info_func(request):
     return register_info_collect(request)
