@@ -1,10 +1,8 @@
 import json
 import os
-import subprocess
 
 from fastapi import UploadFile, File
 from fastapi import Request
-from pydantic import BaseModel
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded

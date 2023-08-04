@@ -57,6 +57,7 @@ class HttpUtil:
         return resp
 
     def req(self, method: str, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
+        data = json.dumps(data)
         if method == RequestInfo.METHOD_GET.value:
             return self.__get(url=url, data=data, params=params, headers=headers)
         elif method == RequestInfo.METHOD_PUT.value:

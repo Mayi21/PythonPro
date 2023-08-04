@@ -1,7 +1,3 @@
-import os
-import subprocess
-
-import requests
 from fastapi import UploadFile, File
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -31,17 +27,17 @@ app.add_middleware(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-
+req_util = HttpUtil()
 
 # health api
 @app.get("/health")
 async def get_info():
-
     # 获取本机计算机名称
     hostname = socket.gethostname()
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
     return {"status": 200, "hostname": hostname, "ip": ip}
+
 
 @app.on_event("startup")
 def register_info():
@@ -59,9 +55,10 @@ def register_info():
         'vm_ip': ip,
         'pm_ip': pm_ip,
     }
-    resp = requests.post(deploy_host_url,
-                         data=json.dumps(data),
-                         headers=RequestInfo.REQ_HEADERS.value)
+    resp = req_util.req(RequestInfo.METHOD_POST,
+                        deploy_host_url,
+                        data)
+
     if resp.status_code == 200 and json.loads(resp.content)['status'] == 200:
         print("register success")
     elif resp.status_code == 200:
@@ -70,12 +67,11 @@ def register_info():
         print("network error")
 
 
-
-
 # execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
     return __exec_cmd(command.value)['result']
+
 
 # execute shell script
 @app.get("/exec-shell")
@@ -83,10 +79,11 @@ async def execute_shell_file(file_name: str):
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)['result']
 
+
 # upload shell script
 @app.post('/uploadfiles')
 @limiter.limit("10/second")
-async def upload_shell_file(request: Request, file: UploadFile=File(...)):
+async def upload_shell_file(request: Request, file: UploadFile = File(...)):
     # need a front page that
     file_data = file.file.read()
     if file.size / 1024 >= 1024:
@@ -100,7 +97,5 @@ async def upload_shell_file(request: Request, file: UploadFile=File(...)):
     return {"success": file.filename}
 
 
-
 if __name__ == '__main__':
     os.system('uvicorn vm_agent:app --reload')
-
