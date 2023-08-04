@@ -2,6 +2,8 @@ import json
 import os
 import subprocess
 
+import requests
+
 from constant import RequestInfo
 
 
@@ -25,16 +27,47 @@ def get_config():
     return config
 
 
-class HttpUtil():
-    def __init__(self, url):
-        self.url = url
-        pass
+class HttpUtil:
 
-    def post(self, data, headers: RequestInfo.REQ_HEADERS):
-        pass
+    def __post(self, url, data, headers):
+        resp = requests.post(url=url,
+                             data=data,
+                             headers=headers)
+        return resp
 
-    def get(self):
-        pass
+
+    def __get(self, url, data, params, headers):
+        resp = requests.get(url=url,
+                            data=data,
+                            params=params,
+                            headers=headers)
+        return resp
+
+    def __put(self, url, data, params, headers):
+        resp = requests.put(url=url,
+                            data=data,
+                            params=params,
+                            headers=headers)
+        return resp
+
+
+    def __delete(self, url, data, params, headers):
+        resp = requests.delete(url=url,
+                               params=params,
+                               data=data,
+                               headers=headers)
+        return resp
+
+    def req(self, method: str, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
+        if method == RequestInfo.METHOD_GET.value:
+            return self.__get(url=url, data=data, params=params, headers=headers)
+        elif method == RequestInfo.METHOD_PUT.value:
+            return self.__put(url=url, data=data, params=params, headers=headers)
+        elif method == RequestInfo.METHOD_POST.value:
+            return self.__post(url=url, data=data, headers=headers)
+        else:
+            return self.__delete(url=url, data=data, params=params, headers=headers)
+
 
 
 if __name__ == '__main__':
