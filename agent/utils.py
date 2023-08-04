@@ -7,6 +7,7 @@ import requests
 from constant import RequestInfo
 
 
+# execute shell command
 def __exec_cmd(cmd):
     try:
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
