@@ -27,3 +27,5 @@ class DockerCMD(Enum):
     STOP_VM = "docker stop"
     DEL_VM = "docker container rm"
     GET_IP = "docker inspect -f \'{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}\'"
+    GET_RUNNING_VM = "docker ps"
+    GET_VM_PORT = "docker port"

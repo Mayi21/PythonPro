@@ -114,5 +114,23 @@ async def del_host(container_id: ContainerId):
                     msg=out['result'])
 
 
+def sync_vm_info():
+    out = __exec_cmd(DockerCMD.GET_RUNNING_VM.value)['result']
+    out = out.split("\n")
+    if len(out) == 1:
+        return
+    vm_infos = []
+    for info in out[1:]:
+        id = info[:12]
+        out = __exec_cmd("{} {}".format(DockerCMD.GET_VM_PORT.value,
+                                  id))['result']
+        port = out.split("->")[-1].split(":")[-1]
+        vm_infos.append({'id': id,
+                         'port': port})
+
+    return vm_infos
+
+
+
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')
