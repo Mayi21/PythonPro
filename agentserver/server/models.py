@@ -46,6 +46,7 @@ class HostStatusRecord(models.Model):
     ip = models.CharField(max_length=15)
     port = models.CharField(max_length=6)
     vm_name = models.CharField(max_length=100)
+    status = models.CharField(max_length=10)
     create_time = models.DateTimeField(auto_now=True)
     pm_ip = models.CharField(max_length=15)
     pm_port = models.CharField(max_length=5)
