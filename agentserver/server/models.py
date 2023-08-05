@@ -27,28 +27,31 @@ class Instance(models.Model):
     container_id = models.CharField(max_length=64)
     last_update_time = models.DateTimeField(auto_now=True)
 
-class DeployHost(models.Model):
-    """
-    deploy host table
-
-    container_id: container id
-    port: expose port
-    create_time: container create time
-    update_time: container update time
-
-    """
+class DeployHostRecord(models.Model):
     id = models.AutoField(primary_key=True)
-    container_id = models.CharField(max_length=64)
+    vm_id = models.CharField(max_length=64)
     ip = models.CharField(max_length=15)
     port = models.CharField(max_length=6)
+    vm_name = models.CharField(max_length=100)
     create_time = models.DateTimeField(auto_now=True)
-    update_time = models.DateTimeField(auto_now=True)
-    # online, offline, stop, exception
-    status = models.CharField(max_length=15, default="ONLINE")
-    host_name = models.CharField(max_length=100)
+    pm_ip = models.CharField(max_length=15)
+    pm_port = models.CharField(max_length=5)
 
     class Meta:
-        db_table = 'deploy_host'
+        db_table = 'deploy_host_record'
+
+class HostStatusRecord(models.Model):
+    id = models.AutoField(primary_key=True)
+    vm_id = models.CharField(max_length=64)
+    ip = models.CharField(max_length=15)
+    port = models.CharField(max_length=6)
+    vm_name = models.CharField(max_length=100)
+    create_time = models.DateTimeField(auto_now=True)
+    pm_ip = models.CharField(max_length=15)
+    pm_port = models.CharField(max_length=5)
+
+    class Meta:
+        db_table = 'host_status_record'
 
 
 # include disk usage and cpu usage every 10 seconds
