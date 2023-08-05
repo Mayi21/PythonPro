@@ -5,10 +5,10 @@ import time
 
 import requests
 from django.http import JsonResponse
-from utils import HttpUtil
+from .utils import HttpUtil
 
 from .models import *
-from constant import *
+from .constant import *
 
 REQ_HEADERS = {'Content-Type': 'application/json'}
 
@@ -95,7 +95,7 @@ def deploy_host():
     server_port = str(__get_not_use_port())
     # TODO get host agent address
     agent_address = __get_pm_agent_address("")
-    deploy_host_url = "/deploy-host".format(agent_address)
+    deploy_host_url = "{}/deploy-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
                         {'value': server_port})
@@ -121,7 +121,7 @@ def stop_host(request):
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     agent_address = __get_pm_agent_address("")
-    stop_host_url = "/stop-host".format(agent_address)
+    stop_host_url = "{}/stop-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         stop_host_url,
                         {'value': container_id})
@@ -138,7 +138,7 @@ def stop_host(request):
             # stop failure
             return JsonResponse({'status': 500, 'msg': msg['msg']})
     else:
-        return JsonResponse({'status': 500, 'msg': resp.content})
+        return JsonResponse({'status': 500, 'msg': str(resp.content)})
 
 
 # delete host
@@ -148,7 +148,7 @@ def del_host(request):
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     # todo
     agent_address = __get_pm_agent_address("")
-    del_host_url = "/del-host".format(agent_address)
+    del_host_url = "{}/del-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_DELETE,
                          del_host_url,
                     {'value': container_id})
@@ -169,10 +169,13 @@ def del_host(request):
 
 # TODO need design a table about pm and vm info
 def __get_pm_agent_address(vm_agent_info):
-    vm_id = vm_agent_info['']
-    vm_ip = vm_agent_info['']
+    # vm_id = vm_agent_info['']
+    # vm_id = vm_agent_info['']
+    # vm_ip = vm_agent_info['']
+    pm_ip = "127.0.0.1"
+    pm_port = "8000"
 
-    return "http://{}:{}".format("xx", "xxx")
+    return "http://{}:{}".format(pm_ip, pm_port)
 
 
 
@@ -189,6 +192,7 @@ def get_deploy_host_func(request):
         }
         instances.append(instance)
     serialized_instances = json.dumps(instances)  # 将非字典对象序列化为 JSON 格式的字符串
+    print(serialized_instances)
     return JsonResponse(serialized_instances, safe=False)  # 设置
 
 

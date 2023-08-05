@@ -3,7 +3,7 @@ import subprocess
 
 import requests
 
-from constant import RequestInfo
+from .constant import RequestInfo
 
 
 def __exec_cmd(cmd):
@@ -55,7 +55,8 @@ class HttpUtil:
                                headers=headers)
         return resp
 
-    def req(self, method, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
+    def req(self, method, url: str, data, params=None, headers=RequestInfo.REQ_HEADERS.value):
+        data = json.dumps(data)
         if method == RequestInfo.METHOD_GET:
             return self.__get(url=url, data=data, params=params, headers=headers)
         elif method == RequestInfo.METHOD_PUT:
