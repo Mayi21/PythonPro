@@ -27,6 +27,10 @@ def get_config():
         config = json.load(f)
     return config
 
+class LogUtil:
+    pass
+
+
 
 class HttpUtil:
 
