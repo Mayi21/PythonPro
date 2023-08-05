@@ -81,7 +81,13 @@ def test_generate_fake_date():
 ## 1. select max port of online container then plus one
 ## 2. random generate and select by port if status eq false or not record
 def __get_not_use_port():
-    online_server_ports = (DeployHost.objects.filter(status=DeployHostStatus.ONLINE.value)
+    # 1. get have resource pm
+    # 2. get ip from pm that not use
+    # TODO default pm 127.0.0.1:8000, max number of host is 10
+
+    pm_ip, pm_port, _ = __get_pm_info("")
+    online_server_ports = (HostStatusRecord.objects.exclude(status=DeployHostStatus.OFFLINE.value)
+                           .filter(pm_ip=pm_ip, pm_port=pm_port)
                            .values_list('port', flat=True))
 
     online_server_ports = set(online_server_ports)
@@ -94,7 +100,7 @@ def __get_not_use_port():
 def deploy_host():
     server_port = str(__get_not_use_port())
     # TODO get host agent address
-    agent_address = __get_pm_agent_address("")
+    pm_ip, pm_port, agent_address = __get_pm_info("")
     deploy_host_url = "{}/deploy-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
@@ -103,12 +109,14 @@ def deploy_host():
         msg = json.loads(resp.content)
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             result = json.loads(msg['msg'])
-            container_id = result['container_id']
-            container_ip = result['ip']
-            deploy_host_model: DeployHost = DeployHost(container_id=container_id,
-                                                       ip=container_ip,
-                                                       port=server_port)
-            deploy_host_model.save()
+            vm_id = result['container_id']
+            vm_ip = result['ip']
+            deploy_host_record: DeployHostRecord = DeployHostRecord(vm_id=vm_id,
+                                                                   ip=vm_ip,
+                                                                   port=server_port,
+                                                                   pm_ip=pm_ip,
+                                                                   pm_port=pm_port)
+            deploy_host_record.save()
             return JsonResponse({'status': 200})
         else:
             return JsonResponse({'status': 500, 'msg': msg['msg']})
@@ -120,7 +128,7 @@ def stop_host(request):
     container_id = json.loads(request.body)['id']
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
-    agent_address = __get_pm_agent_address("")
+    pm_ip, pm_port, agent_address = __get_pm_info("")
     stop_host_url = "{}/stop-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         stop_host_url,
@@ -130,9 +138,9 @@ def stop_host(request):
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             # stop success
             print("stop {} success".format(container_id))
-            deploy_host_model = DeployHost.objects.get(container_id=container_id)
-            deploy_host_model.status = DeployHostStatus.STOP.value
-            deploy_host_model.save()
+            host_status_record = HostStatusRecord.objects.get(vm_id=container_id)
+            host_status_record.status = DeployHostStatus.STOP.value
+            host_status_record.save()
             return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
             # stop failure
@@ -147,7 +155,7 @@ def del_host(request):
     if not container_id:
         return JsonResponse({'status': 500, "msg": "container id is empty"})
     # todo
-    agent_address = __get_pm_agent_address("")
+    pm_ip, pm_port, agent_address = __get_pm_info("")
     del_host_url = "{}/del-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_DELETE,
                         del_host_url,
@@ -156,9 +164,9 @@ def del_host(request):
         msg = json.loads(resp.content)
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             # stop success
-            deploy_host_model = DeployHost.objects.get(container_id=container_id)
-            deploy_host_model.status = DeployHostStatus.OFFLINE.value
-            deploy_host_model.save()
+            host_status_record = HostStatusRecord.objects.get(vm_id=container_id)
+            host_status_record.status = DeployHostStatus.OFFLINE.value
+            host_status_record.save()
             return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
             # stop failure
@@ -168,23 +176,22 @@ def del_host(request):
 
 
 # TODO need design a table about pm and vm info
-def __get_pm_agent_address(vm_agent_info):
+def __get_pm_info(vm_agent_info):
     # vm_id = vm_agent_info['']
     # vm_id = vm_agent_info['']
     # vm_ip = vm_agent_info['']
     pm_ip = "127.0.0.1"
     pm_port = "8000"
 
-    return "http://{}:{}".format(pm_ip, pm_port)
-
+    return pm_ip, pm_port, "http://{}:{}".format(pm_ip, pm_port)
 
 # get deploy host info
 def get_deploy_host_func(request):
-    online_hosts = DeployHost.objects.all()
+    online_hosts = HostStatusRecord.objects.all()
     instances = []
     for host in online_hosts:
         instance = {
-            "id": host.container_id,
+            "id": host.vm_id,
             "ip": host.ip,
             "server_port": host.port,
             "status": host.status,
@@ -233,8 +240,8 @@ def sync_vm_info(request):
     select db and compare with id, add data if not exist
     """
     for info in infos:
-        deploy_host = DeployHost.objects.get(id=info['id'])
-        if not deploy_host:
+        host_status_record = HostStatusRecord.objects.get(vm_id=info['id'])
+        if not host_status_record:
             pass
 
     return JsonResponse({'status': 200,
