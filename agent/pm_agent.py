@@ -73,11 +73,13 @@ async def upload_shell_file(request: Request, file: UploadFile = File(...)):
 
 # run container
 @app.post("/deploy-host")
-async def deploy_host(port: PortItem):
-    port = port.value
+async def deploy_host(port_item: PortItem):
+    vm_port = port_item.vm_port
+    pm_ip = port_item.pm_ip
+    pm_port = port_item.pm_port
     out = __exec_cmd('{} {}:8000 --name agent_{} agent'.format(DockerCMD.RUN_VM.value,
-                                                               port,
-                                                               port))
+                                                               vm_port,
+                                                               vm_port))
     if len(out['result']) != 64:
         return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))

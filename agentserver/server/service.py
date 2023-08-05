@@ -104,7 +104,9 @@ def deploy_host():
     deploy_host_url = "{}/deploy-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
-                        {'value': server_port})
+                        {'vm_port': server_port,
+                         "pm_ip": pm_ip,
+                         "pm_port": pm_port})
     if resp.status_code == 200:
         msg = json.loads(resp.content)
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:

@@ -12,4 +12,6 @@ class ContainerId(BaseModel):
 
 
 class PortItem(BaseModel):
-    value: str
+    vm_port: str
+    pm_port: str
+    pm_ip: str
