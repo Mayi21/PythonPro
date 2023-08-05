@@ -150,8 +150,8 @@ def del_host(request):
     agent_address = __get_pm_agent_address("")
     del_host_url = "{}/del-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_DELETE,
-                         del_host_url,
-                    {'value': container_id})
+                        del_host_url,
+                        {'value': container_id})
     if resp.status_code == 200:
         msg = json.loads(resp.content)
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:
@@ -176,7 +176,6 @@ def __get_pm_agent_address(vm_agent_info):
     pm_port = "8000"
 
     return "http://{}:{}".format(pm_ip, pm_port)
-
 
 
 # get deploy host info
@@ -222,3 +221,21 @@ def register_info_collect(request):
     except Exception as e:
         return JsonResponse({'status': 500,
                              'msg': "register error, cause {}".format(str(e))})
+
+
+def sync_vm_info(request):
+    infos = json.loads(request.body)
+    """
+    info: list
+    id: vm id
+    port: port
+    
+    select db and compare with id, add data if not exist
+    """
+    for info in infos:
+        deploy_host = DeployHost.objects.get(id=info['id'])
+        if not deploy_host:
+            pass
+
+    return JsonResponse({'status': 200,
+                         'msg': 'sync success'})

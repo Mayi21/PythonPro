@@ -30,5 +30,6 @@ urlpatterns = [
     path('del-host/', views.del_host_func, name='del_host'),
     path('host-manage/', views.host_management_page, name='host_manage_page'),
     path('get-host-info/', views.get_deploy_host_info_info, name='get_host_info'),
-    path('register-info/', views.register_info_func, name='register_info')
+    path('register-info/', views.register_info_func, name='register_info'),
+    path('sync-vm/', views.sync_vm_info_func, name='sync_vn_info')
 ]

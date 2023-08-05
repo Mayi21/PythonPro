@@ -68,3 +68,8 @@ def make_fake_data(request):
 @csrf_exempt
 def register_info_func(request):
     return register_info_collect(request)
+
+
+@csrf_exempt
+def sync_vm_info_func(request):
+    request.body
