@@ -125,24 +125,25 @@ def sync_vm_info():
     for info in out[1:]:
         id = info[:12]
         out = __exec_cmd("{} {}".format(DockerCMD.GET_VM_PORT.value,
-                                  id))['result']
+                                        id))['result']
         port = out.split("->")[-1].split(":")[-1]
         vm_infos.append({'id': id,
                          'port': port})
 
     return vm_infos
 
+
 def set_config_json(pm_ip, pm_port):
-    config_json_path = "config.json"
-    with open(config_json_path, 'r') as f:
-        data = json.load(f)
-    with open(config_json_path, "w+") as f:
-        data['pm_ip'] = pm_ip
-        data['pm_port'] = pm_port
-        json.dump(data, f)
-    return True
-
-
+    try:
+        config_json_path = "config.json"
+        with open(config_json_path, 'r') as f:
+            data = json.load(f)
+        with open(config_json_path, "w+") as f:
+            data['pm_ip'] = pm_ip
+            data['pm_port'] = pm_port
+            json.dump(data, f)
+    except Exception as e:
+        raise e
 
 
 if __name__ == '__main__':
