@@ -132,6 +132,16 @@ def sync_vm_info():
 
     return vm_infos
 
+def set_config_json(pm_ip, pm_port):
+    config_json_path = "config.json"
+    with open(config_json_path, 'w+') as f:
+        data = json.load(f)
+        data['pm_ip'] = pm_ip
+        data['pm_port'] = pm_port
+        json.dump(data, f)
+    return True
+
+
 
 
 if __name__ == '__main__':
