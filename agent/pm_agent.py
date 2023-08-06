@@ -133,6 +133,7 @@ def sync_vm_info():
     return vm_infos
 
 
+# setting vm config json
 def set_config_json(pm_ip, pm_port):
     try:
         config_json_path = "config.json"
