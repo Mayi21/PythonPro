@@ -135,5 +135,6 @@ def sync_vm_info():
 
     return vm_infos
 
+
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')
