@@ -77,9 +77,12 @@ async def deploy_host(port_item: PortItem):
     vm_port = port_item.vm_port
     pm_ip = port_item.pm_ip
     pm_port = port_item.pm_port
-    out = __exec_cmd('{} {}:8000 --name agent_{} agent'.format(DockerCMD.RUN_VM.value,
-                                                               vm_port,
-                                                               vm_port))
+    out = __exec_cmd('{} {}:8000 --name agent_{} agent -e PM_IP={} PM_PORT={} SERVER={}'.format(DockerCMD.RUN_VM.value,
+                                                                                                vm_port,
+                                                                                                vm_port,
+                                                                                                pm_ip,
+                                                                                                pm_port,
+                                                                                                "127.0.0.1:8080"))
     if len(out['result']) != 64:
         return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
@@ -131,21 +134,6 @@ def sync_vm_info():
                          'port': port})
 
     return vm_infos
-
-
-# setting vm config json
-def set_config_json(pm_ip, pm_port):
-    try:
-        config_json_path = "config.json"
-        with open(config_json_path, 'r') as f:
-            data = json.load(f)
-        with open(config_json_path, "w+") as f:
-            data['pm_ip'] = pm_ip
-            data['pm_port'] = pm_port
-            json.dump(data, f)
-    except Exception as e:
-        raise e
-
 
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')
