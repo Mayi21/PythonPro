@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class User(models.Model):
@@ -27,6 +28,7 @@ class Instance(models.Model):
     container_id = models.CharField(max_length=64)
     last_update_time = models.DateTimeField(auto_now=True)
 
+
 class DeployHostRecord(models.Model):
     id = models.AutoField(primary_key=True)
     vm_id = models.CharField(max_length=64)
@@ -39,6 +41,7 @@ class DeployHostRecord(models.Model):
 
     class Meta:
         db_table = 'deploy_host_record'
+
 
 class HostStatusRecord(models.Model):
     id = models.AutoField(primary_key=True)
@@ -65,6 +68,7 @@ class InstanceMetric(models.Model):
 
     class Meta:
         db_table = 'instance_metrics'
+
 
 class HostRegisterInfo(models.Model):
     id = models.AutoField(primary_key=True)
