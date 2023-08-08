@@ -29,6 +29,11 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 req_util = HttpUtil()
 
+# get env parameter
+PM_IP = os.getenv("pm_ip")
+PM_PORT = os.getenv("pm_port")
+SERVER = os.getenv("server")
+
 # health api
 @app.get("/health")
 async def get_info():
