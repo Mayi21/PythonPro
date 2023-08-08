@@ -21,12 +21,6 @@ def __exec_cmd(cmd):
 def check_shell_file(file_name):
     pass
 
-
-def get_config():
-    with open('config.json') as f:
-        config = json.load(f)
-    return config
-
 class LogUtil:
     pass
 

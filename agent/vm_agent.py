@@ -46,19 +46,15 @@ async def get_info():
 
 @app.on_event("startup")
 def register_info():
-    config = get_config()
-    server = config['server']
-    pm_ip = config['pm_ip']
-    host_type = config['type']
     # 获取本机计算机名称
     hostname = socket.gethostname()
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
-    deploy_host_url = "http://{}/register-info/".format(server)
+    deploy_host_url = "http://{}/register-info/".format(SERVER)
     data = {
-        'type': host_type,
+        'type': "vm",
         'vm_ip': ip,
-        'pm_ip': pm_ip,
+        'pm_ip': PM_IP,
     }
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
