@@ -29,6 +29,8 @@ app.add_middleware(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
+SERVER = "127.0.0.1:8080"
+
 
 # health api
 @app.get("/health")
@@ -77,12 +79,13 @@ async def deploy_host(port_item: PortItem):
     vm_port = port_item.vm_port
     pm_ip = port_item.pm_ip
     pm_port = port_item.pm_port
-    out = __exec_cmd('{} {}:8000 --name agent_{} agent -e PM_IP={} PM_PORT={} SERVER={}'.format(DockerCMD.RUN_VM.value,
-                                                                                                vm_port,
-                                                                                                vm_port,
-                                                                                                pm_ip,
-                                                                                                pm_port,
-                                                                                                "127.0.0.1:8080"))
+    out = __exec_cmd('{} {}:8000 --env PM_IP={} --env PM_PORT={} --env SERVER={} --name agent_{} agent'.format(
+        DockerCMD.RUN_VM.value,
+        vm_port,
+        pm_ip,
+        pm_port,
+        SERVER,
+        vm_port))
     if len(out['result']) != 64:
         return Response(RequestInfo.INTERNAL_ERROR,
                         msg="deploy host fail, cause by {}".format(out['result']))
