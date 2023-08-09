@@ -35,7 +35,7 @@ req_util = HttpUtil()
 PM_IP = os.getenv("PM_IP")
 PM_PORT = os.getenv("PM_PORT")
 SERVER = os.getenv("SERVER")
-print(PM_IP, PM_PORT, SERVER)
+VM_PORT = __exec_cmd('pgrep -f "uvicorn pm_agent:app --reload"')['result']
 
 # health api
 @app.get("/health")
@@ -53,11 +53,14 @@ def register_info():
     hostname = socket.gethostname()
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
+
     deploy_host_url = "http://{}/register-info/".format(SERVER)
     data = {
         'type': "vm",
         'vm_ip': ip,
+        'vm_port': VM_PORT,
         'pm_ip': PM_IP,
+        'pm_port': PM_PORT
     }
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
