@@ -1,3 +1,5 @@
+import os
+
 from fastapi import UploadFile, File
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -30,9 +32,10 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 req_util = HttpUtil()
 
 # get env parameter
-PM_IP = os.getenv("pm_ip")
-PM_PORT = os.getenv("pm_port")
-SERVER = os.getenv("server")
+PM_IP = os.getenv("PM_IP")
+PM_PORT = os.getenv("PM_PORT")
+SERVER = os.getenv("SERVER")
+print(PM_IP, PM_PORT, SERVER)
 
 # health api
 @app.get("/health")
@@ -58,7 +61,8 @@ def register_info():
     }
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
-                        data)
+                        data,
+                        None)
 
     if resp.status_code == 200 and json.loads(resp.content)['status'] == 200:
         print("register success")
