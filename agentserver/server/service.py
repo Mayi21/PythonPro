@@ -114,10 +114,10 @@ def deploy_host():
             vm_id = result['container_id']
             vm_ip = result['ip']
             deploy_host_record: DeployHostRecord = DeployHostRecord(vm_id=vm_id,
-                                                                   ip=vm_ip,
-                                                                   port=server_port,
-                                                                   pm_ip=pm_ip,
-                                                                   pm_port=pm_port)
+                                                                    ip=vm_ip,
+                                                                    port=server_port,
+                                                                    pm_ip=pm_ip,
+                                                                    pm_port=pm_port)
             deploy_host_record.save()
             return JsonResponse({'status': 200})
         else:
@@ -187,6 +187,7 @@ def __get_pm_info(vm_agent_info):
 
     return pm_ip, pm_port, "http://{}:{}".format(pm_ip, pm_port)
 
+
 # get deploy host info
 def get_deploy_host_func(request):
     online_hosts = HostStatusRecord.objects.all()
@@ -211,20 +212,43 @@ def register_info_collect(request):
     info: dict
         type: pm or vm
         vm_ip:
+        vm_port:
         pm_ip:
+        pm_port:
     """
     try:
         if info['type'] == HostType.VM.value:
             vm_ip = info['vm_ip']
+            vm_port = info['vm_port']
             pm_ip = info['pm_ip']
+            pm_port = info['pm_port']
         else:
             vm_ip = None
+            vm_port = None
             pm_ip = info['pm_ip']
+            pm_port = None
 
         host_register_info = HostRegisterInfo(host_type=info['type'],
                                               vm_ip=vm_ip,
                                               pm_ip=pm_ip)
         host_register_info.save()
+        if info['type'] == HostType.VM.value:
+            query_set = (DeployHostRecord.objects
+                         .filter(ip=vm_ip)
+                         .filter(port=vm_port)
+                         .filter(pm_ip=pm_ip)
+                         .filter(pm_port=pm_port))
+            vm_id = query_set[0]['vm_id']
+            vm_name = query_set[0]['vm_name']
+            host_status_record = HostStatusRecord(vm_id=vm_id,
+                                                  ip=vm_ip,
+                                                  port=vm_port,
+                                                  vm_name=vm_name,
+                                                  status=DeployHostStatus.ONLINE.value,
+                                                  pm_ip=pm_ip,
+                                                  pm_port=pm_port)
+            host_status_record.save()
+
         return JsonResponse({'status': 200,
                              'msg': "register success"})
     except Exception as e:
