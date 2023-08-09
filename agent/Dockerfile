@@ -12,6 +12,7 @@ RUN pip install --upgrade pip
 
 RUN pip uninstall certifi
 RUN pip install certifi
+RUN pip install requests
 
 # 复制项目文件到容器中
 COPY . /app
@@ -21,8 +22,8 @@ EXPOSE 8000
 
 
 # 安装项目依赖包
-RUN pip install -r requirments.txt
+RUN pip install -r requirements.txt
 
 
 # 运行 Python 脚本
-CMD ["uvicorn", "agent_server:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "vm_agent:app", "--host", "0.0.0.0", "--port", "8000"]
