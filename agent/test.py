@@ -70,6 +70,32 @@ def sync_vm_info():
 
     return vm_infos
 
+def deploy_host(port_item):
+    vm_port = port_item['vm_port']
+    pm_ip = port_item['pm_ip']
+    pm_port = port_item['pm_port']
+    print('{} {}:8000 --env PM_IP={} --env PM_PORT={} --env SERVER={} --name agent_{} agent'.format(DockerCMD.RUN_VM.value,
+                                                                                                vm_port,
+                                                                                                pm_ip,
+                                                                                                pm_port,
+                                                                                                "127.0.0.1:8080",
+                                                                                                   vm_port))
+    out = __exec_cmd('{} {}:8000 --env PM_IP={} --env PM_PORT={} --env SERVER={} --name agent_{} agent'.format(DockerCMD.RUN_VM.value,
+                                                                                                vm_port,
+                                                                                                pm_ip,
+                                                                                                pm_port,
+                                                                                                "127.0.0.1:8080",
+                                                                                                   vm_port))
+    print(out)
+def set_config_json(pm_ip, pm_port):
+    config_json_path = "config.json"
+    with open(config_json_path, 'r') as f:
+        data = json.load(f)
+    with open(config_json_path, "w+") as f:
+        data['pm_ip'] = pm_ip
+        data['pm_port'] = pm_port
+        json.dump(data, f)
+    return True
 
 if __name__ == "__main__":
     # print(deploy_host('8081'))
@@ -78,4 +104,5 @@ if __name__ == "__main__":
 
     # print(DockerCMD.DEL_VM.value)
     # print('200'== RespCode.SUCCESS_CODE.value)
-    print(sync_vm_info())
+    # set_config_json("127.0.0.1", "8002")
+    deploy_host({'vm_port': "8900", "pm_ip": "127.0.0.1", "pm_port": "1122"})
