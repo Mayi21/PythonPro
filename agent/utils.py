@@ -57,11 +57,11 @@ class HttpUtil:
 
     def req(self, method: str, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
         data = json.dumps(data)
-        if method == RequestInfo.METHOD_GET.value:
+        if method == RequestInfo.METHOD_GET:
             return self.__get(url=url, data=data, params=params, headers=headers)
-        elif method == RequestInfo.METHOD_PUT.value:
+        elif method == RequestInfo.METHOD_PUT:
             return self.__put(url=url, data=data, params=params, headers=headers)
-        elif method == RequestInfo.METHOD_POST.value:
+        elif method == RequestInfo.METHOD_POST:
             return self.__post(url=url, data=data, headers=headers)
         else:
             return self.__delete(url=url, data=data, params=params, headers=headers)
