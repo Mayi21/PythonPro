@@ -29,7 +29,7 @@ app.add_middleware(
 app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
-SERVER = "127.0.0.1:8080"
+SERVER = "host.docker.internal"
 
 
 # health api
