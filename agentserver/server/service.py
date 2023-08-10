@@ -219,12 +219,10 @@ def register_info_collect(request):
     try:
         if info['type'] == HostType.VM.value:
             vm_ip = info['vm_ip']
-            vm_port = info['vm_port']
             pm_ip = info['pm_ip']
             pm_port = info['pm_port']
         else:
             vm_ip = None
-            vm_port = None
             pm_ip = info['pm_ip']
             pm_port = None
 
@@ -235,10 +233,10 @@ def register_info_collect(request):
         if info['type'] == HostType.VM.value:
             query_set = (DeployHostRecord.objects
                          .filter(ip=vm_ip)
-                         .filter(port=vm_port)
                          .filter(pm_ip=pm_ip)
                          .filter(pm_port=pm_port))
             vm_id = query_set[0]['vm_id']
+            vm_port = query_set[0]['port']
             vm_name = query_set[0]['vm_name']
             host_status_record = HostStatusRecord(vm_id=vm_id,
                                                   ip=vm_ip,
