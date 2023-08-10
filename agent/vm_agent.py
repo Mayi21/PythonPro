@@ -55,10 +55,11 @@ def register_info():
 
     deploy_host_url = "http://{}/register-info/".format(SERVER)
     data = {
-        'type': "vm",
+        'type': "VM",
         'vm_ip': ip,
         'pm_ip': PM_IP,
-        'pm_port': PM_PORT
+        'pm_port': PM_PORT,
+        'vm_name': hostname
     }
     print(data)
     resp = req_util.req(RequestInfo.METHOD_POST,

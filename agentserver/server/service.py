@@ -212,19 +212,21 @@ def register_info_collect(request):
     info: dict
         type: pm or vm
         vm_ip:
-        vm_port:
         pm_ip:
         pm_port:
+        vm_name:
     """
     try:
         if info['type'] == HostType.VM.value:
             vm_ip = info['vm_ip']
             pm_ip = info['pm_ip']
             pm_port = info['pm_port']
+            vm_name = info['vm_name']
         else:
             vm_ip = None
             pm_ip = info['pm_ip']
             pm_port = None
+            vm_name = None
 
         host_register_info = HostRegisterInfo(host_type=info['type'],
                                               vm_ip=vm_ip,
@@ -232,12 +234,10 @@ def register_info_collect(request):
         host_register_info.save()
         if info['type'] == HostType.VM.value:
             query_set = (DeployHostRecord.objects
-                         .filter(ip=vm_ip)
-                         .filter(pm_ip=pm_ip)
-                         .filter(pm_port=pm_port))
-            vm_id = query_set[0]['vm_id']
-            vm_port = query_set[0]['port']
-            vm_name = query_set[0]['vm_name']
+                         .filter(ip=vm_ip, pm_ip=pm_ip, pm_port=pm_port))
+            query_set = list(query_set)
+            vm_id = query_set[0].vm_id
+            vm_port = query_set[0].port
             host_status_record = HostStatusRecord(vm_id=vm_id,
                                                   ip=vm_ip,
                                                   port=vm_port,
