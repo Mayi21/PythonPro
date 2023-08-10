@@ -35,7 +35,6 @@ req_util = HttpUtil()
 PM_IP = os.getenv("PM_IP")
 PM_PORT = os.getenv("PM_PORT")
 SERVER = os.getenv("SERVER")
-VM_PORT = __exec_cmd('pgrep -f "uvicorn pm_agent:app --reload"')['result']
 
 # health api
 @app.get("/health")
@@ -58,10 +57,10 @@ def register_info():
     data = {
         'type': "vm",
         'vm_ip': ip,
-        'vm_port': VM_PORT,
         'pm_ip': PM_IP,
         'pm_port': PM_PORT
     }
+    print(data)
     resp = req_util.req(RequestInfo.METHOD_POST,
                         deploy_host_url,
                         data,
