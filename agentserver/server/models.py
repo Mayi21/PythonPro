@@ -53,6 +53,7 @@ class HostStatusRecord(models.Model):
     create_time = models.DateTimeField(auto_now=True)
     pm_ip = models.CharField(max_length=15)
     pm_port = models.CharField(max_length=5)
+    update_time = models.DateTimeField(auto_now=True)
 
     class Meta:
         db_table = 'host_status_record'
