@@ -97,6 +97,13 @@ consume data and persistence data in db.
 * deploy host
   * use `docker build -t agent .` to build image and `docker run -d -p 8000:8000 agent` to run server.
 
+* run server
+  * `python manage.py runserver 127.0.0.1:8080`
+
+* Run PM
+  * ``
+
+
 ## Server Design
 * deploy, stop and destroy vm
 * 
