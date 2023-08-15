@@ -103,6 +103,11 @@ consume data and persistence data in db.
 * Run PM
   * ``
 
+# Record Log
+## info log
+
+## error log
+
 
 ## Server Design
 * deploy, stop and destroy vm

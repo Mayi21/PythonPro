@@ -7,6 +7,19 @@ from fastapi import FastAPI
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
+# 创建 TimedRotatingFileHandler
+log_handler = TimedRotatingFileHandler('app.log', when='midnight', interval=1, backupCount=14)
+log_handler.setLevel(logging.INFO)
+
+# 创建 Formatter
+log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+log_handler.setFormatter(log_formatter)
+
+# 添加 Handler 到根日志记录器
+logging.root.addHandler(log_handler)
 
 from utils import __exec_cmd
 from models import *

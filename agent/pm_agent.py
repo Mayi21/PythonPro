@@ -13,6 +13,20 @@ from models import *
 from resp import Response
 from utils import __exec_cmd
 from constant import InstanceEnv, RequestInfo, DockerCMD
+import logging
+from logging.handlers import TimedRotatingFileHandler
+
+# 创建 TimedRotatingFileHandler
+log_handler = TimedRotatingFileHandler('app.log', when='midnight', interval=1, backupCount=14)
+log_handler.setLevel(logging.INFO)
+
+# 创建 Formatter
+log_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+log_handler.setFormatter(log_formatter)
+
+# 添加 Handler 到根日志记录器
+logging.root.addHandler(log_handler)
+
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -76,6 +90,7 @@ async def upload_shell_file(request: Request, file: UploadFile = File(...)):
 # run container
 @app.post("/deploy-host")
 async def deploy_host(port_item: PortItem):
+    logging.info("start deploy host, params: {}".format(port_item))
     vm_port = port_item.vm_port
     pm_ip = port_item.pm_ip
     pm_port = port_item.pm_port
@@ -99,6 +114,7 @@ async def deploy_host(port_item: PortItem):
 # stop host
 @app.post("/stop-host")
 async def stop_host(container_id: ContainerId):
+    logging.info("stop host, params: {}".format(container_id))
     container_id = container_id.value
     out = __exec_cmd('{} {}'.format(DockerCMD.STOP_VM.value,
                                     container_id))
@@ -112,6 +128,7 @@ async def stop_host(container_id: ContainerId):
 # delete host
 @app.delete('/del-host')
 async def del_host(container_id: ContainerId):
+    logging.info("delete host, params: {}".format(container_id))
     container_id = container_id.value
     out = __exec_cmd('{} {}'.format(DockerCMD.DEL_VM.value,
                                     container_id))
