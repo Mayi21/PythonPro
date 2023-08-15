@@ -17,7 +17,7 @@ import logging
 from logging.handlers import TimedRotatingFileHandler
 
 # 创建 TimedRotatingFileHandler
-log_handler = TimedRotatingFileHandler('app.log', when='midnight', interval=1, backupCount=14)
+log_handler = TimedRotatingFileHandler('pm_agent_app.log', when='midnight', interval=1, backupCount=14)
 log_handler.setLevel(logging.INFO)
 
 # 创建 Formatter
