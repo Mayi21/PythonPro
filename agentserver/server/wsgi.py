@@ -17,4 +17,4 @@ os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'agentserver.settings')
 
 application = get_wsgi_application()
 
-scheduler.start()
+# scheduler.start()
