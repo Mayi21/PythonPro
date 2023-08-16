@@ -268,14 +268,17 @@
                 method: 'POST',
                 body: formData
             })
-            .then(response => {
-                console.log(response)
-                if (response.ok) {
-                    alert('上传成功！');
+            .then(response => response.json())  // 将响应解析为 JSON 对象
+            .then(data => {
+                console.log(data); // 打印响应数据
+                if (data.success) {
+                    alert(`上传成功！文件名：${data.success}`);
                     document.getElementById('ip').value = '';
                     fileInput.value = null;
+                } else if (data.error) {
+                    alert(`上传失败！错误信息：${data.error}`);
                 } else {
-                    alert('上传失败！');
+                    alert('未知错误！');
                 }
             })
             .catch(error => {
