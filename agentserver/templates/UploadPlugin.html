@@ -2,83 +2,234 @@
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <html>
 <head>
-  <title>插件下发</title>
+    <title>插件下发</title>
+    <style>
+        body {
+            font-family: monospace;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            height: 100vh;
+            background-color: #f5f5f5;
+        }
 
-  <style>
+        .menu-container {
+            width: 200px;
+            background-color: #333;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
 
-  /* 整体布局样式 */
-  body {
-    display: flex;
-    margin: 0;
-  }
+        .menu-item {
+            padding: 10px 20px;
+            color: white;
+            text-decoration: none;
+            font-size: 16px;
+        }
 
-  /* 菜单栏样式 */
-  .menu-container {
-    width: 200px;
-    background: #333;
-    height: 100vh; /* 100%视窗高度 */
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+        .menu-item:hover {
+            background-color: #555;
+            border-radius: 5px;
+        }
 
-  .menu-item {
-    padding: 10px 20px;
-    color: #fff;
-    text-decoration: none;
-    font-size: 16px;
-  }
+        .menu-item.active {
+            background-color: #4caf50;
+            border-radius: 5px;
+        }
 
-  .menu-item:hover {
-    background: #555;
-    border-radius: 5px;
-  }
+        .input-container input[type="text"] {
+            flex-grow: 1;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
 
-  .menu-item.active {
-    background: #4CAF50;
-    border-radius: 5px;
-  }
+        .input-container button {
+            margin-left: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .action-buttons {
+            display: flex;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+        }
+        .action-buttons button {
+            margin-right: 5px;
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease-in-out;
+        }
 
-  /* 主体内容样式 */
-  .main {
-    flex: 1;
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-  }
+        .action-buttons button:hover {
+            background-color: #0056b3;
+        }
 
-  /* 文件上传样式 */
-  .file-input {
-    margin-bottom: 10px;
-  }
+        /* 添加下发主机按钮的样式 */
+        .deploy-button {
+            padding: 10px 20px;
+            font-size: 14px;
+            background-color: #4caf50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease-in-out;
+        }
 
-  .ip-input {
-    margin-bottom: 10px;
-  }
+        .deploy-button:hover {
+            background-color: #45a049;
+        }
 
-  .upload-btn {
-    padding: 10px 20px;
-    background: #4CAF50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+        .stop-button {
+            padding: 8px 16px;
+            background-color: #f44336;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
-  .upload-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-  }
+        .stop-button:hover {
+            background-color: #d32f2f;
+        }
 
-  </style>
+        .offline-button {
+            padding: 8px 16px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
 
+        .offline-button:hover {
+            background-color: #1976D2;
+        }
+
+        .dialog-overlay {
+          display: none;
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+          background-color: rgba(0, 0, 0, 0.7);
+          z-index: 999;
+        }
+
+        .dialog-box {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          width: 300px;
+          background-color: #fff;
+          padding: 20px;
+          border-radius: 5px;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .dialog-message {
+          margin-bottom: 20px;
+        }
+
+        .dialog-buttons {
+          display: flex;
+          justify-content: flex-end;
+        }
+
+        .dialog-buttons button {
+          margin-left: 10px;
+          padding: 8px 20px;
+          border: none;
+          border-radius: 3px;
+          cursor: pointer;
+        }
+
+        .dialog-confirm {
+          background-color: #4caf50;
+          color: #fff;
+        }
+
+        .dialog-cancel {
+          background-color: #ccc;
+        }
+
+
+
+        .file-input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .ip-input {
+            margin-bottom: 10px;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+        }
+
+        .upload-btn {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .upload-btn:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
 </head>
-
 <body>
-
 <div class="menu-container">
     <a href="index.html" class="menu-item">首页</a>
     <a href="search.html" class="menu-item">搜索</a>
@@ -86,26 +237,17 @@
     <a href="display.html" class="menu-item">监控</a>
     <a href="/host-manage/" class="menu-item">实例管理</a>
 </div>
-
-<div class="main">
-
-  <div class="container">
-
-    <input type="file" id="fileInput" class="file-input">
-
-    <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP和端口">
-
-    <button id="uploadBtn" class="upload-btn">
-      上传文件
-    </button>
-
-  </div>
-
-</div>
-
-<!-- 上传文件逻辑 -->
-<script>
-    document.getElementById('uploadBtn').addEventListener('click', uploadFile);
+    <div class="main">
+        <div class="container">
+            <input type="file" id="fileInput" class="file-input">
+            <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP和端口">
+            <button id="uploadBtn" class="upload-btn">
+                上传文件
+            </button>
+        </div>
+    </div>
+    <script>
+        document.getElementById('uploadBtn').addEventListener('click', uploadFile);
         function uploadFile() {
             const ip = document.getElementById('ip').value;
             console.info(ip);
@@ -141,22 +283,6 @@
                 alert('上传失败！');
             });
         }
-
-        // 检查输入的 IP 地址是否合法
-        function validateIP() {
-            const ipInput = document.getElementById('ip');
-            const ip = ipInput.value;
-            const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-            const isValidIP = ipPattern.test(ip);
-
-            const fileInput = document.getElementById('fileInput');
-            const uploadButton = document.getElementById('uploadBtn');
-            uploadButton.disabled = !isValidIP || !fileInput.files[0];
-        }
-
-<!--// 验证逻辑-->
-<!--document.getElementById('ip').addEventListener('input', validateIP);-->
-<!--document.getElementById('fileInput').addEventListener('change', validateIP);-->
-</script>
+    </script>
 </body>
 </html>

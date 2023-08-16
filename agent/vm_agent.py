@@ -112,7 +112,7 @@ async def upload_shell_file(request: Request, file: UploadFile = File(...)):
     file_name = file.filename
     if not file_name.endswith(".sh"):
         return {'error': 'file check not match'}
-    des_file = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
+    des_file = os.path.join(InstanceEnv.PLUGIN_TEMP_PATH.value, file_name)
     with open(des_file, 'wb') as f:
         f.write(file_data)
     return {"success": file.filename}
