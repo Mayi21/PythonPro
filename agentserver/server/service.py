@@ -1,4 +1,5 @@
 import json
+import logging
 import random
 import subprocess
 import time
@@ -99,6 +100,7 @@ def __get_not_use_port():
 
 def deploy_host():
     server_port = str(__get_not_use_port())
+    logging.info("server port is ", server_port)
     # TODO get host agent address
     pm_ip, pm_port, agent_address = __get_pm_info("")
     deploy_host_url = "{}/deploy-host".format(agent_address)

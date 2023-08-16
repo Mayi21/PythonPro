@@ -95,7 +95,7 @@
 
     <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP和端口">
 
-    <button id="uploadBtn" class="upload-btn" disabled>
+    <button id="uploadBtn" class="upload-btn">
       上传文件
     </button>
 
@@ -105,7 +105,7 @@
 
 <!-- 上传文件逻辑 -->
 <script>
-
+    document.getElementById('uploadBtn').addEventListener('click', uploadFile);
         function uploadFile() {
             const ip = document.getElementById('ip').value;
             console.info(ip);
@@ -154,9 +154,9 @@
             uploadButton.disabled = !isValidIP || !fileInput.files[0];
         }
 
-// 验证逻辑
-document.getElementById('ip').addEventListener('input', validateIP);
-document.getElementById('fileInput').addEventListener('change', validateIP);
+<!--// 验证逻辑-->
+<!--document.getElementById('ip').addEventListener('input', validateIP);-->
+<!--document.getElementById('fileInput').addEventListener('change', validateIP);-->
 </script>
 </body>
 </html>
