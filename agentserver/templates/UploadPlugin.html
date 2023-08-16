@@ -93,7 +93,7 @@
 
     <input type="file" id="fileInput" class="file-input">
 
-    <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP">
+    <input type="text" id="ip" class="ip-input" placeholder="输入目标服务器IP和端口">
 
     <button id="uploadBtn" class="upload-btn" disabled>
       上传文件
@@ -109,7 +109,7 @@
         function uploadFile() {
             const ip = document.getElementById('ip').value;
             console.info(ip);
-            const url = 'http://' + ip + ':8000/uploadfiles'; // 替换为实际的 API 接口地址
+            const url = 'http://' + ip + '/uploadfiles'; // 替换为实际的 API 接口地址
 
             const fileInput = document.getElementById('fileInput');
             const file = fileInput.files[0];
