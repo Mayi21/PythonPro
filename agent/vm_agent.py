@@ -108,10 +108,10 @@ async def upload_shell_file(request: Request, file: UploadFile = File(...)):
     # need a front page that
     file_data = file.file.read()
     if file.size / 1024 >= 1024:
-        return {'error': 'shell script to large'}
+        return {'error': 'file size to large, upload max size is 1MB'}
     file_name = file.filename
     if not file_name.endswith(".sh"):
-        return {'error': 'file check not match'}
+        return {'error': '{} file format can\'t support'.format(file_name.split(".")[-1])}
     des_file = os.path.join(InstanceEnv.PLUGIN_TEMP_PATH.value, file_name)
     with open(des_file, 'wb') as f:
         f.write(file_data)
