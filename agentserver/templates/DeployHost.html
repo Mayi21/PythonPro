@@ -346,7 +346,15 @@
             const instanceTable = document.getElementById('instanceTable');
 
             // 清空表格内容
-            instanceTable.innerHTML = '';
+            instanceTable.innerHTML = `
+                <tr>
+                    <th>ID</th>
+                    <th>IP</th>
+                    <th>Port</th>
+                    <th>Status</th>
+                    <th>操作</th>
+                </tr>
+            `;
             fetch('/get-host-info/')
             .then(response => response.json())
             .then(data => {
