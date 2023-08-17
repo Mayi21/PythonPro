@@ -256,6 +256,13 @@ def register_info_collect(request):
                              'msg': "register error, cause {}".format(str(e))})
 
 
+def get_online_vm_id_by_pm(pm_ip, pm_port):
+    vm_ids = DeployHostRecord.objects.filter(pm_ip=pm_ip).values_list('vm_id', flat=True)
+    vm_id = HostStatusRecord.objects.filter(status=DeployHostStatus.ONLINE.value).filter(vm_id__in=vm_ids).values_list('vm_id', flat=True)
+
+    return JsonResponse({'status': 200, 'msg': "get success", 'data': vm_id})
+
+
 def sync_vm_info(request):
     infos = json.loads(request.body)
     """
