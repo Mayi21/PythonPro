@@ -256,6 +256,7 @@ def register_info_collect(request):
                              'msg': "register error, cause {}".format(str(e))})
 
 
+# get vm id by pm use to scan local vm
 def get_online_vm_id_by_pm(pm_ip, pm_port):
     vm_ids = (HostStatusRecord.objects
              .filter(status=DeployHostStatus.ONLINE.value)
