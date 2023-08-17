@@ -156,10 +156,19 @@ def sync_vm_info():
     return vm_infos
 
 @app.post("/scan-local-vm")
-def scan_vm():
+async def scan_vm(vm_ids: VMIds):
     # get vm id from host status record table deploy pm
-    Depl
+    vm_ids = vm_ids.datas
+    running_vm_ids = []
+    for vm_id in vm_ids:
+        if __check_vm_status_by_vm_id(vm_id):
+            running_vm_ids.append(vm_id)
+    return Response(RequestInfo.SUCCESS_CODE,
+                    msg=json.dumps(running_vm_ids))
 
+def __check_vm_status_by_vm_id(vm_id):
+    result = __exec_cmd('docker inspect -f \'{{.State.Running}}\' {}'.format(vm_id))
+    return result['result']
 
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')
