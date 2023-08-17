@@ -7,7 +7,7 @@ class Cmd(BaseModel):
     value: str
 
 
-class ContainerId(BaseModel):
+class VMId(BaseModel):
     value: str
 
 
@@ -15,3 +15,7 @@ class PortItem(BaseModel):
     vm_port: str
     pm_port: str
     pm_ip: str
+
+
+class VMIds(BaseModel):
+    datas: list

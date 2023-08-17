@@ -113,7 +113,7 @@ async def deploy_host(port_item: PortItem):
 
 # stop host
 @app.post("/stop-host")
-async def stop_host(container_id: ContainerId):
+async def stop_host(container_id: VMId):
     logging.info("stop host, params: {}".format(container_id))
     container_id = container_id.value
     out = __exec_cmd('{} {}'.format(DockerCMD.STOP_VM.value,
@@ -127,7 +127,7 @@ async def stop_host(container_id: ContainerId):
 
 # delete host
 @app.delete('/del-host')
-async def del_host(container_id: ContainerId):
+async def del_host(container_id: VMId):
     logging.info("delete host, params: {}".format(container_id))
     container_id = container_id.value
     out = __exec_cmd('{} {}'.format(DockerCMD.DEL_VM.value,
@@ -154,6 +154,11 @@ def sync_vm_info():
                          'port': port})
 
     return vm_infos
+
+@app.post("/scan-local-vm")
+def scan_vm():
+    # get vm id from host status record table deploy pm
+    Depl
 
 
 if __name__ == '__main__':
