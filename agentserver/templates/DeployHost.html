@@ -114,32 +114,6 @@
             background-color: #45a049;
         }
 
-        .stop-button {
-            padding: 8px 16px;
-            background-color: #f44336;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .stop-button:hover {
-            background-color: #d32f2f;
-        }
-
-        .offline-button {
-            padding: 8px 16px;
-            background-color: #2196F3;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-        .offline-button:hover {
-            background-color: #1976D2;
-        }
-
         .dialog-overlay {
             display: none;
             position: fixed;
@@ -226,11 +200,10 @@
                         <td>${instance.server_port}</td>
                         <td>${instance.status}</td>
                         <td class="action-buttons">
-                            <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
+                            <button class="toggle-button" onclick="toggleVM('${instance.id}', '${instance.status}')">${instance.status === 'STOP' ? '启动' : '停止'}</button>
                             <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
                         </td>
                     `;
-                    row.setAttribute('data-id', instance.id); // 添加一个自定义属性以存储ID
                 });
             })
             .catch(error => console.error('获取实例信息失败:', error));
@@ -259,34 +232,29 @@
             dialogOverlay.style.display = 'none';
         }
 
-        function confirmStopAction(id) {
-            showConfirmationDialog('确定要停止主机 ' + id + ' 吗？', function () {
-                stopVM(id);
+        function toggleVM(id, status) {
+            const action = status === 'STOP' ? 'start' : 'stop';
+            const message = status === 'STOP' ? `确定要启动主机 ${id} 吗？` : `确定要停止主机 ${id} 吗？`;
+            showConfirmationDialog(message, function () {
+                performVMAction(id, action);
             });
         }
 
         function confirmOfflineAction(id) {
-            // 获取对应行的状态单元格
-            const statusCell = document.querySelector(`#instanceTable tr[data-id="${id}"] td:nth-child(4)`);
-            const status = statusCell.innerText.trim(); // 获取状态文本并去除首尾空格
-
-            if (status === 'stop') {
-                showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
-                    offlineVM(id);
-                });
-            } else {
-                alert(`主机 ${id} 的状态不是 "stop"，无法下线。`);
-            }
+            showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
+                performVMAction(id, 'offline');
+            });
         }
 
-        function stopVM(id) {
+        function performVMAction(id, action) {
             // 构造请求数据
             const data = {
-                'id': id
+                'id': id,
+                'action': action
             };
 
             // 发起请求
-            fetch('/stop-host/', {
+            fetch(`/${action}-host/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -296,7 +264,13 @@
                 .then(response => {
                     // 请求成功
                     if (response.ok) {
-                        alert('编号为 ' + id + ' 的虚拟机已停止');
+                        if (action === 'start') {
+                            alert(`编号为 ${id} 的虚拟机已启动`);
+                        } else if (action === 'stop') {
+                            alert(`编号为 ${id} 的虚拟机已停止`);
+                        } else if (action === 'offline') {
+                            alert(`编号为 ${id} 的虚拟机已下线`);
+                        }
                     } else {
                         alert('错误:' + response.statusText);
                     }
@@ -307,38 +281,7 @@
                 });
 
             // 记录日志
-            console.log('停止虚拟机操作,编号:', id);
-        }
-
-        function offlineVM(id) {
-            // 构造请求数据
-            const data = {
-                'id': id
-            };
-
-            // 发起请求
-            fetch('/del-host/', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
-            })
-                .then(response => {
-                    // 请求成功
-                    if (response.ok) {
-                        alert('编号为 ' + id + ' 的虚拟机已下线');
-                    } else {
-                        alert('错误:' + response.statusText);
-                    }
-                    flushData();
-                })
-                .catch(error => {
-                    console.error('请求失败', error);
-                });
-
-            // 记录日志
-            console.log('下线虚拟机操作,编号:', id);
+            console.log(`${action}虚拟机操作,编号:`, id);
         }
 
         function flushData() {
@@ -367,11 +310,10 @@
                             <td>${instance.server_port}</td>
                             <td>${instance.status}</td>
                             <td class="action-buttons">
-                                <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
+                                <button class="toggle-button" onclick="toggleVM('${instance.id}', '${instance.status}')">${instance.status === 'STOP' ? '启动' : '停止'}</button>
                                 <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
                             </td>
                         `;
-                        row.setAttribute('data-id', instance.id); // 添加一个自定义属性以存储ID
                     });
                 })
                 .catch(error => console.error('获取实例信息失败:', error));
