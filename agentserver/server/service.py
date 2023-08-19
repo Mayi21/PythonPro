@@ -4,7 +4,6 @@ import random
 import subprocess
 import time
 
-import requests
 from django.http import JsonResponse
 from .utils import HttpUtil
 
