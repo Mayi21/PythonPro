@@ -214,7 +214,7 @@ def __get_pm_info(vm_agent_info):
 
 # get deploy host info
 def get_deploy_host_func(request):
-    online_hosts = HostStatusRecord.objects.all()
+    online_hosts = HostStatusRecord.objects.exclude(status=DeployHostStatus.OFFLINE.value)
     instances = []
     for host in online_hosts:
         instance = {
