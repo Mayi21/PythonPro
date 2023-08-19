@@ -193,9 +193,7 @@ def del_host(request):
         msg = json.loads(resp.content)
         if msg['code'] == RequestInfo.SUCCESS_CODE.value:
             # stop success
-            host_status_record = HostStatusRecord.objects.get(vm_id=container_id)
-            host_status_record.status = DeployHostStatus.OFFLINE.value
-            host_status_record.save()
+            HostStatusRecord.objects.get(vm_id=container_id).delete()
             return JsonResponse({'status': 200, 'msg': 'stop success'})
         else:
             # stop failure
@@ -228,7 +226,6 @@ def get_deploy_host_func(request):
         }
         instances.append(instance)
     serialized_instances = json.dumps(instances)  # 将非字典对象序列化为 JSON 格式的字符串
-    print(serialized_instances)
     return JsonResponse(serialized_instances, safe=False)  # 设置
 
 
