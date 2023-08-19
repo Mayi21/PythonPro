@@ -56,36 +56,30 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
         table {
             border-collapse: collapse;
             width: 100%;
         }
+
         th, td {
             border: 1px solid #ddd;
             padding: 8px;
             text-align: left;
         }
+
         th {
             background-color: #f2f2f2;
         }
-        table {
-            border-collapse: collapse;
-            width: 100%;
-        }
-        th, td {
-            border: 1px solid #ddd;
-            padding: 8px;
-            text-align: left;
-        }
-        th {
-            background-color: #f2f2f2;
-        }
+
         .action-buttons {
             display: flex;
         }
+
         .action-buttons button {
             margin-right: 5px;
         }
+
         .action-buttons button {
             margin-right: 5px;
             padding: 10px 20px;
@@ -147,52 +141,52 @@
         }
 
         .dialog-overlay {
-          display: none;
-          position: fixed;
-          top: 0;
-          left: 0;
-          width: 100%;
-          height: 100%;
-          background-color: rgba(0, 0, 0, 0.7);
-          z-index: 999;
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 999;
         }
 
         .dialog-box {
-          position: absolute;
-          top: 50%;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          width: 300px;
-          background-color: #fff;
-          padding: 20px;
-          border-radius: 5px;
-          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 300px;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
         .dialog-message {
-          margin-bottom: 20px;
+            margin-bottom: 20px;
         }
 
         .dialog-buttons {
-          display: flex;
-          justify-content: flex-end;
+            display: flex;
+            justify-content: flex-end;
         }
 
         .dialog-buttons button {
-          margin-left: 10px;
-          padding: 8px 20px;
-          border: none;
-          border-radius: 3px;
-          cursor: pointer;
+            margin-left: 10px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
         }
 
         .dialog-confirm {
-          background-color: #4caf50;
-          color: #fff;
+            background-color: #4caf50;
+            color: #fff;
         }
 
         .dialog-cancel {
-          background-color: #ccc;
+            background-color: #ccc;
         }
     </style>
 </head>
@@ -236,6 +230,7 @@
                             <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
                         </td>
                     `;
+                    row.setAttribute('data-id', instance.id); // 添加一个自定义属性以存储ID
                 });
             })
             .catch(error => console.error('获取实例信息失败:', error));
@@ -248,100 +243,104 @@
 
             dialogMessage.innerText = message;
             dialogConfirmButton.onclick = function () {
-              hideConfirmationDialog();
-              confirmCallback();
+                hideConfirmationDialog();
+                confirmCallback();
             };
 
             dialogCancelButton.onclick = function () {
-              hideConfirmationDialog();
+                hideConfirmationDialog();
             };
 
             dialogOverlay.style.display = 'flex';
-          }
+        }
 
-          function hideConfirmationDialog() {
+        function hideConfirmationDialog() {
             const dialogOverlay = document.getElementById('dialogOverlay');
             dialogOverlay.style.display = 'none';
-          }
+        }
 
-          function confirmStopAction(id) {
+        function confirmStopAction(id) {
             showConfirmationDialog('确定要停止主机 ' + id + ' 吗？', function () {
-              stopVM(id);
+                stopVM(id);
             });
-          }
+        }
 
-          function confirmOfflineAction(id) {
-            showConfirmationDialog('确定要下线主机 ' + id + ' 吗？', function () {
-              offlineVM(id);
-            });
-          }
+        function confirmOfflineAction(id) {
+            // 获取对应行的状态单元格
+            const statusCell = document.querySelector(`#instanceTable tr[data-id="${id}"] td:nth-child(4)`);
+            const status = statusCell.innerText.trim(); // 获取状态文本并去除首尾空格
 
+            if (status === 'stop') {
+                showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
+                    offlineVM(id);
+                });
+            } else {
+                alert(`主机 ${id} 的状态不是 "stop"，无法下线。`);
+            }
+        }
 
         function stopVM(id) {
-          // 构造请求数据
-          const data = {
-            'id': id
-          };
+            // 构造请求数据
+            const data = {
+                'id': id
+            };
 
-          // 发起请求
-          fetch('/stop-host/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => {
-            // 请求成功
-            if(response.ok) {
-              alert('编号为 ' + id + ' 的虚拟机已停止');
+            // 发起请求
+            fetch('/stop-host/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    // 请求成功
+                    if (response.ok) {
+                        alert('编号为 ' + id + ' 的虚拟机已停止');
+                    } else {
+                        alert('错误:' + response.statusText);
+                    }
+                    flushData();
+                })
+                .catch(error => {
+                    console.error('请求失败', error);
+                });
 
-            // 请求失败
-            } else {
-              alert('错误:' + response.statusText);
-            }
-            flushData();
-          })
-          .catch(error => {
-            console.error('请求失败', error);
-          });
-
-          // 记录日志
-          console.log('停止虚拟机操作,编号:', id);
+            // 记录日志
+            console.log('停止虚拟机操作,编号:', id);
         }
 
         function offlineVM(id) {
             // 构造请求数据
-          const data = {
-            'id': id
-          };
+            const data = {
+                'id': id
+            };
 
-          // 发起请求
-          fetch('/del-host/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data)
-          })
-          .then(response => {
-            // 请求成功
-            if(response.ok) {
-              alert('编号为 ' + id + ' 的虚拟机已下线');
+            // 发起请求
+            fetch('/del-host/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => {
+                    // 请求成功
+                    if (response.ok) {
+                        alert('编号为 ' + id + ' 的虚拟机已下线');
+                    } else {
+                        alert('错误:' + response.statusText);
+                    }
+                    flushData();
+                })
+                .catch(error => {
+                    console.error('请求失败', error);
+                });
 
-            // 请求失败
-            } else {
-              alert('错误:' + response.statusText);
-            }
-            flushData();
-          })
-          .catch(error => {
-            console.error('请求失败', error);
-          });
-
-          // 记录日志
-          console.log('下线虚拟机操作,编号:', id);
+            // 记录日志
+            console.log('下线虚拟机操作,编号:', id);
         }
+
         function flushData() {
             const instanceTable = document.getElementById('instanceTable');
 
@@ -356,83 +355,85 @@
                 </tr>
             `;
             fetch('/get-host-info/')
-            .then(response => response.json())
-            .then(data => {
-                const instanceTable = document.getElementById('instanceTable');
-                const instances = JSON.parse(data);
-                instances.forEach(instance => {
-                    const row = instanceTable.insertRow(-1);
-                    row.innerHTML = `
-                        <td>${instance.id}</td>
-                        <td>${instance.ip}</td>
-                        <td>${instance.server_port}</td>
-                        <td>${instance.status}</td>
-                        <td class="action-buttons">
-                            <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
-                            <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
-                        </td>
-                    `;
-                });
-            })
-            .catch(error => console.error('获取实例信息失败:', error));
+                .then(response => response.json())
+                .then(data => {
+                    const instanceTable = document.getElementById('instanceTable');
+                    const instances = JSON.parse(data);
+                    instances.forEach(instance => {
+                        const row = instanceTable.insertRow(-1);
+                        row.innerHTML = `
+                            <td>${instance.id}</td>
+                            <td>${instance.ip}</td>
+                            <td>${instance.server_port}</td>
+                            <td>${instance.status}</td>
+                            <td class="action-buttons">
+                                <button class="stop-button" onclick="confirmStopAction('${instance.id}')">停止</button>
+                                <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
+                            </td>
+                        `;
+                        row.setAttribute('data-id', instance.id); // 添加一个自定义属性以存储ID
+                    });
+                })
+                .catch(error => console.error('获取实例信息失败:', error));
         }
 
         function deployHost() {
-          // 点击按钮后，禁用按钮
-          const deployButton = document.querySelector('.deploy-button');
-          deployButton.disabled = true;
+            // 点击按钮后，禁用按钮
+            const deployButton = document.querySelector('.deploy-button');
+            deployButton.disabled = true;
 
-          // 显示倒计时
-          const countdownElement = document.getElementById('countdown');
-          countdownElement.style.display = 'block';
-          let countdown = 10;
+            // 显示倒计时
+            const countdownElement = document.getElementById('countdown');
+            countdownElement.style.display = 'block';
+            let countdown = 10;
 
-          const countdownInterval = setInterval(() => {
-            countdownElement.innerText = `请等待 ${countdown} 秒`;
-            countdown--;
+            const countdownInterval = setInterval(() => {
+                countdownElement.innerText = `请等待 ${countdown} 秒`;
+                countdown--;
 
-            if (countdown < 0) {
-              clearInterval(countdownInterval);
-              countdownElement.style.display = 'none';
+                if (countdown < 0) {
+                    clearInterval(countdownInterval);
+                    countdownElement.style.display = 'none';
 
-              // 恢复按钮状态
-              deployButton.disabled = false;
-            }
-          }, 1000);
+                    // 恢复按钮状态
+                    deployButton.disabled = false;
+                }
+            }, 1000);
 
-          // 使用fetch函数发送POST请求到后端
-          fetch('/deploy-host/', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          })
-          .then(response => response.json())
-          .then(data => {
-            // 处理后端返回的数据
-            console.log('下发主机成功:', data);
-            // 手动响应后，弹出提示框
-            showSuccessDialog('创建成功！');
-            flushData();
-          })
-          .catch(error => {
-            console.error('下发主机失败:', error);
-          });
+            // 使用fetch函数发送POST请求到后端
+            fetch('/deploy-host/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            })
+                .then(response => response.json())
+                .then(data => {
+                    // 处理后端返回的数据
+                    console.log('下发主机成功:', data);
+                    // 手动响应后，弹出提示框
+                    showSuccessDialog('创建成功！');
+                    flushData();
+                })
+                .catch(error => {
+                    console.error('下发主机失败:', error);
+                });
         }
+
         function showSuccessDialog(message) {
-          // 弹出提示框
-          alert(message);
+            // 弹出提示框
+            alert(message);
         }
     </script>
 </div>
 <div class="dialog-overlay" id="dialogOverlay">
-  <div class="dialog-box">
-    <p class="dialog-message" id="dialogMessage"></p>
-    <div class="dialog-buttons">
-      <button class="dialog-confirm" id="dialogConfirmButton">确定</button>
-      <button class="dialog-cancel" id="dialogCancelButton">取消</button>
+    <div class="dialog-box">
+        <p class="dialog-message" id="dialogMessage"></p>
+        <div class="dialog-buttons">
+            <button class="dialog-confirm" id="dialogConfirmButton">确定</button>
+            <button class="dialog-cancel" id="dialogCancelButton">取消</button>
+        </div>
     </div>
-  </div>
 </div>
 </body>
 </html>
