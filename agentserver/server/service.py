@@ -144,9 +144,7 @@ def start_host(request):
             # stop success
             print("start {} success".format(container_id))
             # 这里存在一个重复逻辑，启动容器后，会再次运行vm 服务，这个时候会再次上报信息到 host status record表中，而此时有刷新了，导致这个问题
-            host_status_record = HostStatusRecord.objects.get(vm_id=container_id).delete()
-            host_status_record.status = DeployHostStatus.ONLINE.value
-            host_status_record.save()
+            HostStatusRecord.objects.get(vm_id=container_id).delete()
             return JsonResponse({'status': 200, 'msg': 'start success'})
         else:
             # stop failure
