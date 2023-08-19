@@ -242,7 +242,7 @@
 
         function confirmOfflineAction(id) {
             showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
-                performVMAction(id, 'offline');
+                performVMAction(id, 'del');
             });
         }
 
