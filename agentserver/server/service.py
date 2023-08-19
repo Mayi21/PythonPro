@@ -129,6 +129,32 @@ def deploy_host():
         return JsonResponse({'status': 500})
 
 
+def start_host(request):
+    container_id = json.loads(request.body)['id']
+    if not container_id:
+        return JsonResponse({'status': 500, "msg": "container id is empty"})
+    pm_ip, pm_port, agent_address = __get_pm_info("")
+    start_host_url = "{}/start-host".format(agent_address)
+    resp = req_util.req(RequestInfo.METHOD_POST,
+                        start_host_url,
+                        {'value': container_id})
+    if resp.status_code == 200:
+        msg = json.loads(resp.content)
+        if msg['code'] == RequestInfo.SUCCESS_CODE.value:
+            # stop success
+            print("start {} success".format(container_id))
+            # 这里存在一个重复逻辑，启动容器后，会再次运行vm 服务，这个时候会再次上报信息到 host status record表中，而此时有刷新了，导致这个问题
+            host_status_record = HostStatusRecord.objects.get(vm_id=container_id).delete()
+            host_status_record.status = DeployHostStatus.ONLINE.value
+            host_status_record.save()
+            return JsonResponse({'status': 200, 'msg': 'start success'})
+        else:
+            # stop failure
+            return JsonResponse({'status': 500, 'msg': msg['msg']})
+    else:
+        return JsonResponse({'status': 500, 'msg': str(resp.content)})
+
+
 def stop_host(request):
     container_id = json.loads(request.body)['id']
     if not container_id:
@@ -261,12 +287,11 @@ def register_info_collect(request):
 # get vm id by pm use to scan local vm
 def get_online_vm_id_by_pm(pm_ip, pm_port):
     vm_ids = (HostStatusRecord.objects
-             .filter(status=DeployHostStatus.ONLINE.value)
-             .filter(vm_id__in=DeployHostRecord.objects
-                     .filter(pm_ip=pm_ip)
-                     .values_list('vm_id', flat=True))
-             .values_list('vm_id', flat=True))
-
+              .filter(status=DeployHostStatus.ONLINE.value)
+              .filter(vm_id__in=DeployHostRecord.objects
+                      .filter(pm_ip=pm_ip)
+                      .values_list('vm_id', flat=True))
+              .values_list('vm_id', flat=True))
 
     return JsonResponse({'status': 200, 'msg': "get success", 'data': vm_ids})
 

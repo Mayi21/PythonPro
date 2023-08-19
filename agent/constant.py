@@ -25,6 +25,7 @@ class DockerCMD(Enum):
     PULL_VM = ""
     RUN_VM = "docker run -d -p"
     STOP_VM = "docker stop"
+    START_VM = "docker start"
     DEL_VM = "docker container rm"
     GET_IP = "docker inspect -f \'{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}\'"
     GET_RUNNING_VM = "docker ps"

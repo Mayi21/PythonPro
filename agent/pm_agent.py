@@ -94,6 +94,13 @@ async def deploy_host(port_item: PortItem):
     vm_port = port_item.vm_port
     pm_ip = port_item.pm_ip
     pm_port = port_item.pm_port
+    print('{} {}:8000 --env PM_IP={} --env PM_PORT={} --env SERVER={} --name agent_{} agent'.format(
+        DockerCMD.RUN_VM.value,
+        vm_port,
+        pm_ip,
+        pm_port,
+        SERVER,
+        vm_port))
     out = __exec_cmd('{} {}:8000 --env PM_IP={} --env PM_PORT={} --env SERVER={} --name agent_{} agent'.format(
         DockerCMD.RUN_VM.value,
         vm_port,
@@ -110,6 +117,19 @@ async def deploy_host(port_item: PortItem):
                     msg=json.dumps({'container_id': out['result'],
                                     'ip': container_ip['result']}))
 
+
+# start host
+@app.post("/start-host")
+async def stop_host(container_id: VMId):
+    logging.info("start host, params: {}".format(container_id))
+    container_id = container_id.value
+    out = __exec_cmd('{} {}'.format(DockerCMD.START_VM.value,
+                                    container_id))
+    if len(out['result']) != len(container_id):
+        return Response(RequestInfo.INTERNAL_ERROR,
+                        msg="start host fail, cause by {}".format(out['result']))
+    return Response(RequestInfo.SUCCESS_CODE,
+                    msg=out['result'])
 
 # stop host
 @app.post("/stop-host")

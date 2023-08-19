@@ -37,6 +37,11 @@ def deploy_host_func(request):
     return deploy_host()
 
 
+@csrf_exempt
+def start_host_func(request):
+    return start_host(request)
+
+
 # stop host
 @csrf_exempt
 def stop_host_func(request):

@@ -26,6 +26,7 @@ urlpatterns = [
     path('get-data/', views.get_instance_metric, name='get_metrics_data'),
     path('upload-plugin/', views.upload_plugin_page, name='upload_plugin_page_view'),
     path('deploy-host/', views.deploy_host_func, name='deploy_host_func'),
+    path('start-host/', views.start_host_func, name='start_host_func'),
     path('stop-host/', views.stop_host_func, name='stop_host'),
     path('del-host/', views.del_host_func, name='del_host'),
     path('host-manage/', views.host_management_page, name='host_manage_page'),
