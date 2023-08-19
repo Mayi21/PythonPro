@@ -101,6 +101,7 @@ def __get_not_use_port():
 def deploy_host():
     server_port = str(__get_not_use_port())
     logging.info("server port is ", server_port)
+    print("server port is ", server_port)
     # TODO get host agent address
     pm_ip, pm_port, agent_address = __get_pm_info("")
     deploy_host_url = "{}/deploy-host".format(agent_address)
@@ -235,8 +236,9 @@ def register_info_collect(request):
                                               pm_ip=pm_ip)
         host_register_info.save()
         if info['type'] == HostType.VM.value:
+            # TODO 这个地方是从 deploy host 里面查询的，就会导致查询最历史的数据
             query_set = (DeployHostRecord.objects
-                         .filter(ip=vm_ip, pm_ip=pm_ip, pm_port=pm_port))
+                         .filter(ip=vm_ip, pm_ip=pm_ip, pm_port=pm_port).order_by('-create_time'))
             query_set = list(query_set)
             vm_id = query_set[0].vm_id
             vm_port = query_set[0].port
