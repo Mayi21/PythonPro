@@ -201,7 +201,7 @@
                         <td>${instance.status}</td>
                         <td class="action-buttons">
                             <button class="toggle-button" onclick="toggleVM('${instance.id}', '${instance.status}')">${instance.status === 'STOP' ? '启动' : '停止'}</button>
-                            <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
+                            <button class="offline-button" onclick="confirmOfflineAction('${instance.id}', '${instance.status}')">下线</button>
                         </td>
                     `;
                 });
@@ -240,10 +240,15 @@
             });
         }
 
-        function confirmOfflineAction(id) {
-            showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
-                performVMAction(id, 'del');
-            });
+        function confirmOfflineAction(id, action) {
+            console.log(action)
+            if (action === 'STOP') {
+                showConfirmationDialog(`确定要下线主机 ${id} 吗？`, function () {
+                    performVMAction(id, 'del');
+                });
+            } else {
+                alert(`主机 ${id} 的状态不是 "stop"，无法下线。`);
+            }
         }
 
         function performVMAction(id, action) {
@@ -311,7 +316,7 @@
                             <td>${instance.status}</td>
                             <td class="action-buttons">
                                 <button class="toggle-button" onclick="toggleVM('${instance.id}', '${instance.status}')">${instance.status === 'STOP' ? '启动' : '停止'}</button>
-                                <button class="offline-button" onclick="confirmOfflineAction('${instance.id}')">下线</button>
+                                <button class="offline-button" onclick="confirmOfflineAction('${instance.id}', '${instance.status}')">下线</button>
                             </td>
                         `;
                     });
