@@ -38,6 +38,7 @@ def health_monitor():
         if resp.status_code != 200:
             ins.delete()
 
+
 scheduler.add_job(health_monitor,
                   trigger=IntervalTrigger(seconds=10),
                   id='health_monitor',
