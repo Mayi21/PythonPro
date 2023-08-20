@@ -256,7 +256,7 @@ def register_info_collect(request):
                                               pm_ip=pm_ip)
         host_register_info.save()
         if info['type'] == HostType.VM.value:
-            # TODO 这个地方是从 deploy host 里面查询的，就会导致查询最历史的数据
+            # 这个地方是从 deploy host 里面查询的，就会导致查询最历史的数据
             query_set = (DeployHostRecord.objects
                          .filter(ip=vm_ip, pm_ip=pm_ip, pm_port=pm_port).order_by('-create_time'))
             query_set = list(query_set)
@@ -278,16 +278,7 @@ def register_info_collect(request):
                              'msg': "register error, cause {}".format(str(e))})
 
 
-# get vm id by pm use to scan local vm
-def get_online_vm_id_by_pm(pm_ip, pm_port):
-    vm_ids = (HostStatusRecord.objects
-              .filter(status=DeployHostStatus.ONLINE.value)
-              .filter(vm_id__in=DeployHostRecord.objects
-                      .filter(pm_ip=pm_ip)
-                      .values_list('vm_id', flat=True))
-              .values_list('vm_id', flat=True))
 
-    return JsonResponse({'status': 200, 'msg': "get success", 'data': vm_ids})
 
 
 def sync_vm_info(request):

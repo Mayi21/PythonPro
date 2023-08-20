@@ -181,7 +181,7 @@ async def scan_vm(vm_ids: VMIds):
     vm_ids = vm_ids.datas
     running_vm_ids = []
     for vm_id in vm_ids:
-        if __check_vm_status_by_vm_id(vm_id):
+        if __check_vm_status_by_vm_id(vm_id) == 'true':
             running_vm_ids.append(vm_id)
     return Response(RequestInfo.SUCCESS_CODE,
                     msg=json.dumps(running_vm_ids))
