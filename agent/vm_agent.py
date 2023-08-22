@@ -10,6 +10,8 @@ from slowapi.util import get_remote_address
 import logging
 from logging.handlers import TimedRotatingFileHandler
 
+from resp import Response
+
 # 创建 TimedRotatingFileHandler
 log_handler = TimedRotatingFileHandler('vm_agent_app.log', when='midnight', interval=1, backupCount=14)
 log_handler.setLevel(logging.INFO)
@@ -91,7 +93,11 @@ def register_info():
 # execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
-    return __exec_cmd(command.value)['result']
+    out = __exec_cmd(command.value)
+    return Response(RequestInfo.SUCCESS_CODE,
+                    msg="execute cmd success",
+                    data=out)
+
 
 
 # execute shell script
