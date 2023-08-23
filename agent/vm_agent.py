@@ -93,6 +93,7 @@ def register_info():
 # execute shell command
 @app.post("/cmd")
 async def run_cmd(command: Cmd):
+    print("execute shell cmd is {}".format(command.value))
     out = __exec_cmd(command.value)
     return Response(RequestInfo.SUCCESS_CODE,
                     msg="execute cmd success",
@@ -103,6 +104,7 @@ async def run_cmd(command: Cmd):
 # execute shell script
 @app.get("/exec-shell")
 async def execute_shell_file(file_name: str):
+    print("execute shell file is {}".format(file_name))
     shell_file_path = os.path.join(InstanceEnv.PLUGIN_SCRIPT_PATH.value, file_name)
     return __exec_cmd('sh ' + shell_file_path)['result']
 
