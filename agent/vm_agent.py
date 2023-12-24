@@ -51,6 +51,7 @@ PM_IP = os.getenv("PM_IP")
 PM_PORT = os.getenv("PM_PORT")
 SERVER = os.getenv("SERVER")
 
+
 # health api
 @app.get("/health")
 async def get_info():
@@ -98,7 +99,6 @@ async def run_cmd(command: Cmd):
     return Response(RequestInfo.SUCCESS_CODE,
                     msg="execute cmd success",
                     data=out)
-
 
 
 # execute shell script

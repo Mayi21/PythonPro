@@ -8,11 +8,8 @@ from kafka import KafkaConsumer
 from kafka import KafkaProducer
 from constant import KafkaInfo
 
-
-
-res_consumer:KafkaConsumer = None
-command_producer:KafkaProducer = None
-
+res_consumer: KafkaConsumer = None
+command_producer: KafkaProducer = None
 
 
 def send_command(command):
@@ -20,6 +17,7 @@ def send_command(command):
     command_producer.send(KafkaInfo.COMMAND_TOPIC.value,
                           key=cmd_uuid.encode("utf-8"),
                           value=command.encode("utf-8"))
+
 
 # if use kafka, can't response immediately
 # so this place can't use http method,just for not-timely job
@@ -32,10 +30,9 @@ def __handle_res():
         # todo persistence save
 
 
-
-
 def __get_uuid():
     return str(uuid.uuid4())
+
 
 def main(argv):
     bootstrap_servers = None

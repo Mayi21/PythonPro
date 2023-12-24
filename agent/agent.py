@@ -6,10 +6,8 @@ from kafka import KafkaConsumer
 from kafka import KafkaProducer
 from constant import KafkaInfo
 
-
-
-res_producer:KafkaProducer = None
-command_consumer:KafkaProducer = None
+res_producer: KafkaProducer = None
+command_consumer: KafkaProducer = None
 
 
 def __runcommand(command):
@@ -17,6 +15,7 @@ def __runcommand(command):
     output, error = process.communicate()
     print(output)
     return output.decode()
+
 
 def receive_command():
     for msg in command_consumer:
@@ -28,9 +27,11 @@ def receive_command():
         except Exception as e:
             print(e)
 
+
 def __send_res(cmd_uuid, res):
     res_producer.send(KafkaInfo.RES_TOPIC.value, key=cmd_uuid.encode('utf-8'),
-                        value=res.encode('utf-8'))
+                      value=res.encode('utf-8'))
+
 
 def main(argv):
     bootstrap_servers = None
@@ -52,6 +53,7 @@ def main(argv):
         print("kafka config error")
         sys.exit(2)
     receive_command()
+
 
 if __name__ == '__main__':
     main(sys.argv[1:])

@@ -21,9 +21,9 @@ def __exec_cmd(cmd):
 def check_shell_file(file_name):
     pass
 
+
 class LogUtil:
     pass
-
 
 
 class HttpUtil:

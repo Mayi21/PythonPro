@@ -27,7 +27,6 @@ log_handler.setFormatter(log_formatter)
 # 添加 Handler 到根日志记录器
 logging.root.addHandler(log_handler)
 
-
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
 origins = [
@@ -131,6 +130,7 @@ async def stop_host(container_id: VMId):
     return Response(RequestInfo.SUCCESS_CODE,
                     msg=out['result'])
 
+
 # stop host
 @app.post("/stop-host")
 async def stop_host(container_id: VMId):
@@ -175,6 +175,7 @@ def sync_vm_info():
 
     return vm_infos
 
+
 @app.post("/scan-local-vm")
 async def scan_vm(vm_ids: VMIds):
     # get vm id from host status record table deploy pm
@@ -186,9 +187,11 @@ async def scan_vm(vm_ids: VMIds):
     return Response(RequestInfo.SUCCESS_CODE,
                     msg=json.dumps(running_vm_ids))
 
+
 def __check_vm_status_by_vm_id(vm_id):
     result = __exec_cmd('docker inspect -f \'{{.State.Running}}\' {}'.format(vm_id))
     return result['result']
+
 
 if __name__ == '__main__':
     os.system('uvicorn pm_agent:app --reload')

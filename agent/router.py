@@ -8,9 +8,11 @@ from agent import run_command
 SERVER_ADDRESS = '服务器IP地址'
 SERVER_PORT = 12345  # 服务器端口号
 
+
 def send_report(data):
     # 实现上报逻辑，将数据发送给服务器
     pass
+
 
 def process_command(command):
     # 处理服务器发送的指令
@@ -35,6 +37,7 @@ def start_agent():
     finally:
         # 关闭套接字连接
         sock.close()
+
 
 # 启动Agent
 if __name__ == "__main__":
