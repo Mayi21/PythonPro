@@ -16,3 +16,4 @@ services:
 
 networks:
   big_data-network:
+    external: true
