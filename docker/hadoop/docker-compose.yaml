@@ -35,6 +35,22 @@ services:
       command: ["/bin/bash"]
       env_file:
         - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
+      depends_on:
+        - namenode
+        - datanode
+      stdin_open: true
+      tty: true
+
+   hadoop-client2:
+      image: apache/hadoop:2.10.2
+      hostname: hadoop-client2
+      command: ["/bin/bash"]
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
       depends_on:
         - namenode
         - datanode
