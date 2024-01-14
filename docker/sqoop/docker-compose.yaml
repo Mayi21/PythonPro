@@ -1,0 +1,18 @@
+version: "2"
+services:
+   sqoop:
+      image: apache/hadoop:2.10.2
+      hostname: sqoop
+      command: ["/bin/bash"]
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
+      stdin_open: true
+      tty: true
+      networks:
+        - big_data-network
+networks:
+  # 使用之前先确保这个网络段存在
+  big_data-network:
+    external: true
