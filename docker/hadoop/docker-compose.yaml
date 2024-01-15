@@ -37,6 +37,8 @@ services:
    nodemanager:
       image: apache/hadoop:3
       command: ["yarn", "nodemanager"]
+      depends_on:
+        - resourcemanager
       environment:
         HADOOP_HOME: /opt/hadoop
       env_file:
@@ -48,7 +50,23 @@ services:
    hadoop-client:
       image: apache/hadoop:3
       hostname: hadoop-client
-      command: ["/bin/bash"]
+      command: ["yarn", "nodemanager"]
+      depends_on:
+        - resourcemanager
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
+      stdin_open: true
+      tty: true
+      networks:
+        - big_data-network
+   hadoop-client2:
+      image: apache/hadoop:3
+      hostname: hadoop-client2
+      command: ["yarn", "nodemanager"]
+      depends_on:
+        - resourcemanager
       env_file:
         - ./config
       volumes:
