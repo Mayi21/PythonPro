@@ -4,17 +4,20 @@ services:
       image: apache/hadoop:3
       hostname: namenode
       command: ["hdfs", "namenode"]
+      environment:
+        ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+        HADOOP_HOME: /opt/hadoop
       ports:
         - 9870:9870
       env_file:
         - ./config
-      environment:
-          ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
       networks:
         - big_data-network
    datanode:
       image: apache/hadoop:3
       command: ["hdfs", "datanode"]
+      environment:
+        HADOOP_HOME: /opt/hadoop
       env_file:
         - ./config
       networks:
@@ -23,6 +26,8 @@ services:
       image: apache/hadoop:3
       hostname: resourcemanager
       command: ["yarn", "resourcemanager"]
+      environment:
+        HADOOP_HOME: /opt/hadoop
       ports:
          - 8088:8088
       env_file:
@@ -32,8 +37,24 @@ services:
    nodemanager:
       image: apache/hadoop:3
       command: ["yarn", "nodemanager"]
+      environment:
+        HADOOP_HOME: /opt/hadoop
       env_file:
         - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
+      networks:
+        - big_data-network
+   hadoop-client:
+      image: apache/hadoop:3
+      hostname: hadoop-client
+      command: ["/bin/bash"]
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/tmp
+      stdin_open: true
+      tty: true
       networks:
         - big_data-network
 networks:
