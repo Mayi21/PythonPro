@@ -1,0 +1,20 @@
+version: '3'
+services:
+  metastore-standalone:
+    image: apache/hive:3.1.3
+    container_name: metastore-standalone
+    ports:
+      - "9083:9083"
+    environment:
+      - SERVICE_NAME=metastore
+      - DB_DRIVER=mysql
+      - SERVICE_OPTS=-Djavax.jdo.option.ConnectionDriverName=com.mysql.cj.jdbc.Driver -Djavax.jdo.option.ConnectionURL=jdbc:mysql://mysql:3306/metastore_db -Djavax.jdo.option.ConnectionUserName=root -Djavax.jdo.option.ConnectionPassword=123456
+    volumes:
+      - /Users/xaohii/data/docker_local/hive_data:/opt/hive/data/warehouse
+      - /Users/xaohii/data/docker_local/share/mysql-connector-j-8.1.0.jar:/opt/hive/lib/mysql-connector-j-8.1.0.jar
+    networks:
+      - big_data-network
+networks:
+  # 使用之前先确保这个网络段存在
+  big_data-network:
+    external: true
