@@ -9,6 +9,7 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
     volumes:
       - /Users/xaohii/data/docker_local/mysql_data:/var/lib/mysql
+      - /Users/xaohii/data/docker_local/share:/share
     ports:
       - 3306:3306
     networks:
