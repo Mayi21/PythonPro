@@ -1,13 +1,13 @@
 version: "2"
 services:
    sqoop:
-      image: apache/hadoop:2.10.2
+      image: mayi21docker/sqoop:1.4.7
       hostname: sqoop
       command: ["/bin/bash"]
       env_file:
         - ./config
       volumes:
-        - /Users/xaohii/data/docker_local/share:/tmp
+        - /Users/xaohii/data/docker_local/share:/share
       stdin_open: true
       tty: true
       networks:
