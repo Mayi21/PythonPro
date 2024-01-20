@@ -1,7 +1,7 @@
 version: "2"
 services:
    namenode:
-      image: apache/hadoop:3
+      image: apache/hadoop:2.10.2
       hostname: namenode
       command: ["hdfs", "namenode"]
       environment:
@@ -11,19 +11,23 @@ services:
         - 9870:9870
       env_file:
         - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/hadoop/namenode_data:/tmp/hadoop-hadoop
       networks:
         - big_data-network
    datanode:
-      image: apache/hadoop:3
+      image: apache/hadoop:2.10.2
       command: ["hdfs", "datanode"]
       environment:
         HADOOP_HOME: /opt/hadoop
       env_file:
         - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/hadoop/datanode_data:/tmp/hadoop-hadoop
       networks:
         - big_data-network
    resourcemanager:
-      image: apache/hadoop:3
+      image: apache/hadoop:2.10.2
       hostname: resourcemanager
       command: ["yarn", "resourcemanager"]
       environment:
@@ -35,7 +39,7 @@ services:
       networks:
         - big_data-network
    nodemanager:
-      image: apache/hadoop:3
+      image: apache/hadoop:2.10.2
       command: ["yarn", "nodemanager"]
       depends_on:
         - resourcemanager
@@ -45,34 +49,6 @@ services:
         - ./config
       volumes:
         - /Users/xaohii/data/docker_local/share:/share
-      networks:
-        - big_data-network
-   hadoop-client:
-      image: apache/hadoop:3
-      hostname: hadoop-client
-      command: ["yarn", "nodemanager"]
-      depends_on:
-        - resourcemanager
-      env_file:
-        - ./config
-      volumes:
-        - /Users/xaohii/data/docker_local/share:/share
-      stdin_open: true
-      tty: true
-      networks:
-        - big_data-network
-   hadoop-client2:
-      image: apache/hadoop:3
-      hostname: hadoop-client2
-      command: ["yarn", "nodemanager"]
-      depends_on:
-        - resourcemanager
-      env_file:
-        - ./config
-      volumes:
-        - /Users/xaohii/data/docker_local/share:/share
-      stdin_open: true
-      tty: true
       networks:
         - big_data-network
 networks:
