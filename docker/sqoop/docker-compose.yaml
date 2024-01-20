@@ -1,9 +1,11 @@
 version: "2"
 services:
    sqoop:
-      image: mayi21docker/sqoop:1.4.7
+      image: mayi21docker/sqoop:1.4.7.1
       hostname: sqoop
       command: ["/bin/bash"]
+      environment:
+        JAVA_HOME: /usr/lib/java-1.8.0/jdk
       env_file:
         - ./config
       volumes:
