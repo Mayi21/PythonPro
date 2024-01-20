@@ -1,0 +1,17 @@
+version: "2"
+services:
+   sqoop_nodemanager:
+      image: mayi21docker/hadoop:2.10.2_mysql
+      command: ["yarn", "nodemanager"]
+      hostname: sqoop_nodemanager
+      environment:
+        HADOOP_HOME: /opt/hadoop
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/share
+      networks:
+        - big_data-network
+networks:
+  big_data-network:
+    external: true
