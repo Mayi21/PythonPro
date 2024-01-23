@@ -11,8 +11,10 @@ services:
       - SERVICE_OPTS=-Djavax.jdo.option.ConnectionDriverName=com.mysql.cj.jdbc.Driver -Djavax.jdo.option.ConnectionURL=jdbc:mysql://mysql:3306/metastore_db -Djavax.jdo.option.ConnectionUserName=root -Djavax.jdo.option.ConnectionPassword=123456
     volumes:
       - /Users/xaohii/data/docker_local/hive_data:/opt/hive/data/warehouse
+      # 保证这个路径存在
       - /Users/xaohii/data/docker_local/share/mysql-connector-j-8.1.0.jar:/opt/hive/lib/mysql-connector-j-8.1.0.jar
       - /Users/xaohii/data/docker_local/share:/share
+      - /Users/xaohii/data/docker_local/share/hive-site.xml:/opt/hive/conf/hive-site.xml
     networks:
       - big_data-network
 networks:
