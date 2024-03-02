@@ -2,10 +2,9 @@ version: "2"
 services:
    hiveBaseHadoop:
       image: mayi21docker/hive:11.0
-      hostname: namenode
-      command: ["hdfs", "namenode"]
+      hostname: hive
+      command: ["hdfs", "datanode"]
       environment:
-        ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
         HADOOP_HOME: /opt/hadoop
         MYSQL_URL: jdbc:mysql://mysql:3306/metastore_db
         MYSQL_USER: root
