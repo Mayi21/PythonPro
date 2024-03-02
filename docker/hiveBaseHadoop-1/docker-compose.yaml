@@ -1,0 +1,26 @@
+version: "2"
+services:
+   hiveBaseHadoop:
+      image: mayi21docker/hive:11.0
+      hostname: namenode
+      command: ["hdfs", "namenode"]
+      environment:
+        ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+        HADOOP_HOME: /opt/hadoop
+        MYSQL_URL: jdbc:mysql://mysql:3306/metastore_db
+        MYSQL_USER: root
+        MYSQL_PASSWD: 123456
+        DRIVER_URL: com.mysql.cj.jdbc.Driver
+      ports:
+        - 9872:9870
+        - 10000:10000
+        - 10001:10001
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/share:/share
+      networks:
+        - big_data-network
+networks:
+  big_data-network:
+    external: true
