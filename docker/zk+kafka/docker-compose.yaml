@@ -4,7 +4,7 @@ services:
   zookeeper:
     image: zookeeper
     build:
-      context: ..
+      context: ./
     container_name: zookeeper
     ports:
       - 2181:2181
@@ -18,13 +18,13 @@ services:
     depends_on:
       - zookeeper
     build:
-      context: ..
-    container_name: kafka-node-0s
+      context: ./
+    container_name: kafka-node-0
     image: wurstmeister/kafka
     environment:
       KAFKA_BROKER_ID: 0
-      KAFKA_ZOOKEEPER_CONNECT: 192.168.0.103:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.103:9092
+      KAFKA_ZOOKEEPER_CONNECT: 192.168.1.100:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.100:9092
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 2
@@ -38,13 +38,13 @@ services:
     depends_on:
       - kafka_node_0
     build:
-      context: ..
+      context: ./
     container_name: kafka-node-1
     image: wurstmeister/kafka
     environment:
       KAFKA_BROKER_ID: 1
-      KAFKA_ZOOKEEPER_CONNECT: 192.168.0.103:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.103:9093
+      KAFKA_ZOOKEEPER_CONNECT: 192.168.1.100:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.100:9093
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9093
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 2
@@ -58,13 +58,13 @@ services:
     depends_on:
       - kafka_node_1
     build:
-      context: ..
+      context: ./
     container_name: kafka-node-2
     image: wurstmeister/kafka
     environment:
       KAFKA_BROKER_ID: 2
-      KAFKA_ZOOKEEPER_CONNECT: 192.168.0.103:2181
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.0.103:9094
+      KAFKA_ZOOKEEPER_CONNECT: 192.168.1.100:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://192.168.1.100:9094
       KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9094
       KAFKA_NUM_PARTITIONS: 3
       KAFKA_DEFAULT_REPLICATION_FACTOR: 2
