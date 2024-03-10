@@ -1,30 +1,37 @@
 #!/bin/bash
 
-# 更新apt包索引
-sudo apt update
+# 设置Hadoop安装路径
+HADOOP_INSTALL_DIR="/usr/local/hadoop"
 
-# 下载Hadoop压缩包
-wget https://downloads.apache.org/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz
+# 创建安装目录
+ mkdir -p $HADOOP_INSTALL_DIR
 
-# 解压Hadoop压缩包
-tar -xvf hadoop-3.3.1.tar.gz
+# 下载Hadoop安装包（这里以官网地址为例）
+HADOOP_DOWNLOAD_URL="https://archive.apache.org/dist/hadoop/common/hadoop-3.3.1/hadoop-3.3.1.tar.gz"
+wget -P $HADOOP_INSTALL_DIR $HADOOP_DOWNLOAD_URL
 
-# 将Hadoop文件夹移动到/opt目录下
-sudo mv hadoop-3.3.1 /opt/hadoop
+# 解压安装包
+ tar -xzvf $HADOOP_INSTALL_DIR/hadoop-*.tar.gz -C $HADOOP_INSTALL_DIR --strip-components=1
 
-# 设置Hadoop环境变量
-echo "export HADOOP_HOME=/opt/hadoop" >> ~/.bashrc
-echo "export PATH=\$PATH:\$HADOOP_HOME/bin:\$HADOOP_HOME/sbin" >> ~/.bashrc
+# 配置Hadoop环境变量
+echo "export HADOOP_HOME=$HADOOP_INSTALL_DIR" >> ~/.bashrc
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> ~/.bashrc
 source ~/.bashrc
 
-# 配置Hadoop环境
-cp $HADOOP_HOME/etc/hadoop/*.xml $HADOOP_HOME/etc/hadoop/*.cmd /opt/hadoop/etc/hadoop
-sudo sed -i '/^export JAVA_HOME/ s:.*:export JAVA_HOME=/usr/lib/jvm/default-java\nexport HADOOP_HOME=/opt/hadoop\nexport HADOOP_INSTALL=$HADOOP_HOME\nexport HADOOP_MAPRED_HOME=$HADOOP_HOME\nexport HADOOP_COMMON_HOME=$HADOOP_HOME\nexport HADOOP_HDFS_HOME=$HADOOP_HOME\nexport YARN_HOME=$HADOOP_HOME\nexport HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native\nexport PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin\nexport HADOOP_OPTS="-Djava.library.path=$HADOOP_HOME/lib/native"': /opt/hadoop/etc/hadoop/hadoop-env.sh
+# 配置Hadoop伪分布式模式
+cp $HADOOP_INSTALL_DIR/etc/hadoop/mapred-site.xml.template $HADOOP_INSTALL_DIR/etc/hadoop/mapred-site.xml
+echo "<configuration><property><name>mapreduce.framework.name</name><value>yarn</value></property></configuration>" >> $HADOOP_INSTALL_DIR/etc/hadoop/mapred-site.xml
+
+# 配置Hadoop单节点模式
+cp $HADOOP_INSTALL_DIR/etc/hadoop/core-site.xml.template $HADOOP_INSTALL_DIR/etc/hadoop/core-site.xml
+echo "<configuration><property><name>fs.defaultFS</name><value>hdfs://localhost:9000</value></property></configuration>" >> $HADOOP_INSTALL_DIR/etc/hadoop/core-site.xml
+cp $HADOOP_INSTALL_DIR/etc/hadoop/hdfs-site.xml.template $HADOOP_INSTALL_DIR/etc/hadoop/hdfs-site.xml
+echo "<configuration><property><name>dfs.replication</name><value>1</value></property></configuration>" >> $HADOOP_INSTALL_DIR/etc/hadoop/hdfs-site.xml
 
 # 格式化HDFS
 hdfs namenode -format
 
-# 启动Hadoop
+# 启动Hadoop集群
 start-dfs.sh
 start-yarn.sh
 

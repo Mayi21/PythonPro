@@ -55,8 +55,8 @@ echo "hive.server2.authentication.pam.services=login" >> $HIVE_HOME/conf/hive-si
 echo "hive.server2.enable.doAs=false" >> $HIVE_HOME/conf/hive-site.xml
 
 # 启动Hive服务
-nohup $HIVE_HOME/bin/hive --service metastore &> /opt/logs/hive/metastore.log &
-nohup $HIVE_HOME/bin/hive --service hiveserver2 &> /opt/logs/hive/hiveserver2.log &
+nohup $HIVE_HOME/bin/hive --service metastore &> /var/log/hive/metastore.log &
+nohup $HIVE_HOME/bin/hive --service hiveserver2 &> /var/log/hive/hiveserver2.log &
 
 # 验证Hive安装
 hive --version

@@ -1,0 +1,21 @@
+version: "2"
+services:
+   hadoop:
+      image: apache/hadoop:2.10.2
+      hostname: hadoop
+      command: ["sh", "sbin/start-all.sh"]
+      environment:
+        ENSURE_NAMENODE_DIR: "/tmp/hadoop-root/dfs/name"
+        HADOOP_HOME: /opt/hadoop
+      ports:
+        - 9872:9870
+        - 8090:8088
+      env_file:
+        - ./config
+      volumes:
+        - /Users/xaohii/data/docker_local/hadoop/namenode_data:/tmp/hadoop-hadoop
+      networks:
+        - big_data-network
+networks:
+  big_data-network:
+    external: true
