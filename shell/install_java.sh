@@ -14,9 +14,9 @@ wget -P $JDK_INSTALL_DIR $JDK_DOWNLOAD_URL
  tar -xzvf $JDK_INSTALL_DIR/jdk-*.tar.gz -C $JDK_INSTALL_DIR --strip-components=1
 
 # 配置环境变量
-echo "export JAVA_HOME=$JDK_INSTALL_DIR" >> ~/.bashrc
-echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> ~/.bashrc
-source ~/.bashrc
+echo "export JAVA_HOME=/opt/jdk" >> /etc/profile
+echo "export PATH=\$JAVA_HOME/bin:\$PATH" >> /etc/profile
+source /etc/profile
 
 # 验证安装
 java -version

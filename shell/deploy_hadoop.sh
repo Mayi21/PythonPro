@@ -14,9 +14,9 @@ wget -P $HADOOP_INSTALL_DIR $HADOOP_DOWNLOAD_URL
  tar -xzvf $HADOOP_INSTALL_DIR/hadoop-*.tar.gz -C $HADOOP_INSTALL_DIR --strip-components=1
 
 # 配置Hadoop环境变量
-echo "export HADOOP_HOME=$HADOOP_INSTALL_DIR" >> ~/.bashrc
-echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> ~/.bashrc
-source ~/.bashrc
+echo "export HADOOP_HOME=/opt/hadoop" >> /etc/profile
+echo 'export PATH=$PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin' >> /etc/profile
+source /etc/profile
 
 # 配置Hadoop伪分布式模式
 cp $HADOOP_INSTALL_DIR/etc/hadoop/mapred-site.xml.template $HADOOP_INSTALL_DIR/etc/hadoop/mapred-site.xml
