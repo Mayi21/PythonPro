@@ -3,6 +3,7 @@ import json
 import subprocess
 
 import requests
+import uuid
 
 from constant import RequestInfo
 
@@ -16,6 +17,32 @@ def __exec_cmd(cmd):
         return {"result": result}
     except Exception as e:
         return {"result": str(e)}
+
+
+# 异步执行命令
+def async_exec_cmd(cmd):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        # 返回到kafka消息中
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
+
+
+# 同步执行命令
+def sync_exec_cmd(cmd):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
+
+def get_uuid():
+    return str(uuid.uuid4())
 
 
 def check_shell_file(file_name):

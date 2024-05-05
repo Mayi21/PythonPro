@@ -1,4 +1,6 @@
+import json
 import os
+import threading
 
 from fastapi import UploadFile, File
 from fastapi import Request
@@ -47,9 +49,9 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 req_util = HttpUtil()
 
 # get env parameter
-PM_IP = os.getenv("PM_IP")
-PM_PORT = os.getenv("PM_PORT")
-SERVER = os.getenv("SERVER")
+# PM_IP = os.getenv("PM_IP")
+# PM_PORT = os.getenv("PM_PORT")
+# SERVER = os.getenv("SERVER")
 
 
 # health api
@@ -62,6 +64,9 @@ async def get_info():
     return {"status": 200, "hostname": hostname, "ip": ip}
 
 
+# 服务启动执行的任务
+# 在服务启动是，获取本地配置的agent server服务端信息，上报消息到server上
+# 上报的内容是当前时间+
 @app.on_event("startup")
 def register_info():
     # 获取本机计算机名称
@@ -69,12 +74,16 @@ def register_info():
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
 
-    deploy_host_url = "http://{}/register-info/".format(SERVER)
+    uuid = uuid.uuid4()
+
+    with open('config.json', 'r') as f:
+        agent_server_config = json.load(f)
+
+
+    deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])
     data = {
         'type': "VM",
         'vm_ip': ip,
-        'pm_ip': PM_IP,
-        'pm_port': PM_PORT,
         'vm_name': hostname
     }
     print(data)
@@ -91,11 +100,23 @@ def register_info():
         print("network error")
 
 
-# execute shell command
-@app.post("/cmd")
-async def run_cmd(command: Cmd):
+# 异步执行shell命令，将执行结果返回大kafka中消费
+# 目前是将kafka消息中加上节点IP和命令，来让调用方区分那个节点的那个命令的返回内容是
+@app.post("/v2/async-cmd")
+async def async_execute_cmd(command: Cmd):
     print("execute shell cmd is {}".format(command.value))
-    out = __exec_cmd(command.value)
+    # 开启一个线程，用来执行异步命令，然后将结果返回到kafka中
+    exec_cmd_thread = threading.Thread(target=async_exec_cmd(command.value))
+    exec_cmd_thread.start()
+    return Response(RequestInfo.SUCCESS_CODE,
+                    msg="execute cmd success",
+                    data=None)
+
+# 同步执行shell命令，在接口中返回响应结果
+@app.post("/v2/sync-cmd/")
+async def sync_execute_cmd(command: Cmd):
+    print("execute shell cmd is {}".format(command.value))
+    out = sync_exec_cmd(command.value)
     return Response(RequestInfo.SUCCESS_CODE,
                     msg="execute cmd success",
                     data=out)
@@ -109,7 +130,9 @@ async def execute_shell_file(file_name: str):
     return __exec_cmd('sh ' + shell_file_path)['result']
 
 
-# upload shell script
+# 上传shell脚本
+# 限制上传的大小和文件后缀
+# 将上传后的shell脚本文件放在本地
 @app.post('/uploadfiles')
 @limiter.limit("10/second")
 async def upload_shell_file(request: Request, file: UploadFile = File(...)):
