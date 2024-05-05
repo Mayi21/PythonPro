@@ -127,7 +127,6 @@ def deploy_host():
     else:
         return JsonResponse({'status': 500})
 
-
 def start_host(request):
     container_id = json.loads(request.body)['id']
     if not container_id:

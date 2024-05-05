@@ -33,5 +33,7 @@ urlpatterns = [
     path('get-host-info/', views.get_deploy_host_info_info, name='get_host_info'),
     path('register-info/', views.register_info_func, name='register_info'),
     path('sync-vm/', views.sync_vm_info_func, name='sync_vn_info'),
+    path('v2/sync-cmd/', views.execute_sync_cmd_function, name='execute_sync_cmd'),
+    path('install_agent/', views.install_agent, name='install_agent_func'),
 
 ]
