@@ -5,6 +5,8 @@ import uuid
 
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
+
+from utils import get_uuid
 from time import sleep
 
 # bootstrap_servers = os.getenv("kafka_bootstrap_servers")
@@ -27,7 +29,7 @@ def server_receive_res():
 
 
 def __get_command_uuid():
-    return str(uuid.uuid4())
+    return get_uuid()
 
 
 command_res_thread = threading.Thread(target=server_receive_res, name="command_consumer")
