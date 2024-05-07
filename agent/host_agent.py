@@ -1,6 +1,12 @@
 import os
 import threading
+import socket
+import json
+import subprocess
+import requests
+import uuid
 from enum import Enum
+
 from fastapi import UploadFile, File
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -11,11 +17,6 @@ from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 import logging
 from logging.handlers import TimedRotatingFileHandler
-import socket
-import json
-import subprocess
-import requests
-import uuid
 
 
 class RequestInfo(Enum):
@@ -159,7 +160,7 @@ req_util = HttpUtil()
 
 
 # health api
-@app.get("/health")
+@app.get("/v2/health")
 async def get_info():
     # 获取本机计算机名称
     hostname = socket.gethostname()
@@ -171,36 +172,36 @@ async def get_info():
 # 服务启动执行的任务
 # 在服务启动是，获取本地配置的agent server服务端信息，上报消息到server上
 # 上报的内容是当前时间+
-@app.on_event("startup")
-def register_info():
-    # 获取本机计算机名称
-    hostname = socket.gethostname()
-    # 获取本机ip
-    ip = socket.gethostbyname(hostname)
-
-    uuid = Utils.get_uuid()
-
-    with open('config.json', 'r') as f:
-        agent_server_config = json.load(f)
-
-    deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])
-    data = {
-        'type': "VM",
-        'vm_ip': ip,
-        'vm_name': hostname
-    }
-    print(data)
-    resp = req_util.req(RequestInfo.METHOD_POST,
-                        deploy_host_url,
-                        data,
-                        None)
-
-    if resp.status_code == 200 and json.loads(resp.content)['status'] == 200:
-        print("register success")
-    elif resp.status_code == 200:
-        print(json.loads(resp.content)['msg'])
-    else:
-        print("network error")
+# @app.on_event("startup")
+# def register_info():
+    # # 获取本机计算机名称
+    # hostname = socket.gethostname()
+    # # 获取本机ip
+    # ip = socket.gethostbyname(hostname)
+    #
+    # uuid = Utils.get_uuid()
+    #
+    # with open('config.json', 'r') as f:
+    #     agent_server_config = json.load(f)
+    #
+    # deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])
+    # data = {
+    #     'type': "VM",
+    #     'vm_ip': ip,
+    #     'vm_name': hostname
+    # }
+    # print(data)
+    # resp = req_util.req(RequestInfo.METHOD_POST,
+    #                     deploy_host_url,
+    #                     data,
+    #                     None)
+    #
+    # if resp.status_code == 200 and json.loads(resp.content)['status'] == 200:
+    #     print("register success")
+    # elif resp.status_code == 200:
+    #     print(json.loads(resp.content)['msg'])
+    # else:
+    #     print("network error")
 
 
 # 异步执行shell命令，将执行结果返回大kafka中消费
