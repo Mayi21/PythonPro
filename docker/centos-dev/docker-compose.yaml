@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  centos:
+    image: mayi21docker/centos-dev
+    privileged: true
+    ports:
+      - "10008:10008"
+      - "10022:22"
+    volumes:
+      - C:\Users\xaohii\data\share:/share
+    command: /usr/sbin/init
+    stdin_open: true
+    tty: true
