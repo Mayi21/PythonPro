@@ -1,18 +1,132 @@
-import json
 import os
 import threading
-
+from enum import Enum
 from fastapi import UploadFile, File
 from fastapi import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import FastAPI
+from pydantic import BaseModel
 from slowapi.errors import RateLimitExceeded
 from slowapi import Limiter, _rate_limit_exceeded_handler
 from slowapi.util import get_remote_address
 import logging
 from logging.handlers import TimedRotatingFileHandler
+import socket
+import json
+import subprocess
+import requests
+import uuid
 
-from resp import Response
+
+class RequestInfo(Enum):
+    SUCCESS_CODE = "200"
+    INTERNAL_ERROR = "500"
+    REQ_HEADERS = {'Content-Type': 'application/json'}
+    METHOD_GET = "GET"
+    METHOD_POST = "POST"
+    METHOD_DELETE = "DELETE"
+    METHOD_PUT = "PUT"
+
+
+class InstanceEnv(Enum):
+    PLUGIN_SCRIPT_PATH = "/opt/plugin"
+    PLUGIN_TEMP_PATH = '/tmp'
+
+
+class Cmd(BaseModel):
+    name: str
+    description: str
+    value: str
+
+
+# execute shell command
+def __exec_cmd(cmd):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
+
+
+# 异步执行命令
+def async_exec_cmd(cmd):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        # 返回到kafka消息中
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
+
+
+# 同步执行命令
+def sync_exec_cmd(cmd):
+    try:
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, shell=True)
+        output, error = process.communicate()
+        result = output.decode().strip() if output else error.decode().strip()
+        return {"result": result}
+    except Exception as e:
+        return {"result": str(e)}
+
+
+def get_uuid():
+    return str(uuid.uuid4())
+
+
+class HttpUtil:
+
+    def __post(self, url, data, headers):
+        resp = requests.post(url=url,
+                             data=data,
+                             headers=headers)
+        return resp
+
+    def __get(self, url, data, params, headers):
+        resp = requests.get(url=url,
+                            data=data,
+                            params=params,
+                            headers=headers)
+        return resp
+
+    def __put(self, url, data, params, headers):
+        resp = requests.put(url=url,
+                            data=data,
+                            params=params,
+                            headers=headers)
+        return resp
+
+    def __delete(self, url, data, params, headers):
+        resp = requests.delete(url=url,
+                               params=params,
+                               data=data,
+                               headers=headers)
+        return resp
+
+    def req(self, method: RequestInfo, url: str, data, params, headers=RequestInfo.REQ_HEADERS.value):
+        data = json.dumps(data)
+        if method == RequestInfo.METHOD_GET:
+            return self.__get(url=url, data=data, params=params, headers=headers)
+        elif method == RequestInfo.METHOD_PUT:
+            return self.__put(url=url, data=data, params=params, headers=headers)
+        elif method == RequestInfo.METHOD_POST:
+            return self.__post(url=url, data=data, headers=headers)
+        else:
+            return self.__delete(url=url, data=data, params=params, headers=headers)
+
+
+class Response:
+    code: RequestInfo
+    msg: str
+
+    def __init__(self, code: RequestInfo.SUCCESS_CODE, msg: str, data):
+        self.code = code
+        self.msg = msg
+        self.data = json.loads(data)
+
 
 # 创建 TimedRotatingFileHandler
 log_handler = TimedRotatingFileHandler('vm_agent_app.log', when='midnight', interval=1, backupCount=14)
@@ -24,12 +138,6 @@ log_handler.setFormatter(log_formatter)
 
 # 添加 Handler 到根日志记录器
 logging.root.addHandler(log_handler)
-
-from utils import __exec_cmd
-from models import *
-from utils import *
-from constant import InstanceEnv
-import socket
 
 limiter = Limiter(key_func=get_remote_address)
 app = FastAPI()
@@ -47,11 +155,6 @@ app.state.limiter = limiter
 app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 req_util = HttpUtil()
-
-# get env parameter
-# PM_IP = os.getenv("PM_IP")
-# PM_PORT = os.getenv("PM_PORT")
-# SERVER = os.getenv("SERVER")
 
 
 # health api
@@ -78,7 +181,6 @@ def register_info():
 
     with open('config.json', 'r') as f:
         agent_server_config = json.load(f)
-
 
     deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])
     data = {
@@ -111,6 +213,7 @@ async def async_execute_cmd(command: Cmd):
     return Response(RequestInfo.SUCCESS_CODE,
                     msg="execute cmd success",
                     data=None)
+
 
 # 同步执行shell命令，在接口中返回响应结果
 @app.post("/v2/sync-cmd/")
