@@ -1,29 +1,23 @@
-Name: host_agent
-Version: 1.0
-Release: 1%{?dist}
-Summary: Description of your package
-
-License: YourLicense
-URL: http://www.example.com
-Source0: %{name}-%{version}.tar.gz
-
-BuildArch: noarch
+Name:           mypackage
+Version:        1.0
+Release:        1
+Summary:        My sample package
+License:        GPLv3
 
 %description
-Your description here
+agent rpm package.
 
-%prep
-%setup -q
+# 定义rpm文件安装后，这个文件要放在那里
+%define _prefix /usr/local/agent
+%define SRC_PATH %{_topdir}/../src
 
-%build
-# Nothing needed here for a Python script
-
+# 把要打包的文件移入到构建目录下面
 %install
-rm -rf $RPM_BUILD_ROOT
-mkdir -p $RPM_BUILD_ROOT/usr/bin
-cp -a %{_builddir}/%{name}-%{version}/* $RPM_BUILD_ROOT/usr/bin/
+mkdir -p $RPM_BUILD_ROOT%{_prefix}/plugin
+cp -pR %{SRC_PATH}/* $RPM_BUILD_ROOT%{_prefix}/plugin/
 
+
+# 定义文件属性和这个rpm包里面包含哪些文件
 %files
-/usr/bin/host_agent.py
-
-%changelog
+%defattr(-,root,root)
+%{_prefix}/plugin/*
