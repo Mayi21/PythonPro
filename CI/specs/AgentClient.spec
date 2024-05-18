@@ -9,12 +9,11 @@ agent rpm package.
 
 # 定义rpm文件安装后，这个文件要放在那里
 %define _prefix /usr/local/agent
-%define SRC_PATH %{_topdir}/../src
 
 # 把要打包的文件移入到构建目录下面
 %install
 mkdir -p $RPM_BUILD_ROOT%{_prefix}/plugin
-cp -pR %{SRC_PATH}/* $RPM_BUILD_ROOT%{_prefix}/plugin/
+cp -pR %{_pro_dir}/* $RPM_BUILD_ROOT%{_prefix}/plugin/
 
 
 # 定义文件属性和这个rpm包里面包含哪些文件
