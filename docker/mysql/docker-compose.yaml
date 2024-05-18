@@ -8,10 +8,10 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: 123456
     volumes:
-      - /Users/xaohii/data/docker_local/mysql_data:/var/lib/mysql
-      - /Users/xaohii/data/docker_local/share:/share
+      - C:\Users\xaohii\data\local_data\mysql:/var/lib/mysql
+      - C:\Users\xaohii\data\share:/share
     ports:
-      - 3306:3306
+      - 7306:3306
     networks:
       - big_data-network
 
