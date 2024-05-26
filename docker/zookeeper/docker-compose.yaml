@@ -1,0 +1,15 @@
+version: "3"
+
+services:
+  zookeeper:
+    image: zookeeper
+    build:
+      context: ./
+    container_name: zookeeper
+    ports:
+      - 2181:2181
+    volumes:
+      - ./data/zookeeper/data:/data
+      - ./data/zookeeper/datalog:/datalog
+      - ./data/zookeeper/logs:/logs
+    restart: always
