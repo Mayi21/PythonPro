@@ -78,7 +78,7 @@ def deploy_host(port_item):
 
 
 def set_config_json(pm_ip, pm_port):
-    config_json_path = "../conf/config.json"
+    config_json_path = "../conf/agent.conf"
     with open(config_json_path, 'r') as f:
         data = json.load(f)
     with open(config_json_path, "w+") as f:

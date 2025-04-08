@@ -179,7 +179,7 @@ def register_info():
 
     uuid_id = uuid.uuid4()
 
-    with open('../agent-plugin/conf/config.json', 'r') as f:
+    with open('../agent-plugin/conf/agent.conf', 'r') as f:
         agent_server_config = json.load(f)
 
     deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])

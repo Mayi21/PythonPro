@@ -181,7 +181,7 @@ async def get_info():
     #
     # uuid = Utils.get_uuid()
     #
-    # with open('config.json', 'r') as f:
+    # with open('agent.conf', 'r') as f:
     #     agent_server_config = json.load(f)
     #
     # deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])
