@@ -129,7 +129,7 @@ class Response:
 
 
 # 创建 TimedRotatingFileHandler
-log_handler = TimedRotatingFileHandler('../agent/vm_agent_app.log', when='midnight', interval=1, backupCount=14)
+log_handler = TimedRotatingFileHandler('../agent-plugin/logs/vm_agent_app.log', when='midnight', interval=1, backupCount=14)
 log_handler.setLevel(logging.INFO)
 
 # 创建 Formatter
@@ -177,9 +177,9 @@ def register_info():
     # 获取本机ip
     ip = socket.gethostbyname(hostname)
 
-    uuid = uuid.uuid4()
+    uuid_id = uuid.uuid4()
 
-    with open('../agent/config.json', 'r') as f:
+    with open('../agent-plugin/conf/config.json', 'r') as f:
         agent_server_config = json.load(f)
 
     deploy_host_url = "http://{}:{}/register-info/".format(agent_server_config['SERVER'], agent_server_config['PORT'])

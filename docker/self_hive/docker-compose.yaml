@@ -15,7 +15,7 @@ services:
         - 10002:10000
         - 10003:10001
       volumes:
-        - /Users/xaohii/data/docker_local/share:/share
+        - C:\Users\xaohii\data\share:/share
       networks:
         - big_data-network
 networks:

@@ -101,7 +101,7 @@ def deploy_host():
     server_port = str(__get_not_use_port())
     logging.info("server port is ", server_port)
     print("server port is ", server_port)
-    # TODO get host agent address
+    # TODO get host agent-plugin address
     pm_ip, pm_port, agent_address = __get_pm_info("")
     deploy_host_url = "{}/deploy-host".format(agent_address)
     resp = req_util.req(RequestInfo.METHOD_POST,
@@ -202,9 +202,6 @@ def del_host(request):
 
 # TODO need design a table about pm and vm info
 def __get_pm_info(vm_agent_info):
-    # vm_id = vm_agent_info['']
-    # vm_id = vm_agent_info['']
-    # vm_ip = vm_agent_info['']
     pm_ip = "127.0.0.1"
     pm_port = "8000"
 

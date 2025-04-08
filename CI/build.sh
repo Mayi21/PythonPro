@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # 获取当前脚本所在目录的父目录
-SCRIPT=$(readlink -f "$0")
+SCRIPT=$(dirname "$0")
 PARENT_DIR=$(dirname "$(dirname "$SCRIPT")")
 
 # 检查目录是否存在，如果不存在则创建
@@ -15,4 +15,4 @@ cp -af "${PARENT_DIR}/agent/host_agent.py" "${PARENT_DIR}/rpm_pkg/SOURCES/"
 tar czf "${PARENT_DIR}/rpm_pkg/SOURCES/host_agent-1.0.tar.gz" -C "${PARENT_DIR}/rpm_pkg/SOURCES" host_agent.py
 
 # 构建 RPM 包
-rpmbuild -ba "${PARENT_DIR}/rpm_pkg/SPECS/host_agent.spec"
+rpmbuild -v -bb --define "_topdir ${CUR_DIR}" ${CUR_DIR}/AgentClient.spec
