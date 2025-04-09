@@ -28,7 +28,7 @@ install -d %{buildroot}/var/log/agent
 
 # 安装 Python 源码
 cp -r src/* %{buildroot}/usr/local/agent/
-chmod 755 %{buildroot}/usr/local/agent/agent.py
+chmod 755 %{buildroot}/usr/local/agent/host_agent.py
 
 # 安装配置文件
 install -m 644 conf/agent.conf %{buildroot}/usr/local/agent/conf/
@@ -36,21 +36,17 @@ install -m 644 conf/agent.conf %{buildroot}/usr/local/agent/conf/
 # 安装启动脚本
 install -m 755 bin/agent-start.sh %{buildroot}/usr/local/agent/bin/agent-start
 
-# 安装 requirements.txt
-install -m 644 requirements.txt %{buildroot}/usr/local/agent/requirements.txt
-
 %post
 # 安装 Python 依赖
 /usr/bin/python3 -m ensurepip --upgrade
 /usr/bin/python3 -m pip install --upgrade pip
-/usr/bin/python3 -m pip install -r /usr/local/agent/requirements.txt
+/usr/bin/python3 -m pip install paramiko flask
 echo "Agent plugin installed successfully. Run '/usr/local/agent/bin/agent-start' to begin collecting node info."
 
 %files
 /usr/local/agent/*
 /usr/local/agent/bin/agent-start
 /usr/local/agent/conf/agent.conf
-/usr/local/agent/requirements.txt
 %dir /var/log/agent
 
 %changelog

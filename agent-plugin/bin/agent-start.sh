@@ -17,7 +17,7 @@ stop_service() {
 # 检查服务状态
 check_service_status() {
     # 检查服务的状态，使用curl命令检查服务是否响应
-    if curl -sSf "http://127.0.0.1:8000/v2/health" > /dev/null; then
+    if curl -sSf "http://127.0.0.1:5000/v1/health" > /dev/null; then
         echo "my_service is running."
     else
         echo "my_service is not running."
