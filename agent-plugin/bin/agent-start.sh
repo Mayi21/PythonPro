@@ -4,7 +4,7 @@ WORK_DIR=/usr/local/agent
 # 启动服务
 start_service() {
     echo "Starting my_service..."
-    python3 ${WORK_DIR}/hsot_agent.py
+    python3 ${WORK_DIR}/host_agent.py
 }
 
 # 停止服务

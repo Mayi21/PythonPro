@@ -6,11 +6,12 @@ License:        MIT
 URL:            https://example.com/agent-plugin
 Source0:        %{name}-%{version}.tar.gz
 BuildArch:      noarch
-Requires:       python3, python3-psutil
+Requires:       python3
 
 %description
 This package provides a Python-based agent plugin to collect system information
-from nodes, such as CPU, memory, disk, and network usage.
+from nodes, such as CPU, memory, disk, and network usage. Dependencies are installed
+via pip during the installation process.
 
 %prep
 %setup -q
@@ -19,29 +20,37 @@ from nodes, such as CPU, memory, disk, and network usage.
 true
 
 %install
-# 创建统一的安装目录
+# 创建安装目录
 install -d %{buildroot}/usr/local/agent
 install -d %{buildroot}/usr/local/agent/bin
 install -d %{buildroot}/usr/local/agent/conf
 install -d %{buildroot}/var/log/agent
 
-# 安装 Python 源码到 /usr/local/agent/
+# 安装 Python 源码
 cp -r src/* %{buildroot}/usr/local/agent/
 chmod 755 %{buildroot}/usr/local/agent/agent.py
 
-# 安装配置文件到 /usr/local/agent/conf/
+# 安装配置文件
 install -m 644 conf/agent.conf %{buildroot}/usr/local/agent/conf/
 
-# 安装启动脚本到 /usr/local/agent/bin/
+# 安装启动脚本
 install -m 755 bin/agent-start.sh %{buildroot}/usr/local/agent/bin/agent-start
 
+# 安装 requirements.txt
+install -m 644 requirements.txt %{buildroot}/usr/local/agent/requirements.txt
+
 %post
+# 安装 Python 依赖
+/usr/bin/python3 -m ensurepip --upgrade
+/usr/bin/python3 -m pip install --upgrade pip
+/usr/bin/python3 -m pip install -r /usr/local/agent/requirements.txt
 echo "Agent plugin installed successfully. Run '/usr/local/agent/bin/agent-start' to begin collecting node info."
 
 %files
 /usr/local/agent/*
 /usr/local/agent/bin/agent-start
 /usr/local/agent/conf/agent.conf
+/usr/local/agent/requirements.txt
 %dir /var/log/agent
 
 %changelog
