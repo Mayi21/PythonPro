@@ -4,7 +4,7 @@ WORK_DIR=/usr/local/agent
 # 启动服务
 start_service() {
     echo "Starting my_service..."
-    python3 ${WORK_DIR}/host_agent.py
+    nohup gunicorn -w 4 -b 0.0.0.0:5000 --pythonpath /usr/local/agent host_agent:app &
 }
 
 # 停止服务

@@ -189,4 +189,4 @@ def health_check():
 
 if __name__ == "__main__":
     # 在节点上运行，监听特定端口
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

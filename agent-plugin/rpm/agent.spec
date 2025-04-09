@@ -40,7 +40,7 @@ install -m 755 bin/agent-start.sh %{buildroot}/usr/local/agent/bin/agent-start
 # 安装 Python 依赖
 /usr/bin/python3 -m ensurepip --upgrade
 /usr/bin/python3 -m pip install --upgrade pip
-/usr/bin/python3 -m pip install paramiko flask
+/usr/bin/python3 -m pip install paramiko flask gunicorn
 echo "Agent plugin installed successfully. Run '/usr/local/agent/bin/agent-start' to begin collecting node info."
 
 %files
