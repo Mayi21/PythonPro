@@ -6,10 +6,9 @@ class AgentInfo(models.Model):
     """
     存储Agent信息的模型
     """
-    id = models.AutoField(primary_key=True)
     ip = models.CharField(max_length=255, verbose_name='IP地址')
     sn = models.CharField(max_length=255, verbose_name='设备SN')
-    updateTime = models.BigIntegerField(verbose_name='更新时间戳')
+    updateTime = models.DateTimeField(auto_now=True, verbose_name='更新时间')
 
     class Meta:
         db_table = 'agent_info'  # 设置数据库表名

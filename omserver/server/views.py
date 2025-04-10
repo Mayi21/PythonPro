@@ -1,7 +1,12 @@
 # dashboard/views.py
+import json
+import time
+
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
+
+from .models import AgentInfo
 
 NODES = [
     {'name': 'Node1', 'url': 'http://node1_ip:5000'},
@@ -53,16 +58,14 @@ def upload_file(request, node_name):
         return Response({'error': str(e)}, status=500)
 
 @api_view(['POST'])
-def upload_file(request, node_name):
-    node = next((n for n in NODES if n['name'] == node_name), None)
-    if not node:
-        return Response({'error': 'Node not found'}, status=404)
-    data = request.data
-    required_fields = ['local_path', 'remote_path', 'hostname', 'username', 'password']
-    if not all(field in data for field in required_fields):
+def update_vm_info(request):
+    data = json.loads(request.body)
+    if 'node_ip' not in data:
         return Response({'error': 'Missing required fields'}, status=400)
-    try:
-        response = requests.post(f"{node['url']}/upload_file", json=data, timeout=10)
-        return Response(response.json())
-    except requests.RequestException as e:
-        return Response({'error': str(e)}, status=500)
+    if 'node_sn' not in data:
+        return Response({'error': 'Missing required fields'}, status=400)
+    node_ip = data['node_ip']
+    node_sn = data['node_sn']
+    agent_info = AgentInfo(ip=node_ip, sn=node_sn, )
+    agent_info.save()
+    return Response({'status': 'OK'})
