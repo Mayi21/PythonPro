@@ -66,9 +66,11 @@ def update_vm_info(request):
         return Response({'error': 'Missing required fields'}, status=400)
     node_ip = data['node_ip']
     node_sn = data['node_sn']
-    agent_info = AgentInfo(ip=node_ip, sn=node_sn, )
-    agent_info.save()
-    return Response({'status': 'OK'})
+    _, created = AgentInfo.objects.update_or_create(ip=node_ip, sn=node_sn)
+    if created:
+        return Response({'INFO': 'Created new record!'}, status=200)
+    else:
+        return Response({'INFO': 'Updated existing record!'}, status=200)
 
 @api_view(['POST'])
 def deploy_vm(request):
