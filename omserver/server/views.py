@@ -69,3 +69,12 @@ def update_vm_info(request):
     agent_info = AgentInfo(ip=node_ip, sn=node_sn, )
     agent_info.save()
     return Response({'status': 'OK'})
+
+@api_view(['POST'])
+def deploy_vm(request):
+    '''
+    下发虚拟机
+
+    '''
+    data = json.loads(request.body)
+
