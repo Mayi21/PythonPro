@@ -1,12 +1,16 @@
 # dashboard/views.py
 import json
+import threading
 import time
+import uuid
 
+import paramiko
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
 
-from .models import AgentInfo
+from .constans import TaskState
+from .models import AgentInfo, InstallTask
 
 NODES = [
     {'name': 'Node1', 'url': 'http://node1_ip:5000'},
@@ -72,11 +76,79 @@ def update_vm_info(request):
     else:
         return Response({'INFO': 'Updated existing record!'}, status=200)
 
+@api_view(['GET'])
+def get_task_info(request, task_id: str):
+    task_info = InstallTask.objects.get(id=task_id)
+    return Response({'data': task_info.to_json()}, status=200)
+
+def install_rpm(task_id: str, ip: str, passwd: str, sn: str):
+    install_task = InstallTask.objects.get(id=task_id)
+    wget_url = "http://192.168.100.157/myrepo/repodata/packages/agent-plugin-1.0.0-1.el7.noarch.rpm"  # 可选参数，默认给个链接
+    install_task.state = TaskState.PROCESSING.value
+    update_install_task_info(install_task, "Start connect node.")
+    install_task.save()
+
+    try:
+        # 建立 SSH 连接
+        ssh = paramiko.SSHClient()
+        ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        ssh.connect(hostname=ip, username='root', password=passwd)
+        update_install_task_info(install_task, "Start connect node.")
+
+        # 构造 wget 命令
+        command = f"wget -P /tmp {wget_url}"
+        update_install_task_info(install_task, "Execute command {}".format(command))
+
+        # 执行命令
+        stdin, stdout, stderr = ssh.exec_command(command)
+        output = stdout.read().decode()
+        error = stderr.read().decode()
+        update_install_task_info(install_task, "Output {}".format(output))
+        install_task.state = TaskState.FINISHED.value
+        install_task.save()
+        ssh.close()
+    except Exception as e:
+        return Response({'error': str(e)}, status=500)
+
+def update_install_task_info(task: InstallTask, new_info: str):
+    task.info = task.info + "\n" + get_time_now() + " " + new_info
+    task.save()
+
+
+def get_time_now():
+    # 获取当前时间戳
+    import time
+
+    timestamp = time.time()
+    local_time = time.localtime(timestamp)
+    formatted_time = time.strftime("%Y-%m-%d %H:%M:%S", local_time)
+    return formatted_time
+
 @api_view(['POST'])
 def deploy_vm(request):
-    '''
-    下发虚拟机
-
-    '''
+    """
+    接收参数后通过 root 登录远程服务器，并执行 wget 命令
+    """
     data = json.loads(request.body)
+    if "ip" not in data:
+        return Response({'error': 'Missing required fields'}, status=400)
+    if "passwd" not in data:
+        return Response({'error': 'Missing required fields'}, status=400)
+    ip = data["ip"]
+    passwd = data["passwd"]
+    vm_sn = uuid.uuid4()
+
+    install_task = InstallTask(
+        ip=ip,
+        sn=vm_sn,
+        passwd=passwd,
+        state=TaskState.READY.value,
+    )
+    install_task.save()
+    resp = {
+        'task_id': install_task.id,
+    }
+    thread = threading.Thread(target=install_rpm, args=(install_task.id, ip, passwd, vm_sn))
+    thread.start()
+    return Response({'data': json.dumps(resp)}, status=200)
 
