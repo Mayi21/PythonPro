@@ -4,14 +4,15 @@ WORK_DIR=/usr/local/agent
 # 启动服务
 start_service() {
     echo "Starting my_service..."
-    nohup gunicorn -w 4 -b 0.0.0.0:5000 --pythonpath /usr/local/agent host_agent:app &
+    cd "/usr/local/agent"
+    nohup uvicorn  host_agent:app --host 0.0.0.0 --port 5000 &
 }
 
 # 停止服务
 stop_service() {
     echo "Stopping my_service..."
     # 这里是停止服务的命令，替换为你的实际停止命令
-    # 例如：/path/to/my_service stop
+    pkill -f "uvicorn host_agent:app"
 }
 
 # 检查服务状态
