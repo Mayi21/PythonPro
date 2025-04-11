@@ -33,8 +33,8 @@ def read_conf():
     """
     读取conf文件配置获取平台服务信息和sn信息
     """
-    data = json.load(open("config.json", 'r'))
-    return data['server_ip'], data['server_port'], data['server_username'], data['sn']
+    data = json.load(open("../conf/agent.conf", 'r'))
+    return data['server_ip'], data['server_port'], data['sn']
 
 server_ip, server_port, sn = read_conf()
 host_ip = get_host_ip()
@@ -231,7 +231,8 @@ def report_vm_info():
         'node_sn': sn
     }
     server_url = 'http://{}:{}{}'.format(server_ip, server_port, "/v2/api/register_node_info")
-    resp = requests.post(server_url, data=req)
+    resp = requests.post(server_url, data=json.dumps(req))
+    print("update success")
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
