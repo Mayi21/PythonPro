@@ -1,13 +1,54 @@
-# node_monitor.py
+import json
+import socket
+
+import requests
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.interval import IntervalTrigger
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 import psutil
-import platform
-from flask import Flask, jsonify, request
 import subprocess
+import platform
 import os
 import paramiko
-from datetime import datetime
 
-app = Flask(__name__)
+app = FastAPI()
+def get_host_ip():
+    """
+    查询本机ip地址
+    :return: ip
+    """
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        ip = s.getsockname()[0]
+    finally:
+        s.close()
+
+    return ip
+
+def read_conf():
+    """
+    读取conf文件配置获取平台服务信息和sn信息
+    """
+    data = json.load(open("config.json", 'r'))
+    return data['server_ip'], data['server_port'], data['server_username'], data['sn']
+
+server_ip, server_port, sn = read_conf()
+host_ip = get_host_ip()
+
+
+
+# 停止时，停止调度器
+@app.on_event("shutdown")
+async def shutdown_event():
+    scheduler.shutdown()
+
+@app.get("/")
+async def read_root():
+    return {"message": "Hello, FastAPI!"}
 
 
 class SystemMonitor:
@@ -15,7 +56,6 @@ class SystemMonitor:
         self.system_info = {}
 
     def get_cpu_info(self):
-        """获取CPU信息"""
         cpu_percent = psutil.cpu_percent(interval=1)
         cpu_count = psutil.cpu_count()
         self.system_info['cpu'] = {
@@ -26,7 +66,6 @@ class SystemMonitor:
         return self.system_info['cpu']
 
     def get_memory_info(self):
-        """获取内存信息"""
         memory = psutil.virtual_memory()
         self.system_info['memory'] = {
             'total': f"{memory.total / (1024 ** 3):.2f} GB",
@@ -36,7 +75,6 @@ class SystemMonitor:
         return self.system_info['memory']
 
     def get_disk_info(self):
-        """获取磁盘信息"""
         disks = []
         for partition in psutil.disk_partitions():
             try:
@@ -55,14 +93,13 @@ class SystemMonitor:
         return self.system_info['disk']
 
     def execute_command(self, command):
-        """执行系统命令（兼容Python 3.4+）"""
         try:
             result = subprocess.run(
                 command,
                 shell=True,
-                stdout=subprocess.PIPE,  # 捕获标准输出
-                stderr=subprocess.PIPE,  # 捕获标准错误
-                universal_newlines=True  # 返回字符串而不是字节，兼容3.4+
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE,
+                universal_newlines=True
             )
             return {
                 'output': result.stdout,
@@ -73,7 +110,6 @@ class SystemMonitor:
             return {'error': str(e)}
 
     def execute_shell_script(self, script_path):
-        """执行shell脚本（兼容Python 3.4+）"""
         if not os.path.exists(script_path):
             return {'error': 'Script file not found'}
 
@@ -101,10 +137,8 @@ class SystemMonitor:
             return {'error': str(e)}
 
     def upload_file(self, local_path, remote_path, hostname, username, password, port=22):
-        """上传文件到远程服务器"""
         if not os.path.exists(local_path):
             return {'error': 'Local file not found'}
-
         try:
             ssh = paramiko.SSHClient()
             ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
@@ -118,7 +152,6 @@ class SystemMonitor:
             return {'error': str(e)}
 
     def get_system_summary(self):
-        """获取系统信息概要"""
         self.get_cpu_info()
         self.get_memory_info()
         self.get_disk_info()
@@ -131,62 +164,80 @@ class SystemMonitor:
         return self.system_info
 
 
-# 创建监控实例
 monitor = SystemMonitor()
 
+# ===== Pydantic 请求体模型 =====
+class CommandRequest(BaseModel):
+    command: str
 
-# API 路由
-@app.route('/system_info', methods=['GET'])
+class ScriptRequest(BaseModel):
+    script_path: str
+
+class UploadRequest(BaseModel):
+    local_path: str
+    remote_path: str
+    hostname: str
+    username: str
+    password: str
+    port: Optional[int] = 22
+
+
+# ===== API 路由 =====
+@app.get("/system_info")
 def get_system_info():
-    """获取系统信息API"""
-    return jsonify(monitor.get_system_summary())
+    return monitor.get_system_summary()
 
 
-@app.route('/execute_command', methods=['POST'])
-def execute_command():
-    """执行命令API"""
-    data = request.get_json()
-    if not data or 'command' not in data:
-        return jsonify({'error': 'No command provided'}), 400
-    result = monitor.execute_command(data['command'])
-    return jsonify(result)
+@app.post("/execute_command")
+def run_command(req: CommandRequest):
+    if not req.command:
+        raise HTTPException(status_code=400, detail="No command provided")
+    return monitor.execute_command(req.command)
 
 
-@app.route('/execute_script', methods=['POST'])
-def execute_script():
-    """执行脚本API"""
-    data = request.get_json()
-    if not data or 'script_path' not in data:
-        return jsonify({'error': 'No script path provided'}), 400
-    result = monitor.execute_shell_script(data['script_path'])
-    return jsonify(result)
+@app.post("/execute_script")
+def run_script(req: ScriptRequest):
+    if not req.script_path:
+        raise HTTPException(status_code=400, detail="No script path provided")
+    return monitor.execute_shell_script(req.script_path)
 
 
-@app.route('/upload_file', methods=['POST'])
-def upload_file():
-    """上传文件API"""
-    data = request.get_json()
-    required_fields = ['local_path', 'remote_path', 'hostname', 'username', 'password']
-    if not data or not all(field in data for field in required_fields):
-        return jsonify({'error': 'Missing required fields'}), 400
-
+@app.post("/upload_file")
+def upload(req: UploadRequest):
     result = monitor.upload_file(
-        local_path=data['local_path'],
-        remote_path=data['remote_path'],
-        hostname=data['hostname'],
-        username=data['username'],
-        password=data['password'],
-        port=data.get('port', 22)
+        local_path=req.local_path,
+        remote_path=req.remote_path,
+        hostname=req.hostname,
+        username=req.username,
+        password=req.password,
+        port=req.port
     )
-    return jsonify(result)
+    if "error" in result:
+        raise HTTPException(status_code=500, detail=result["error"])
+    return result
 
 
-@app.route('/health', methods=['GET'])
+@app.get("/health")
 def health_check():
-    """健康检查API"""
-    return jsonify({'status': 'healthy', 'node': platform.node()})
+    return {"status": "healthy", "node": platform.node()}
 
 
-if __name__ == "__main__":
-    # 在节点上运行，监听特定端口
-    app.run(host='0.0.0.0', port=5000, debug=False)
+def report_vm_info():
+    '''
+    请求平台地址注册主机信息
+    '''
+    req = {
+        'node_ip': host_ip,
+        'node_sn': sn
+    }
+    server_url = 'http://{}:{}{}'.format(server_ip, server_port, "/v2/api/register_node_info")
+    resp = requests.post(server_url, data=req)
+# 创建调度器
+scheduler = AsyncIOScheduler()
+
+# 启动时，启动定时任务
+@app.on_event("startup")
+async def startup_event():
+    scheduler.add_job(report_vm_info, IntervalTrigger(seconds=5))  # 每 5 秒执行一次
+    scheduler.start()
+
