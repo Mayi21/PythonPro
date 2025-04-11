@@ -232,7 +232,7 @@ def report_vm_info():
     }
     server_url = 'http://{}:{}{}'.format(server_ip, server_port, "/v2/api/register_node_info")
     resp = requests.post(server_url, data=json.dumps(req))
-    print("update success")
+    print(resp.json())
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
