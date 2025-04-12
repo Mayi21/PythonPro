@@ -83,7 +83,7 @@ def get_task_info(request, task_id: str):
 
 def install_rpm(task_id: str, ip: str, passwd: str, sn: str):
     install_task = InstallTask.objects.get(id=task_id)
-    wget_url = "http://192.168.100.157/myrepo/repodata/packages/agent-plugin-1.0.0-1.el7.noarch.rpm"  # 可选参数，默认给个链接
+    wget_url = "http://192.168.100.157/myrepo/packages/agent-plugin-1.0.0-1.el7.noarch.rpm"  # 可选参数，默认给个链接
     install_task.state = TaskState.PROCESSING.value
     update_install_task_info(install_task, "Start connect node.")
     install_task.save()
@@ -92,20 +92,33 @@ def install_rpm(task_id: str, ip: str, passwd: str, sn: str):
         # 建立 SSH 连接
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(hostname=ip, username='root', password=passwd)
         update_install_task_info(install_task, "Start connect node.")
+        ssh.connect(hostname=ip, username='root', password=passwd)
 
-        # 构造 wget 命令
-        command = f"wget -P /tmp {wget_url}"
-        update_install_task_info(install_task, "Execute command {}".format(command))
-
-        # 执行命令
-        stdin, stdout, stderr = ssh.exec_command(command)
+        # 执行安装命令
+        install_rpm_cmd = "rpm -ivh {}".format(wget_url)
+        update_install_task_info(install_task, "Execute command {}".format(install_rpm_cmd))
+        stdin, stdout, stderr = ssh.exec_command(install_rpm_cmd)
         output = stdout.read().decode()
         error = stderr.read().decode()
         update_install_task_info(install_task, "Output {}".format(output))
-        install_task.state = TaskState.FINISHED.value
-        install_task.save()
+
+        # 执行内容替换命令
+        replace_conf_cmd = "sed -i 's/SERVER_IP/{}/g; s/SN/{}/g' /usr/local/agent/conf/agent.conf".format('192.168.0.110', sn)
+
+        update_install_task_info(install_task, "Execute command {}".format(replace_conf_cmd))
+        stdin, stdout, stderr = ssh.exec_command(replace_conf_cmd)
+        output = stdout.read().decode()
+        error = stderr.read().decode()
+        update_install_task_info(install_task, "Output {}".format(output))
+
+        # 执行服务启动命令
+        start_app_cmd = "bash /usr/local/agent/bin/agent-start start"
+        update_install_task_info(install_task, "Execute command {}".format(start_app_cmd))
+        stdin, stdout, stderr = ssh.exec_command(start_app_cmd)
+        output = stdout.read().decode()
+        error = stderr.read().decode()
+        update_install_task_info(install_task, "Output {}".format(output))
         ssh.close()
     except Exception as e:
         return Response({'error': str(e)}, status=500)
