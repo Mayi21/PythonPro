@@ -1,10 +1,9 @@
 # dashboard/views.py
 import json
 import threading
-import time
 import uuid
-
 import paramiko
+from django.http import HttpResponse, HttpRequest
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 import requests
@@ -12,54 +11,28 @@ import requests
 from .constans import TaskState
 from .models import AgentInfo, InstallTask
 
-NODES = [
-    {'name': 'Node1', 'url': 'http://node1_ip:5000'},
-    {'name': 'Node2', 'url': 'http://node2_ip:5000'},
-]
-
-@api_view(['GET'])
-def node_list(request):
-    return Response(NODES)
-
-@api_view(['GET'])
-def node_detail(request, node_name):
-    node = next((n for n in NODES if n['name'] == node_name), None)
-    if not node:
-        return Response({'error': 'Node not found'}, status=404)
-    try:
-        response = requests.get(f"{node['url']}/system_info", timeout=5)
-        return Response(response.json())
-    except requests.RequestException as e:
-        return Response({'error': str(e)}, status=500)
+EXECUTE_CMD_API = "/execute_command"
+SYSTEM_INFO_API = "/system_info"
 
 @api_view(['POST'])
-def execute_command(request, node_name):
-    node = next((n for n in NODES if n['name'] == node_name), None)
-    if not node:
-        return Response({'error': 'Node not found'}, status=404)
-    command = request.data.get('command')
-    if not command:
-        return Response({'error': 'No command provided'}, status=400)
-    try:
-        response = requests.post(f"{node['url']}/execute_command", json={'command': command}, timeout=10)
-        return Response(response.json())
-    except requests.RequestException as e:
-        return Response({'error': str(e)}, status=500)
+def exec_shell_command(request):
+    data = json.loads(request.body)
+    if 'sn' not in data:
+        return Response({'error': 'Missing sn address'}, status=400)
 
-@api_view(['POST'])
-def upload_file(request, node_name):
-    node = next((n for n in NODES if n['name'] == node_name), None)
-    if not node:
-        return Response({'error': 'Node not found'}, status=404)
-    data = request.data
-    required_fields = ['local_path', 'remote_path', 'hostname', 'username', 'password']
-    if not all(field in data for field in required_fields):
-        return Response({'error': 'Missing required fields'}, status=400)
-    try:
-        response = requests.post(f"{node['url']}/upload_file", json=data, timeout=10)
-        return Response(response.json())
-    except requests.RequestException as e:
-        return Response({'error': str(e)}, status=500)
+    if 'cmd' not in data:
+        return Response({'error': 'Invalid command'}, status=400)
+
+    agent_info = AgentInfo.objects.get(sn=data['sn'])
+    vm_ip = agent_info.ip
+    return execute_cmd_in_vm(vm_ip, data['cmd'])
+
+def execute_cmd_in_vm(vm_ip, command):
+    url = "http://{}:{}{}".format(vm_ip, 5000, EXECUTE_CMD_API)
+    headers = {'Content-Type': 'application/json'}
+    data = {'command': command}
+    response = requests.post(url, headers=headers, data=json.dumps(data))
+    return HttpResponse(response.text, status=response.status_code)
 
 @api_view(['POST'])
 def update_vm_info(request):
@@ -164,4 +137,18 @@ def deploy_vm(request):
     thread = threading.Thread(target=install_rpm, args=(install_task.id, ip, passwd, vm_sn))
     thread.start()
     return Response({'data': json.dumps(resp)}, status=200)
+
+@api_view(['GET'])
+def get_node_info(request):
+    sn = request.GET.get('sn')
+    agent_info = AgentInfo.objects.get(sn=sn)
+    print(agent_info.ip)
+    return get_system_info(agent_info.ip)
+
+def get_system_info(vm_ip):
+    url = "http://{}:{}{}".format(vm_ip, 5000, SYSTEM_INFO_API)
+    print(url)
+    response = requests.get(url)
+    print(response.text)
+    return Response({'data': response.json()}, status=response.status_code)
 
