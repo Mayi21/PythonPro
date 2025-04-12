@@ -33,7 +33,7 @@ def read_conf():
     """
     读取conf文件配置获取平台服务信息和sn信息
     """
-    data = json.load(open("../conf/agent.conf", 'r'))
+    data = json.load(open("./conf/agent.conf", 'r'))
     return data['server_ip'], data['server_port'], data['sn']
 
 server_ip, server_port, sn = read_conf()

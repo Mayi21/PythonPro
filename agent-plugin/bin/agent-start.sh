@@ -4,7 +4,7 @@ WORK_DIR=/usr/local/agent
 # 启动服务
 start_service() {
     echo "Starting my_service..."
-    cd "/usr/local/agent"
+    cd /usr/local/agent
     nohup uvicorn  host_agent:app --host 0.0.0.0 --port 5000 &
 }
 
