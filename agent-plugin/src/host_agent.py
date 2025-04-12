@@ -13,6 +13,26 @@ import subprocess
 import platform
 import os
 import paramiko
+import logging
+
+
+# 定义日志文件夹路径
+log_folder = "/var/log/agent"
+# 确保日志文件夹存在
+if not os.path.exists(log_folder):
+    os.makedirs(log_folder)
+
+# 配置日志记录器
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler(os.path.join(log_folder, 'app.log')),
+        logging.StreamHandler()  # 同时在控制台输出日志
+    ]
+)
+
+logger = logging.getLogger(__name__)
 
 app = FastAPI()
 def get_host_ip():
@@ -32,9 +52,12 @@ def get_host_ip():
 def read_conf():
     """
     读取conf文件配置获取平台服务信息和sn信息
+    :return: server_ip, server_port, sn
     """
     data = json.load(open("./conf/agent.conf", 'r'))
     return data['server_ip'], data['server_port'], data['sn']
+
+
 
 server_ip, server_port, sn = read_conf()
 host_ip = get_host_ip()
@@ -99,7 +122,8 @@ class SystemMonitor:
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE,
-                universal_newlines=True
+                universal_newlines=True,
+                cwd='/'  # 指定工作目录为根目录
             )
             return {
                 'output': result.stdout,
@@ -226,19 +250,21 @@ def report_vm_info():
     '''
     请求平台地址注册主机信息
     '''
+    logger.info("Start report VM info")
     req = {
         'node_ip': host_ip,
         'node_sn': sn
     }
     server_url = 'http://{}:{}{}'.format(server_ip, server_port, "/v2/api/register_node_info")
     resp = requests.post(server_url, data=json.dumps(req))
-    print(resp.json())
+    logger.info("Report response: {}".format(resp.text))
 # 创建调度器
 scheduler = AsyncIOScheduler()
 
 # 启动时，启动定时任务
 @app.on_event("startup")
 async def startup_event():
+    logger.info('Starting schedule task!')
     scheduler.add_job(report_vm_info, IntervalTrigger(seconds=5))  # 每 5 秒执行一次
     scheduler.start()
 
